@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
         
-<mapper namespace="com.inspaction.user.mapper.UserMapper">
+<mapper namespace="com.wit.inspaction.user.mapper.UserMapper">
 
 	<!-- 사전점검 항목 리스트 조회 -->
 	<select id="selectCategoryList" resultType="UserDTO">
@@ -24,7 +24,7 @@
 		     ,company_id companyId
 		     ,rate
 		     ,company_nm companyNm
-		FROM COMPANY 
+		FROM company 
 		WHERE CATEGORY_ID = #{categoryId}
 	</select>
 	
@@ -61,7 +61,7 @@
 		      , A.SEQ
 		      , B.estimate_amount estimateAmount
 		      , B.estimate_contents estimateContents
-		FROM request100t A ,request110T B
+		FROM request100t A ,request110t B
 		WHERE A.REQ_NO = B.REQ_NO
 		AND  A.CATEGORY_ID = A.CATEGORY_ID 
 		AND A.COMPANY_ID = B.COMPANY_ID
@@ -79,9 +79,9 @@
 	SELECT  A.REQ_NO reqNo,
             A.CATEGORY_ID categoryId,
             (SELECT category_nm FROM category WHERE category_id = A.category_id) AS categoryNm ,
-             (SELECT  COALESCE(estimate_amount, "") FROM request110T WHERE REQ_NO = A.REQ_NO AND CATEGORY_ID= A.CATEGORY_ID AND COMPANY_ID= B.COMPANY_ID) AS estimateAmount ,
+             (SELECT  COALESCE(estimate_amount, "") FROM request110t WHERE REQ_NO = A.REQ_NO AND CATEGORY_ID= A.CATEGORY_ID AND COMPANY_ID= B.COMPANY_ID) AS estimateAmount ,
              (SELECT RATE FROM company WHERE category_id = A.category_id AND company_id = B.COMPANY_ID) AS rate ,
-    COALESCE((SELECT estimate_contents FROM request110T WHERE REQ_NO = A.REQ_NO AND CATEGORY_ID = A.CATEGORY_ID AND COMPANY_ID  = B.COMPANY_ID),'견적대기중') estimateContents,
+    COALESCE((SELECT estimate_contents FROM request110t WHERE REQ_NO = A.REQ_NO AND CATEGORY_ID = A.CATEGORY_ID AND COMPANY_ID  = B.COMPANY_ID),'견적대기중') estimateContents,
               (SELECT COUNT(*) 
      FROM request100t C 
      WHERE C.REQ_NO = A.REQ_NO AND C.CATEGORY_ID = A.CATEGORY_ID) AS companyCnt,
@@ -143,7 +143,7 @@ ORDER BY  B.REQ_DATE DESC, A.CATEGORY_ID
             WHEN TIMESTAMPDIFF(HOUR, B.REQ_DATE, NOW()) <![CDATA[<]]> 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, B.REQ_DATE, NOW()), '시간 전')
             ELSE CONCAT(TIMESTAMPDIFF(DAY, B.REQ_DATE, NOW()), '일 전')
        END AS timeAgo  
-       	FROM request100t A , request110T B
+       	FROM request100t A , request110t B
 	WHERE A.REQ_NO = B.REQ_NO 
 	AND  A.SEQ = B.SEQ
     AND  B.END_DATE = '99991231'
@@ -160,7 +160,7 @@ ORDER BY  B.REQ_DATE DESC, A.CATEGORY_ID
 		      ,A.NICK_NAME nickName
 		      ,A.NAME   name
 		      ,A.APT_NO   mainAptNo    
-		      ,(SELECT APT_NAME FROM APT000T WHERE APT_NO  = A.APT_NO ) mainAptNm
+		      ,(SELECT APT_NAME FROM apt000t WHERE APT_NO  = A.APT_NO ) mainAptNm
 		FROM prsn000t A
 		WHERE A.KAKAO_ID = #{kakaoId}	
 	</select>
@@ -169,7 +169,7 @@ ORDER BY  B.REQ_DATE DESC, A.CATEGORY_ID
 	<select id="selectAptList" parameterType="java.util.HashMap" resultType="java.util.Map">
 		SELECT APT_NO aptNo
 		       ,APT_NAME aptName
-		FROM APT000T 
+		FROM apt000t 
 		WHERE CLERK_NO = #{clerkNo}	
 		AND END_DATE = '99991231'
 	</select>
@@ -239,6 +239,7 @@ ORDER BY  B.REQ_DATE DESC, A.CATEGORY_ID
         REQ_NO,
         SEQ,
         END_DATE,
+        APT_NO,
         company_id,
         category_id,
         req_user,
@@ -252,6 +253,7 @@ ORDER BY  B.REQ_DATE DESC, A.CATEGORY_ID
         #{reqNo},
         #{seq},
         '99991231',
+         #{aptNo},
         #{companyId},
         #{categoryId},
         #{reqUser}, 

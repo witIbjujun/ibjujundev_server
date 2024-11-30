@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.wit.inspaction.chat.mapper.ChatMapper">
+
+	<!-- 채팅내용 조회 -->
+	<select id="selectChatList" parameterType="java.util.HashMap" resultType="ChatDTO">
+	SELECT A.CHAT_ID roomId
+          ,A.CHAT_NAME roomNm
+          ,A.CRE_DT
+          ,B.CLERK_NO authorId
+          ,B.MESSAGE_CONTENT text
+          ,B.MESSAGE_STATUS status
+          ,B.MESSAGE_TYPE type
+          ,UNIX_TIMESTAMP(B.created_at) createdAt
+	FROM chats100t A , chats110t B
+	WHERE A.CHAT_ID = B.CHAT_ID
+	AND   A.CHAT_ID = #{chatId}
+	ORDER BY B.created_at desc
+	</select>
+	
+	<!-- 채팅내용 조회 -->
+	<select id="selectAuthorsByIds" parameterType="java.util.HashMap" resultType="AuthorDTO">
+	SELECT A.CHAT_ID
+		 ,B.CLERK_NO id
+		 ,B.ROLE role
+		 , ' ' firstName
+		 ,B. NICK_NAME lastName
+		 , imageUrl
+	FROM chats120t A , prsn000t B
+	WHERE  A.CLERK_NO = B.CLERK_NO 
+	AND A.CHAT_ID = #{chatId}
+	</select>
+	
+	<!-- 채팅글 저장 -->
+	<insert id="insertChatMessage" parameterType="java.util.HashMap">
+		
+	<selectKey keyProperty="message_id" resultType="String" order="BEFORE">
+        SELECT  (MAX(CAST(message_id AS UNSIGNED)) + 1) 
+        FROM chats110t
+        WHERE chat_id = #{chatId}
+    </selectKey>
+    
+		INSERT INTO chats110t(
+			 message_id
+			, chat_id
+			, CLERK_NO
+			, message_content
+			, message_status
+			, message_type
+			, created_at
+		) VALUES (
+			#{message_id}
+			, #{chatId}
+			, #{clerkNo}
+			, #{messageContent}
+			, #{messageStatus}
+			, #{messageType}
+			, NOW()
+		)		
+	</insert>
+
+</mapper>

@@ -211,8 +211,12 @@ public class UserController {
 	    String reqUser = param.get("reqUser") == null ? "" : (String) param.get("reqUser");
 	    String categoryId = param.get("categoryId") == null ? "" : (String) param.get("categoryId");
 	    String reqGubun = param.get("reqGubun") == null ? "" : (String) param.get("reqGubun");
+	    
+	    String aptNo = param.get("aptNo") == null ? "" : (String) param.get("aptNo");
+	    
 	    String reqState = "01";
 	    String reqContents = "요청드립니다.";
+	    System.out.println("aptNo:: " + aptNo);
 	    System.out.println("categoryId 11111:: " + categoryId);
 	    System.out.println("reqGubun :: " + reqGubun);
 	    System.out.println("reqUser :: " + reqUser);
@@ -228,6 +232,7 @@ public class UserController {
 	    paramMap.put("reqUser", reqUser);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("reqState", reqState);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("reqContents", reqContents);  // 선택된 회사 ID 배열 추가
+	    paramMap.put("aptNo", aptNo);  // 선택된 회사 ID 배열 추가
 		
 	    int result = userService.saveRequestInfo(paramMap);
 		
