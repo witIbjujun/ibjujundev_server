@@ -42,7 +42,7 @@
 		            WHEN TIMESTAMPDIFF(MINUTE, est_dt, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(MINUTE, est_dt, NOW()), '분 전')
 		            WHEN TIMESTAMPDIFF(HOUR, est_dt, NOW()) <![CDATA[<]]> 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, est_dt, NOW()), '시간 전')
 		            ELSE CONCAT(TIMESTAMPDIFF(DAY, est_dt, NOW()), '일 전') END  AS estDt
-		FROM WIT_ESTM000T
+		FROM wit_estm000t
 		WHERE sllr_no = #{sllrNo}
 		/* AND auto_yn = 'Y' */
 		AND stat != 01
@@ -66,7 +66,7 @@
 
 	<!-- 견적발송 정보 저장 -->
 	<insert id="insertEstimateInfo" parameterType="java.util.HashMap">
-		INSERT INTO WIT_ESTM000T
+		INSERT INTO wit_estm000t
 		(
 			 EST_NO
 			, STAT
@@ -77,7 +77,7 @@
 			, ITEM_PRICE2
 		) VALUES (
 			 (SELECT t.est_no
-              FROM (SELECT IFNULL(MAX(EST_NO), 0) + 1 as est_no from WIT_ESTM000T) t)
+              FROM (SELECT IFNULL(MAX(EST_NO), 0) + 1 as est_no from wit_estm000t) t)
 			, '01'
 			, '99991231'
 			, #{atpName}
@@ -89,7 +89,7 @@
 
 	<!-- 견적정보 수정 -->
 	<update id="updateEstimateInfo" parameterType="java.util.HashMap">
-		UPDATE WIT_ESTM000T
+		UPDATE wit_estm000t
 		SET  STAT = #{stat}
 			, customer_content = #{customerContent}
 			, ITEM_PRICE1 = #{itemPrice1}
@@ -99,7 +99,7 @@
 	<!-- 판매자 프로필 저장 -->
 	<insert id="insertSellerProfile" parameterType="java.util.HashMap" useGeneratedKeys="true" keyProperty="sllr_no"
 	 keyColumn="sllr_no">
-		INSERT INTO WIT_SLLR000T
+		INSERT INTO wit_sllr000t
 		(
 			STORE_NAME
 			, END_DATE
@@ -165,7 +165,7 @@
 		       , address2 AS address2
 		       , (select count(est_no) from wit_estm000t where stat = '01' and sllr_no = '17') AS reqCnt /* 견적요청내역 건수 */
                , (select count(est_no) from wit_estm000t where stat != '01'and sllr_no = '17') AS ingCnt /* 거래내역 건수 */
-		FROM   WIT_SLLR000T
+		FROM   wit_sllr000t
 		WHERE  SLLR_NO = #{sllrNo}
 	</select>
 
@@ -178,13 +178,13 @@
 		       , cre_user AS creUser
 		       , upd_dt AS updDt
 		       , upd_user AS updUser
-		FROM   WIT_CASH000T
+		FROM   wit_cash000t
 		WHERE  SLLR_NO = #{sllrNo}
 	</select>
 
 	<!-- 캐시 등록 -->
 	<insert id="insertCashInfo" parameterType="java.util.HashMap">
-		INSERT INTO WIT_CASH000T
+		INSERT INTO wit_cash000t
 		(
 			CASH_NO
 			, SLLR_NO
@@ -198,7 +198,7 @@
 		        )
 		        FROM (
 		            SELECT CAST(SUBSTRING('cash_no', 10) AS UNSIGNED) AS cash_no_num
-		            FROM WIT_CASH000t
+		            FROM wit_cash000t
 		            WHERE CRE_DT >= CURDATE()
 		        ) AS derived)
 		    </selectKey>
@@ -212,7 +212,7 @@
 
 	<!-- 캐시 이력 등록 -->
 	<insert id="insertCashHistoryInfo" parameterType="java.util.HashMap">
-		INSERT INTO WIT_CASH100T
+		INSERT INTO wit_cash100t
 		(
 			 SLLR_NO
 			, CASH_NO
@@ -227,7 +227,7 @@
 			, #{cashNo}
 			, (SELECT T.cash_seq
 			   FROM   (SELECT IFNULL(MAX(CAST(CASH_SEQ AS UNSIGNED)), 0) + 1 AS cash_seq
-					   FROM   WIT_CASH100T
+					   FROM   wit_cash100t
 					   WHERE  SLLR_NO = #{sllrNo}
 					   AND    CASH_NO = #{cashNo}) AS T)
 			, #{cashGbn}
@@ -240,12 +240,12 @@
 
 	<!-- 캐시정보 수정 -->
 	<update id="updateCashInfo" parameterType="java.util.HashMap">
-		UPDATE WIT_CASH000T
+		UPDATE wit_cash000t
 		SET  CASH = (SELECT T.CASH
 		             FROM   (SELECT CASE WHEN B.CASH_GBN = '01' THEN A.CASH + B.CASH
 							            ELSE A.CASH - B.CASH
 							            END  AS CASH
-							 FROM   WIT_CASH000T A, WIT_CASH100T B
+							 FROM   wit_cash000t A, wit_cash100t B
 							 WHERE  A.SLLR_NO = #{sllrNo}
 							 AND    A.CASH_NO = #{cashNo}
 							 AND    A.CASH_NO = B.CASH_NO
@@ -258,7 +258,7 @@
 
 	<!-- 업체 정보 수정 -->
 	<update id="updateSellerInfo" parameterType="java.util.HashMap">
-		UPDATE WIT_SLLR000T
+		UPDATE wit_sllr000t
 		SET    store_name = #{storeName}
 		       ,service_area = #{serviceArea}
 		       ,service_item = #{serviceItem}
@@ -291,7 +291,7 @@
 		            WHEN TIMESTAMPDIFF(MINUTE, A.cre_dt, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(MINUTE, A.cre_dt, NOW()), '분 전')
 		            WHEN TIMESTAMPDIFF(HOUR, A.cre_dt, NOW()) <![CDATA[<]]> 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, A.cre_dt, NOW()), '시간 전')
 		            ELSE CONCAT(TIMESTAMPDIFF(DAY, A.cre_dt, NOW()), '일 전') END  AS creDt
-		FROM  WIT_CASH100T A
+		FROM  wit_cash100t A
 		WHERE A.SLLR_NO = #{sllrNo}
 		ORDER BY cash_no, CAST(A.CASH_SEQ AS UNSIGNED) desc
 	</select>
@@ -323,9 +323,9 @@
 		       , A.END_DATE AS endDate
 		       , A.SLLR_NO AS sllrNo
 		       , A.CATEGORY_ID AS categoryId
-		       , (SELECT CATEGORY_NM FROM CATEGORY WHERE CATEGORY_ID = A.CATEGORY_ID) AS categoryNm
+		       , (SELECT CATEGORY_NM FROM category WHERE CATEGORY_ID = A.CATEGORY_ID) AS categoryNm
 		       , A.ESDR_SEND_CNT_CD AS esdrSendCntCd
-		       , (SELECT CD_NM FROM WIT_CODE000T WHERE CD_CLS = 'DRE01' AND CD = A.ESDR_SEND_CNT_CD AND APPL_EN_DATE = '99991231235959') esdrSendCnt
+		       , (SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'DRE01' AND CD = A.ESDR_SEND_CNT_CD AND APPL_EN_DATE = '99991231235959') esdrSendCnt
 		       , A.AREA AS area
 		       , A.CONTENT AS content
 		       , A.EX_START_TIME AS exStartTime
@@ -334,12 +334,12 @@
 		       , A.CRE_DATE AS creDate
 		       , A.UPD_USER AS updUser
 		       , A.UPD_DATE AS updDate
-		       , (SELECT COUNT(EST_NO) FROM WIT.WIT_ESTM000T WHERE ESDR_NO = A.ESDR_NO AND DATE_FORMAT(EST_DT, '%Y%m%d') = DATE_FORMAT(SYSDATE(), '%Y%m%d')) todaySendCnt
-		       , CASE WHEN (SELECT COUNT(EST_NO) FROM WIT.WIT_ESTM000T WHERE ESDR_NO = A.ESDR_NO AND DATE_FORMAT(EST_DT, '%Y%m%d') = DATE_FORMAT(SYSDATE(), '%Y%m%d')) != 0
-                      THEN ((SELECT REM FROM WIT_CODE000T WHERE CD_CLS = 'DRE01' AND CD = A.ESDR_SEND_CNT_CD AND APPL_EN_DATE = '99991231235959') /
-                           (SELECT cd_nm FROM WIT_CODE000T WHERE CD_CLS = 'DRE01' AND CD = A.ESDR_SEND_CNT_CD AND APPL_EN_DATE = '99991231235959')) * (SELECT COUNT(EST_NO) FROM WIT.WIT_ESTM000T WHERE ESDR_NO = A.ESDR_NO AND DATE_FORMAT(EST_DT, '%Y%m%d') = DATE_FORMAT(SYSDATE(), '%Y%m%d'))
+		       , (SELECT COUNT(EST_NO) FROM wit_estm000t WHERE ESDR_NO = A.ESDR_NO AND DATE_FORMAT(EST_DT, '%Y%m%d') = DATE_FORMAT(SYSDATE(), '%Y%m%d')) todaySendCnt
+		       , CASE WHEN (SELECT COUNT(EST_NO) FROM wit_estm000t WHERE ESDR_NO = A.ESDR_NO AND DATE_FORMAT(EST_DT, '%Y%m%d') = DATE_FORMAT(SYSDATE(), '%Y%m%d')) != 0
+                      THEN ((SELECT REM FROM wit_code000t WHERE CD_CLS = 'DRE01' AND CD = A.ESDR_SEND_CNT_CD AND APPL_EN_DATE = '99991231235959') /
+                           (SELECT cd_nm FROM wit_code000t WHERE CD_CLS = 'DRE01' AND CD = A.ESDR_SEND_CNT_CD AND APPL_EN_DATE = '99991231235959')) * (SELECT COUNT(EST_NO) FROM wit_estm000t WHERE ESDR_NO = A.ESDR_NO AND DATE_FORMAT(EST_DT, '%Y%m%d') = DATE_FORMAT(SYSDATE(), '%Y%m%d'))
 					  ELSE 0 END AS todaySendCash
-		FROM   WIT.ESTM100T A
+		FROM   estm100t A
 		WHERE  A.SLLR_NO = #{sllrNo}
 		AND    A.END_DATE = '99991231'
 		order by A.esdr_no
@@ -351,9 +351,9 @@
 		       , A.END_DATE AS endDate
 		       , A.SLLR_NO AS sllrNo
 		       , A.CATEGORY_ID AS categoryId
-		       , (SELECT CATEGORY_NM FROM CATEGORY WHERE CATEGORY_ID = A.CATEGORY_ID) AS categoryNm
+		       , (SELECT CATEGORY_NM FROM category WHERE CATEGORY_ID = A.CATEGORY_ID) AS categoryNm
 		       , A.ESDR_SEND_CNT_CD AS esdrSendCntCd
-		       , (SELECT CD_NM FROM WIT_CODE000T WHERE CD_CLS = 'DRE01' AND CD = A.ESDR_SEND_CNT_CD AND APPL_EN_DATE = '99991231235959') esdrSendCnt
+		       , (SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'DRE01' AND CD = A.ESDR_SEND_CNT_CD AND APPL_EN_DATE = '99991231235959') esdrSendCnt
 		       , A.AREA AS area
 		       , A.CONTENT AS content
 		       , A.EX_START_TIME AS exStartTime
@@ -362,14 +362,14 @@
 		       , A.CRE_DATE AS creDate
 		       , A.UPD_USER AS updUser
 		       , A.UPD_DATE AS updDate
-		FROM   WIT.ESTM100T A
+		FROM   estm100t A
 		WHERE  A.ESDR_NO = #{esdrNo}
 		AND    A.END_DATE = '99991231'
 	</select>
 
 	<!-- 바로견적 설정 등록 -->
 	<insert id="insertDirectEstimateSetInfo" parameterType="java.util.HashMap">
-		INSERT INTO ESTM100T
+		INSERT INTO estm100t
 		(
 			ESDR_NO
 		    , END_DATE
@@ -399,7 +399,7 @@
 
 	<!-- 바로견적 설정 수정 -->
 	<update id="updateDirectEstimateSetInfo" parameterType="java.util.HashMap">
-		UPDATE ESTM100T
+		UPDATE estm100t
 		SET    ESDR_SEND_CNT_CD = #{esdrSendCntCd}
 	           , AREA = #{area}
 		       , CONTENT = #{content}
@@ -427,7 +427,7 @@
 			   ,CRE_DATE AS creDate
 			   ,UPD_USER AS updUser
 			   ,UPD_DATE AS updDate
-		FROM   WIT_CODE000T
+		FROM   wit_code000t
 		WHERE  CD_CLS IN
 		<foreach item="item" collection="cdCls" open="(" separator="," close=")">
             #{item}
