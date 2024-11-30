@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wit.inspaction.seller.mapper.SellerMapper">
+
+	<!-- 견적리스트 조회 -->
+	<select id="selectEstimateRequestList" parameterType="java.util.HashMap" resultType="EstimateRequestDTO">
+		select
+			est_dt AS estDt
+			, atp_name AS aptName
+			, item_image AS  itemImage
+			, (select cd_nm from wit_code000t where cd_cls = 'EST01' and appl_en_date = '99991231235959' and cd = stat) AS stat
+			, content AS content
+			, prsn_name AS prsnName
+			, auto_yn AS autoYn
+			from wit_estm000t
+			where sllr_no = 17
+			<if test="stat == null or stat.equals('')">
+			and stat != 01
+			</if>
+			<if test="stat !=null and !stat.equals('')">
+			and stat = 01
+			</if>
+	</select>
+
+	<!-- 바로 견적리스트 조회 -->
+	<select id="selectAutoEstimateList" parameterType="java.util.HashMap" resultType="EstimateRequestDTO">
+		SELECT
+			est_no AS estNo
+			, item_name AS itemName
+			, atp_name AS aptName
+			, item_image AS  itemImage
+			, (select cd_nm from wit_code000t where cd_cls = 'EST01' and appl_en_date = '99991231235959' and cd = stat) AS stat
+			, content AS content
+			, prsn_name AS prsnName
+			, IF(auto_yn = 'Y', '바로 견적서비스 발송', '일반 견적서비스 발송') AS autoYn
+			,  CASE
+		            WHEN TIMESTAMPDIFF(SECOND, est_dt, NOW()) <![CDATA[<=]]> 10 THEN '방금 전'
+		            WHEN TIMESTAMPDIFF(SECOND, est_dt, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(SECOND, est_dt, NOW()), '초 전')
+		            WHEN TIMESTAMPDIFF(MINUTE, est_dt, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(MINUTE, est_dt, NOW()), '분 전')
+		            WHEN TIMESTAMPDIFF(HOUR, est_dt, NOW()) <![CDATA[<]]> 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, est_dt, NOW()), '시간 전')
+		            ELSE CONCAT(TIMESTAMPDIFF(DAY, est_dt, NOW()), '일 전') END  AS estDt
+		FROM WIT_ESTM000T
+		WHERE sllr_no = #{sllrNo}
+		/* AND auto_yn = 'Y' */
+		AND stat != 01
+		AND est_dt BETWEEN DATE_ADD(NOW(), INTERVAL -1 WEEK) AND NOW()
+	</select>
+
+	<!-- 견적발송 용 데이터 조회 -->
+	<select id="selectEstimateRequestInfoForSend" resultType="SellerSendDTO">
+		select
+		    sllr_no AS sllrNo
+		    , est_no AS  estNo
+		    , atp_name AS aptName
+			, content AS content
+			, item_image AS itemImage
+			, item_name AS itemName
+			, customer_content customerContent
+			, item_price1 itemPrice1
+		from wit_estm000t
+		where est_no = '3'
+	</select>
+
+	<!-- 견적발송 정보 저장 -->
+	<insert id="insertEstimateInfo" parameterType="java.util.HashMap">
+		INSERT INTO WIT_ESTM000T
+		(
+			 EST_NO
+			, STAT
+			, END_DATE
+			, ATP_NAME
+			, CONTENT
+			, ITEM_PRICE1
+			, ITEM_PRICE2
+		) VALUES (
+			 (SELECT t.est_no
+              FROM (SELECT IFNULL(MAX(EST_NO), 0) + 1 as est_no from WIT_ESTM000T) t)
+			, '01'
+			, '99991231'
+			, #{atpName}
+			, #{content}
+			, #{itemPrice1}
+			, #{itemPrice2}
+		)
+	</insert>
+
+	<!-- 견적정보 수정 -->
+	<update id="updateEstimateInfo" parameterType="java.util.HashMap">
+		UPDATE WIT_ESTM000T
+		SET  STAT = #{stat}
+			, customer_content = #{customerContent}
+			, ITEM_PRICE1 = #{itemPrice1}
+		WHERE EST_NO = #{estNo}
+	</update>
+
+	<!-- 판매자 프로필 저장 -->
+	<insert id="insertSellerProfile" parameterType="java.util.HashMap" useGeneratedKeys="true" keyProperty="sllr_no"
+	 keyColumn="sllr_no">
+		INSERT INTO WIT_SLLR000T
+		(
+			STORE_NAME
+			, END_DATE
+			, SERVICE_AREA
+			, SERVICE_ITEM
+			, ITEM_PRICE1
+			, ITEM_PRICE2
+			, ITEM_PRICE3
+			, SLLR_CONTENT
+			, SLLR_IMAGE
+			, NAME
+			, CEO_NAME
+			, EMAIL
+			, STORE_CODE
+			, STORE_IMAGE
+			, HP
+			, ZIP_CODE
+			, ADDRESS1
+			, ADDRESS2
+		) VALUES (
+			  #{storeName}
+			, '99991231'
+			, #{serviceArea}
+			, #{serviceItem}
+			, #{itemPrice1}
+			, #{itemPrice2}
+			, #{itemPrice3}
+			, #{sllrContent}
+			, #{sllrImage}
+			, #{name}
+			, #{ceoName}
+			, #{email}
+			, #{storeCode}
+			, #{storeImage}
+			, #{hp}
+			, #{zipCode}
+			, #{address1}
+			, #{address2}
+
+		)
+	</insert>
+
+	<!-- 판매자 프로필 조회 -->
+	<select id="selectSellerInfo" parameterType="int" resultType="SellerDTO">
+		SELECT sllr_no AS sllrNo
+		       , store_name AS storeName
+		       , end_date AS endDate
+		       , service_area AS serviceArea
+		       , service_item AS serviceItem
+		       , item_price1 AS itemPrice1
+		       , item_price2 AS itemPrice2
+		       , item_price3 AS itemPrice3
+		       , sllr_content AS sllrContent
+		       , sllr_image AS sllrImage
+		       , name AS name
+		       , ceo_name AS ceoName
+		       , email AS email
+		       , store_code AS storeCode
+		       , store_image AS storeImage
+		       , hp AS hp
+		       , zip_code AS zipCode
+		       , address1 AS address1
+		       , address2 AS address2
+		       , (select count(est_no) from wit_estm000t where stat = '01' and sllr_no = '17') AS reqCnt /* 견적요청내역 건수 */
+               , (select count(est_no) from wit_estm000t where stat != '01'and sllr_no = '17') AS ingCnt /* 거래내역 건수 */
+		FROM   WIT_SLLR000T
+		WHERE  SLLR_NO = #{sllrNo}
+	</select>
+
+	<!-- 캐시정보 조회 -->
+	<select id="selectCashInfo" parameterType="java.util.HashMap" resultType="CashDTO">
+		SELECT  cash_no AS cashNo
+		       ,sllr_no AS sllrNo
+		       , cash AS cash
+		       , cre_dt AS creDt
+		       , cre_user AS creUser
+		       , upd_dt AS updDt
+		       , upd_user AS updUser
+		FROM   WIT_CASH000T
+		WHERE  SLLR_NO = #{sllrNo}
+	</select>
+
+	<!-- 캐시 등록 -->
+	<insert id="insertCashInfo" parameterType="java.util.HashMap">
+		INSERT INTO WIT_CASH000T
+		(
+			CASH_NO
+			, SLLR_NO
+			, CASH
+			, CRE_DT
+			, CRE_USER
+		) VALUES (
+			<selectKey keyProperty="cashNo" resultType="string" order="BEFORE">
+		        (SELECT CONCAT('CS', DATE_FORMAT(SYSDATE(), '%Y%m%d'),
+		                LPAD(COALESCE(MAX(cash_no_num) + 1, 1), 5, '0')
+		        )
+		        FROM (
+		            SELECT CAST(SUBSTRING('cash_no', 10) AS UNSIGNED) AS cash_no_num
+		            FROM WIT_CASH000t
+		            WHERE CRE_DT >= CURDATE()
+		        ) AS derived)
+		    </selectKey>
+		    #{cashNo}
+			, #{sllrNo}
+			, #{cash}
+			, SYSDATE()
+			, #{creUser}
+		)
+	</insert>
+
+	<!-- 캐시 이력 등록 -->
+	<insert id="insertCashHistoryInfo" parameterType="java.util.HashMap">
+		INSERT INTO WIT_CASH100T
+		(
+			 SLLR_NO
+			, CASH_NO
+			, CASH_SEQ
+			, CASH_GBN
+			, CASH
+			, EST_NO
+			, CRE_DT
+			, CRE_USER
+		) VALUES (
+  			  #{sllrNo}
+			, #{cashNo}
+			, (SELECT T.cash_seq
+			   FROM   (SELECT IFNULL(MAX(CAST(CASH_SEQ AS UNSIGNED)), 0) + 1 AS cash_seq
+					   FROM   WIT_CASH100T
+					   WHERE  SLLR_NO = #{sllrNo}
+					   AND    CASH_NO = #{cashNo}) AS T)
+			, #{cashGbn}
+			, #{cash}
+			, #{estNo}
+			, SYSDATE()
+			, #{creUser}
+		)
+	</insert>
+
+	<!-- 캐시정보 수정 -->
+	<update id="updateCashInfo" parameterType="java.util.HashMap">
+		UPDATE WIT_CASH000T
+		SET  CASH = (SELECT T.CASH
+		             FROM   (SELECT CASE WHEN B.CASH_GBN = '01' THEN A.CASH + B.CASH
+							            ELSE A.CASH - B.CASH
+							            END  AS CASH
+							 FROM   WIT_CASH000T A, WIT_CASH100T B
+							 WHERE  A.SLLR_NO = #{sllrNo}
+							 AND    A.CASH_NO = #{cashNo}
+							 AND    A.CASH_NO = B.CASH_NO
+							 ORDER BY CAST(B.CASH_SEQ AS UNSIGNED) DESC LIMIT 1) AS T)
+		     ,UPD_DT = SYSDATE()
+		     ,UPD_USER = #{updUser}
+		WHERE SLLR_NO = #{sllrNo}
+		AND   CASH_NO = #{cashNo}
+	</update>
+
+	<!-- 업체 정보 수정 -->
+	<update id="updateSellerInfo" parameterType="java.util.HashMap">
+		UPDATE WIT_SLLR000T
+		SET    store_name = #{storeName}
+		       ,service_area = #{serviceArea}
+		       ,service_item = #{serviceItem}
+		       ,item_price1 = #{itemPrice1}
+		       ,sllr_content = #{sllrContent}
+		       ,name = #{name}
+		       ,ceo_name = #{ceoName}
+		       ,email = #{email}
+		       ,store_code = #{storeCode}
+		       ,hp = #{hp}
+		       ,zip_code = #{zipCode}
+		       ,address1 = #{address1}
+		       ,address2 = #{address2}
+		WHERE  SLLR_NO = #{sllrNo}
+	</update>
+
+	<!-- 캐시 이력 목록 -->
+	<select id="selectCashHistoryList" parameterType="java.util.HashMap" resultType="CashHistoryDTO">
+		SELECT
+				A.sllr_no AS sllrNo
+				,A.cash_no AS cashNo
+				,A.cash_seq AS cashSeq
+				,IF(A.cash_gbn = '01', '포인트충전', '견적서비스') AS cashGbn  /* 01 : 포인트충전, 02 : 견적서비스 */
+				,IF(A.cash_gbn = '01', A.cash, CONCAT('-', A.cash)) AS cash
+				,IF(A.cash_gbn = '01','포인트충전',(select item_name from wit_estm000t where est_no = A.EST_NO)) itemName
+				,A.cre_user AS creUser
+				,  CASE
+		            WHEN TIMESTAMPDIFF(SECOND, A.cre_dt, NOW()) <![CDATA[<=]]> 10 THEN '방금 전'
+		            WHEN TIMESTAMPDIFF(SECOND, A.cre_dt, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(SECOND, A.cre_dt, NOW()), '초 전')
+		            WHEN TIMESTAMPDIFF(MINUTE, A.cre_dt, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(MINUTE, A.cre_dt, NOW()), '분 전')
+		            WHEN TIMESTAMPDIFF(HOUR, A.cre_dt, NOW()) <![CDATA[<]]> 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, A.cre_dt, NOW()), '시간 전')
+		            ELSE CONCAT(TIMESTAMPDIFF(DAY, A.cre_dt, NOW()), '일 전') END  AS creDt
+		FROM  WIT_CASH100T A
+		WHERE A.SLLR_NO = #{sllrNo}
+		ORDER BY cash_no, CAST(A.CASH_SEQ AS UNSIGNED) desc
+	</select>
+
+	<!-- 캐시 설정 목록 -->
+	<select id="selectCashRechargeList" parameterType="java.util.HashMap" resultType="CashRechargeSetDTO">
+		select
+				cash_recharge_no AS cashRechargeNo
+		        , cash_gbn AS cashGbn
+		        , end_date AS endDate
+		        , cash AS cash
+		        , bonus_ratio AS bonusRatio
+		        , (cash*bonus_ratio)/100 AS bonusCash
+		        , cash + (cash*bonus_ratio)/100 AS totalCash
+		        , recom_yn AS recomYn
+		        , popular_yn AS popularYn
+		        , cre_dt AS creDt
+		        , cre_user AS creUser
+		        , upd_dt AS updDt
+		        , upd_user AS updUser
+		from    wit_cash200t
+		where   cash_gbn = #{cashGbn}
+        and     end_date = '99991231'
+	</select>
+
+	<!-- 바로견적 목록 -->
+	<select id="selectDirectEstimateSetList" parameterType="java.util.HashMap" resultType="DirectEstimateSetDTO">
+		SELECT A.ESDR_NO AS esdrNo
+		       , A.END_DATE AS endDate
+		       , A.SLLR_NO AS sllrNo
+		       , A.CATEGORY_ID AS categoryId
+		       , (SELECT CATEGORY_NM FROM CATEGORY WHERE CATEGORY_ID = A.CATEGORY_ID) AS categoryNm
+		       , A.ESDR_SEND_CNT_CD AS esdrSendCntCd
+		       , (SELECT CD_NM FROM WIT_CODE000T WHERE CD_CLS = 'DRE01' AND CD = A.ESDR_SEND_CNT_CD AND APPL_EN_DATE = '99991231235959') esdrSendCnt
+		       , A.AREA AS area
+		       , A.CONTENT AS content
+		       , A.EX_START_TIME AS exStartTime
+		       , A.EX_END_TIME AS exEndtime
+		       , A.CRE_USER AS creUser
+		       , A.CRE_DATE AS creDate
+		       , A.UPD_USER AS updUser
+		       , A.UPD_DATE AS updDate
+		       , (SELECT COUNT(EST_NO) FROM WIT.WIT_ESTM000T WHERE ESDR_NO = A.ESDR_NO AND DATE_FORMAT(EST_DT, '%Y%m%d') = DATE_FORMAT(SYSDATE(), '%Y%m%d')) todaySendCnt
+		       , CASE WHEN (SELECT COUNT(EST_NO) FROM WIT.WIT_ESTM000T WHERE ESDR_NO = A.ESDR_NO AND DATE_FORMAT(EST_DT, '%Y%m%d') = DATE_FORMAT(SYSDATE(), '%Y%m%d')) != 0
+                      THEN ((SELECT REM FROM WIT_CODE000T WHERE CD_CLS = 'DRE01' AND CD = A.ESDR_SEND_CNT_CD AND APPL_EN_DATE = '99991231235959') /
+                           (SELECT cd_nm FROM WIT_CODE000T WHERE CD_CLS = 'DRE01' AND CD = A.ESDR_SEND_CNT_CD AND APPL_EN_DATE = '99991231235959')) * (SELECT COUNT(EST_NO) FROM WIT.WIT_ESTM000T WHERE ESDR_NO = A.ESDR_NO AND DATE_FORMAT(EST_DT, '%Y%m%d') = DATE_FORMAT(SYSDATE(), '%Y%m%d'))
+					  ELSE 0 END AS todaySendCash
+		FROM   WIT.ESTM100T A
+		WHERE  A.SLLR_NO = #{sllrNo}
+		AND    A.END_DATE = '99991231'
+		order by A.esdr_no
+	</select>
+
+	<!-- 바로견적 상세 -->
+	<select id="selectDirectEstimateSetInfo" parameterType="java.util.HashMap" resultType="DirectEstimateSetDTO">
+		SELECT A.ESDR_NO AS esdrNo
+		       , A.END_DATE AS endDate
+		       , A.SLLR_NO AS sllrNo
+		       , A.CATEGORY_ID AS categoryId
+		       , (SELECT CATEGORY_NM FROM CATEGORY WHERE CATEGORY_ID = A.CATEGORY_ID) AS categoryNm
+		       , A.ESDR_SEND_CNT_CD AS esdrSendCntCd
+		       , (SELECT CD_NM FROM WIT_CODE000T WHERE CD_CLS = 'DRE01' AND CD = A.ESDR_SEND_CNT_CD AND APPL_EN_DATE = '99991231235959') esdrSendCnt
+		       , A.AREA AS area
+		       , A.CONTENT AS content
+		       , A.EX_START_TIME AS exStartTime
+		       , A.EX_END_TIME AS exEndTime
+		       , A.CRE_USER AS creUser
+		       , A.CRE_DATE AS creDate
+		       , A.UPD_USER AS updUser
+		       , A.UPD_DATE AS updDate
+		FROM   WIT.ESTM100T A
+		WHERE  A.ESDR_NO = #{esdrNo}
+		AND    A.END_DATE = '99991231'
+	</select>
+
+	<!-- 바로견적 설정 등록 -->
+	<insert id="insertDirectEstimateSetInfo" parameterType="java.util.HashMap">
+		INSERT INTO ESTM100T
+		(
+			ESDR_NO
+		    , END_DATE
+		    , SLLR_NO
+		    , CATEGORY_ID
+		    , ESDR_SEND_CNT_CD
+	        , AREA
+		    , CONTENT
+		    , EX_START_TIME
+		    , EX_END_TIME
+		    , CRE_USER
+		    , CRE_DATE
+		) VALUES (
+  			  #{esdrNo}
+			, '99991231'
+			, #{sllrNo}
+			, #{categoryId}
+			, #{esdrSendCntCd}
+			, #{area}
+			, #{content}
+			, #{exStartTime}
+			, #{exEndTime}
+			, #{creUser}
+			, SYSDATE()
+		)
+	</insert>
+
+	<!-- 바로견적 설정 수정 -->
+	<update id="updateDirectEstimateSetInfo" parameterType="java.util.HashMap">
+		UPDATE ESTM100T
+		SET    ESDR_SEND_CNT_CD = #{esdrSendCntCd}
+	           , AREA = #{area}
+		       , CONTENT = #{content}
+		       , EX_START_TIME = #{exStartTime}
+		       , EX_END_TIME = #{exEndTime}
+		       , UPD_USER = #{updUser}
+		       , UPD_DATE = SYSDATE()
+		WHERE  ESDR_NO = #{esdrNo}
+		AND    END_DATE = '99991231'
+	</update>
+
+	<!-- 공통코드 조회 -->
+	<select id="selectCodeList" parameterType="java.util.HashMap" resultType="CodeDTO">
+		SELECT CD_CLS AS cdCls
+			   , CD_CLS_NM AS cdClsNm
+			   , APPL_ST_DATE AS applStDate
+			   , APPL_EN_DATE AS applEnDate
+			   , CD AS cd
+			   ,CD_NM AS cdNm
+			   ,UPP_CD_CLS AS uppCdCls
+			   ,UPP_CD AS uppCd
+			   ,CONTENT AS content
+			   ,REM AS rem
+			   ,CRE_USER AS creUser
+			   ,CRE_DATE AS creDate
+			   ,UPD_USER AS updUser
+			   ,UPD_DATE AS updDate
+		FROM   WIT_CODE000T
+		WHERE  CD_CLS IN
+		<foreach item="item" collection="cdCls" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+		AND    APPL_EN_DATE = '99991231235959'
+	</select>
+
+</mapper>

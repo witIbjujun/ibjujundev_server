@@ -1,0 +1,20 @@
+package com.wit.inspaction;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+
+@SpringBootApplication
+public class PreinspactionApplication extends SpringBootServletInitializer {
+	
+	/**
+	 * 메인 Application 시작
+	 * @param args
+	 */
+    public static void main(String[] args) {
+    	
+        SpringApplication.run(PreinspactionApplication.class, args);
+    }
+}

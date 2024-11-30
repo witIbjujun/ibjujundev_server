@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <typeAliases>
+        <typeAlias alias="PreinspactionDTO" type="com.wit.inspaction.preinspaction.model.PreinspactionDTO"/>
+        <typeAlias alias="PreinspactionDetailDTO" type="com.wit.inspaction.preinspaction.model.PreinspactionDetailDTO"/>
+        <typeAlias alias="UserDTO" type="com.wit.inspaction.user.model.UserDTO"/>
+        
+        <!-- 게시판 -->
+    	<typeAlias alias="BoardDTO" type="com.wit.inspaction.board.model.BoardDTO"/>
+    	
+    	<!-- 댓글 -->
+    	<typeAlias alias="CommentDTO" type="com.wit.inspaction.board.model.CommentDTO"/>
+    	
+    	<!-- 채팅 -->
+    	<typeAlias alias="ChatDTO" type="com.wit.inspaction.chat.model.ChatDTO"/>
+    	
+    	<!-- 등록자 -->
+    	<typeAlias alias="AuthorDTO" type="com.wit.inspaction.chat.model.AuthorDTO"/>
+    	
+    	<!-- 질문 -->
+       <typeAlias alias="QuestionInfoDTO" type="com.wit.inspaction.question.model.QuestionInfoDTO"/>
+       
+       <typeAlias alias="OptionInfoDTO" type="com.wit.inspaction.question.model.OptionInfoDTO"/>
+    	
+    	<!-- Seller -->
+    	<typeAlias alias="EstimateRequestDTO" type="com.wit.inspaction.seller.model.EstimateRequestDTO"/>
+    	<typeAlias alias="SellerSendDTO" type="com.wit.inspaction.seller.model.SellerSendDTO"/>
+    	<typeAlias alias="SellerDTO" type="com.wit.inspaction.seller.model.SellerDTO"/>
+    	<typeAlias alias="SellerDetailDTO" type="com.wit.inspaction.seller.model.SellerDetailDTO"/>
+    	<typeAlias alias="CashDTO" type="com.wit.inspaction.seller.model.CashDTO"/>
+    	<typeAlias alias="CashHistoryDTO" type="com.wit.inspaction.seller.model.CashHistoryDTO"/>
+    	<typeAlias alias="CashRechargeSetDTO" type="com.wit.inspaction.seller.model.CashRechargeSetDTO"/>
+    	<typeAlias alias="DirectEstimateSetDTO" type="com.wit.inspaction.seller.model.DirectEstimateSetDTO"/>
+		
+		<!-- 공통코드 -->
+    	<typeAlias alias="CodeDTO" type="com.wit.inspaction.seller.model.CodeDTO"/>
+
+
+    </typeAliases>
+    
+</configuration>

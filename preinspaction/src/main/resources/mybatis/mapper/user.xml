@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.inspaction.user.mapper.UserMapper">
+
+	<!-- 사전점검 항목 리스트 조회 -->
+	<select id="selectCategoryList" resultType="UserDTO">
+		SELECT  category_id AS categoryId
+		        , category_nm AS categoryNm
+		        , detail  
+		        , imagePath
+                , COALESCE(count, 0) count
+                , (SELECT COUNT(company_id) FROM company WHERE category_id = A.category_id) companyCnt
+        FROM  category A 
+        WHERE  A.END_DATE = '99991231'
+	</select>
+	
+	
+	<!-- 사전점검 상세항목 리스트 조회 -->
+	<select id="selectCompanyList" parameterType="java.util.HashMap" resultType="UserDTO">
+		SELECT category_id categoryId
+		     ,company_id companyId
+		     ,rate
+		     ,company_nm companyNm
+		FROM COMPANY 
+		WHERE CATEGORY_ID = #{categoryId}
+	</select>
+	
+	<!-- 사전점검 상세항목 리스트 조회 -->
+	<select id="generateReqNo" parameterType="java.util.HashMap" resultType="String">
+		SELECT CONCAT(#{reqGubun}, DATE_FORMAT(SYSDATE(), '%Y%m%d'), 
+		        LPAD(COALESCE(MAX(req_no_num) + 1, 1), 5, '0')) AS req_no
+		FROM (
+		    SELECT CAST(SUBSTRING(req_no, 10) AS UNSIGNED) AS req_no_num
+		    FROM request100t
+		    WHERE req_date >= CURDATE()
+		) AS derived
+	</select>
+	
+	<!-- 사전점검 상세항목 리스트 조회 -->
+	<select id="selectRequestDetailList" parameterType="java.util.HashMap" resultType="UserDTO">
+		SELECT A.REQ_NO reqNo
+			  ,A.REQ_USER
+		      ,A.REQ_DATE reqDate
+		      ,A.REQ_CONTENTS reqContents
+		      ,A.COMPANY_ID companyId
+		      ,A.CATEGORY_ID categoryId
+		      ,A.REQ_STATE   reqState
+		      ,CASE WHEN A.REQ_STATE = '01' THEN '견적요청' 
+		  			WHEN A.REQ_STATE = '02' THEN '진행요청'
+		            WHEN A.REQ_STATE = '03' THEN '진행중'
+		            WHEN A.REQ_STATE = '04' THEN '미참여'         
+		            ELSE A.REQ_STATE
+		        END AS reqStateNm
+			  , (SELECT category_nm FROM category WHERE category_id = A.category_id) AS categoryNm 
+		      , (SELECT RATE FROM company WHERE category_id = A.category_id AND company_id = A.COMPANY_ID) AS rate
+		      , (SELECT COMPANY_nm FROM company WHERE category_id = A.category_id AND company_id = A.COMPANY_ID) AS companyNm
+		      , DATE_FORMAT(A.REQ_DATE, '%c월 %e일') AS reqDateInfo
+		      , A.SEQ
+		      , B.estimate_amount estimateAmount
+		      , B.estimate_contents estimateContents
+		FROM request100t A ,request110T B
+		WHERE A.REQ_NO = B.REQ_NO
+		AND  A.CATEGORY_ID = A.CATEGORY_ID 
+		AND A.COMPANY_ID = B.COMPANY_ID
+		AND A.SEQ = B.SEQ
+		AND A.REQ_STATE  IN  ('02','03')
+		AND B.END_DATE = '99991231'
+	    AND A.REQ_USER  = #{reqUser}	
+		AND A.CATEGORY_ID = #{categoryId}	
+		AND A.REQ_NO = #{reqNo}
+	ORDER BY A.REQ_DATE DESC , A.category_id
+	</select>
+	
+	<!-- 사전점검 견적전 리스트 조회 -->
+	<select id="selectRequesAsistList" parameterType="java.util.HashMap" resultType="UserDTO">
+	SELECT  A.REQ_NO reqNo,
+            A.CATEGORY_ID categoryId,
+            (SELECT category_nm FROM category WHERE category_id = A.category_id) AS categoryNm ,
+             (SELECT  COALESCE(estimate_amount, "") FROM request110T WHERE REQ_NO = A.REQ_NO AND CATEGORY_ID= A.CATEGORY_ID AND COMPANY_ID= B.COMPANY_ID) AS estimateAmount ,
+             (SELECT RATE FROM company WHERE category_id = A.category_id AND company_id = B.COMPANY_ID) AS rate ,
+    COALESCE((SELECT estimate_contents FROM request110T WHERE REQ_NO = A.REQ_NO AND CATEGORY_ID = A.CATEGORY_ID AND COMPANY_ID  = B.COMPANY_ID),'견적대기중') estimateContents,
+              (SELECT COUNT(*) 
+     FROM request100t C 
+     WHERE C.REQ_NO = A.REQ_NO AND C.CATEGORY_ID = A.CATEGORY_ID) AS companyCnt,
+            COALESCE(B.COMPANY_ID, '견적요청') AS companyId,
+           (SELECT COMPANY_nm FROM company WHERE category_id = A.category_id AND company_id = B.COMPANY_ID) AS companyNm,
+            B.REQ_DATE AS req_date,
+            DATE_FORMAT(B.REQ_DATE, '%c월 %e일') AS reqDateInfo,
+     CASE
+        WHEN TIMESTAMPDIFF(SECOND, B.REQ_DATE, NOW()) <![CDATA[<=]]> 10 THEN '방금 전'
+        WHEN TIMESTAMPDIFF(SECOND, B.REQ_DATE, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(SECOND, B.REQ_DATE, NOW()), '초 전')
+        WHEN TIMESTAMPDIFF(MINUTE, B.REQ_DATE, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(MINUTE, B.REQ_DATE, NOW()), '분 전')
+        WHEN TIMESTAMPDIFF(HOUR, B.REQ_DATE, NOW()) <![CDATA[<]]> 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, B.REQ_DATE, NOW()), '시간 전')
+        ELSE CONCAT(TIMESTAMPDIFF(DAY, B.REQ_DATE, NOW()), '일 전')
+    END AS timeAgo,
+    
+   B.REQ_STATE  AS reqState
+FROM 
+    (SELECT REQ_NO, CATEGORY_ID 
+     FROM request100t
+     WHERE REQ_USER = #{reqUser}	
+     	<if test="reqNo != null">
+		AND A.REQ_NO = #{reqNo}
+	</if>
+	<if test="seq != null">
+		AND A.SEQ = #{seq}
+	</if>
+     GROUP BY REQ_NO, CATEGORY_ID) A
+LEFT JOIN 
+    (SELECT REQ_NO, CATEGORY_ID, 
+            MIN(COMPANY_ID) AS COMPANY_ID, 
+            MIN(REQ_DATE) AS REQ_DATE, 
+             MIN(REQ_STATE) AS REQ_STATE
+     FROM request100t
+      WHERE REQ_STATE in ('01','02')
+     GROUP BY REQ_NO, CATEGORY_ID) B
+ON A.REQ_NO = B.REQ_NO 
+AND A.CATEGORY_ID = B.CATEGORY_ID
+ORDER BY  B.REQ_DATE DESC, A.CATEGORY_ID
+
+
+	</select>
+	
+	
+	<!--알림 리스트 조회 -->
+	<select id="selectNoticeList" parameterType="java.util.HashMap" resultType="UserDTO">
+	SELECT A.REQ_NO
+      ,A.SEQ
+      ,A.REQ_GUBUN reqGubun
+      ,B.REQ_DATE reqDate
+      ,A.REQ_STATE
+      ,COALESCE(B.estimate_amount, "") AS estimateAmount
+      ,B.estimate_contents estimateContents
+      ,(SELECT category_nm FROM category WHERE category_id = B.category_id) AS categoryNm 
+       ,(SELECT COMPANY_nm FROM company WHERE category_id = A.category_id AND company_id = B.company_id) AS companyNm
+       ,  CASE
+            WHEN TIMESTAMPDIFF(SECOND, B.REQ_DATE, NOW()) <![CDATA[<=]]> 10 THEN '방금 전'
+            WHEN TIMESTAMPDIFF(SECOND, B.REQ_DATE, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(SECOND, B.REQ_DATE, NOW()), '초 전')
+            WHEN TIMESTAMPDIFF(MINUTE, B.REQ_DATE, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(MINUTE, B.REQ_DATE, NOW()), '분 전')
+            WHEN TIMESTAMPDIFF(HOUR, B.REQ_DATE, NOW()) <![CDATA[<]]> 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, B.REQ_DATE, NOW()), '시간 전')
+            ELSE CONCAT(TIMESTAMPDIFF(DAY, B.REQ_DATE, NOW()), '일 전')
+       END AS timeAgo  
+       	FROM request100t A , request110T B
+	WHERE A.REQ_NO = B.REQ_NO 
+	AND  A.SEQ = B.SEQ
+    AND  B.END_DATE = '99991231'
+    AND B.REQ_STATE = '02'
+	AND A.REQ_USER  = #{reqUser}	
+	ORDER BY B.REQ_DATE DESC , A.category_id
+	</select>
+	
+	<!--알림 리스트 조회 -->
+	<select id="selectUserInfo" parameterType="java.util.HashMap" resultType="UserDTO">
+		SELECT A.CLERK_NO clerkNo
+		      ,A.KAKAO_ID kakaoId
+		      ,A.ROLE role
+		      ,A.NICK_NAME nickName
+		      ,A.NAME   name
+		      ,A.APT_NO   mainAptNo    
+		      ,(SELECT APT_NAME FROM APT000T WHERE APT_NO  = A.APT_NO ) mainAptNm
+		FROM prsn000t A
+		WHERE A.KAKAO_ID = #{kakaoId}	
+	</select>
+	
+	<!--알림 리스트 조회 -->
+	<select id="selectAptList" parameterType="java.util.HashMap" resultType="java.util.Map">
+		SELECT APT_NO aptNo
+		       ,APT_NAME aptName
+		FROM APT000T 
+		WHERE CLERK_NO = #{clerkNo}	
+		AND END_DATE = '99991231'
+	</select>
+	
+	<!-- 사전점검 항목 저장 -->
+	<insert id="insertRequestInfo" parameterType="java.util.HashMap">
+	INSERT INTO request100t (
+        req_no,
+        company_id,
+        category_id,
+        req_gubun,
+        req_user,
+        req_date,
+        req_state,
+        req_contents,
+        seq
+    ) 
+    VALUES (
+    
+     <selectKey keyProperty="reqNo" resultType="string" order="BEFORE">
+         (SELECT CONCAT(#{reqGubun}, DATE_FORMAT(SYSDATE(), '%Y%m%d'), 
+                LPAD(COALESCE(MAX(req_no_num) + 1, 1), 5, '0')
+        )
+        FROM (
+            SELECT CAST(SUBSTRING(req_no, 10) AS UNSIGNED) AS req_no_num
+            FROM request100t
+            WHERE req_date >= CURDATE()
+        ) AS derived)
+    </selectKey>
+    
+       #{reqNo}, 
+        #{companyId},
+        #{categoryId},
+        #{reqGubun},  
+        #{reqUser}, 
+        SYSDATE(),  
+        #{reqState},     
+        #{reqContents},        
+        #{seq}
+    )
+	</insert>
+	
+	<!-- 사전점검 항목 저장 -->
+	<update id="updateRequestState" parameterType="java.util.HashMap">
+		UPDATE request100t
+		  SET req_state = #{reqState}
+		     ,UPDATE_DT =  SYSDATE() 
+		     ,UPDATE_USER = #{reqUser}
+		WHERE REQ_NO =   #{reqNo}
+		AND SEQ =  #{seq}
+	</update>
+	
+	<!-- 사전점검 항목 저장 -->
+	<update id="updateUserInfo" parameterType="java.util.HashMap">
+		UPDATE prsn000t
+		  SET APT_NO = #{mainAptNo}
+		     ,NICK_NAME = #{nickName}
+		     ,UDT_DATE =  SYSDATE() 
+		     ,UDT_USER = #{clerkNo}
+		WHERE CLERK_NO =  #{clerkNo}
+	</update>
+	
+	
+	<!-- 사전점검 항목 저장 -->
+	<insert id="insertHistoryRequest" parameterType="java.util.HashMap">
+	INSERT INTO request110t (
+        REQ_NO,
+        SEQ,
+        END_DATE,
+        company_id,
+        category_id,
+        req_user,
+        req_date,
+        req_state,
+        req_contents,
+        estimate_amount,
+        estimate_contents        
+    ) 
+    VALUES (
+        #{reqNo},
+        #{seq},
+        '99991231',
+        #{companyId},
+        #{categoryId},
+        #{reqUser}, 
+        SYSDATE(),  
+        #{reqState},     
+        #{reqContents},
+        #{estimateAmount},
+        #{estimateContents}
+                
+    )
+	</insert>
+	
+	
+	<!-- 사전점검 항목 저장 -->
+	<insert id="insertTotalRequestInfo" parameterType="java.util.HashMap">
+	INSERT INTO request100t (
+        req_no,
+        company_id,
+        category_id,
+        req_gubun,
+        req_user,
+        req_date,
+        req_state,
+        req_contents,
+        seq
+    ) 
+    VALUES (
+       #{reqNo},
+        #{companyId},
+        #{categoryId},
+        #{reqGubun},  
+        #{reqUser}, 
+        SYSDATE(),  
+        #{reqState},     
+        #{reqContents},        
+        #{seq}
+    )
+	</insert>
+	
+	
+</mapper>

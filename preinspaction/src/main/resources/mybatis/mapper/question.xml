@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+
+<mapper namespace="com.wit.inspaction.question.mapper.QuestionMapper">
+
+	<!-- 질문 조회 -->
+	<select id="selectQuestionInfo" parameterType="java.util.HashMap" resultType="QuestionInfoDTO">
+		SELECT
+			  QUST_CD AS qustCd
+			, QUST_OP_CD AS qustOpCd
+			, QUST_TITLE AS qustTitle
+			, QUST_SUB_TITLE AS qustSubTitle
+			, QUST_TYPE AS qustType
+			, REM AS rem
+		FROM
+			WIT.WIT_QUST100T
+		WHERE QUST_CD = #{qustCd}
+		AND END_DATE = '99991231'
+	</select>
+	
+	<!-- 질문 옵션 조회 -->
+	<select id="selectOptionList" parameterType="java.util.HashMap" resultType="OptionInfoDTO">
+		SELECT
+			  OP_CD AS opCd
+			, OP_SEQ AS opSeq
+			, LOW_QUST_CD AS lowQustCd
+			, OP_TITLE AS opTitle
+			, OP_SUB_TITLE AS opSubTitle
+			, OP_CONTENTS AS opContents
+		FROM
+			WIT.WIT_QUST110T
+		WHERE OP_CD = #{opCd}
+		AND END_DATE = '99991231'
+		ORDER BY OP_SEQ ASC
+	</select>
+
+	<!-- 질문 저장 -->
+	<insert id="saveQuestionInfo" parameterType="java.util.HashMap">
+		INSERT INTO WIT.WIT_QUST200T
+		(
+			  QUST_CD
+			, OP_CD
+			, OP_SEQ
+			, USER_ID
+			, SEQ
+			, CRE_USER
+			, CRE_DATE
+		) 
+		VALUES
+		(
+			  #{qustCd}
+			, #{opCd}
+			, #{opSeq}
+			, #{userId}
+			, (SELECT 
+				IFNULL(COUNT(S.QUST_CD), 0) 
+			  FROM WIT.WIT_QUST200T S
+			   WHERE S.USER_ID = #{userId})
+			, #{userId}
+			, NOW()
+		) 
+	</insert>
+	
+	<!-- 질문 삭제 -->
+	<delete id="deleteQuestionInfo" parameterType="java.util.HashMap">
+		DELETE FROM WIT.WIT_QUST200T
+		WHERE QUST_CD = #{qustCd}
+		AND OP_CD = #{opCd}
+		AND USER_ID = #{userId}
+	</delete>
+	
+	<!-- 저장 질문 조회 -->
+	<select id="selectQuestionInfoBySave" parameterType="java.util.HashMap" resultType="QuestionInfoDTO">
+		SELECT
+			 B.QUST_CD AS qustCd
+		    , B.QUST_OP_CD AS qustOpCd
+		    , B.QUST_TITLE AS qustTitle
+		    , B.QUST_SUB_TITLE AS qustSubTitle
+		    , B.QUST_TYPE AS qustType
+		    , B.REM AS rem
+		FROM
+			  WIT.WIT_QUST200T A
+		    , WIT.WIT_QUST100T B
+		WHERE A.USER_ID = #{userId}
+		AND B.QUST_CD = A.QUST_CD
+		AND B.END_DATE = '99991231'
+		GROUP BY B.QUST_CD, B.QUST_OP_CD, B.QUST_TITLE, B.QUST_SUB_TITLE, B.QUST_TYPE
+		ORDER BY B.QUST_CD
+	</select>
+	
+		<!-- 저장 옵션 조회 -->
+	<select id="selectOptionListBySave" parameterType="java.util.HashMap" resultType="OptionInfoDTO">
+		SELECT
+			  B.OP_CD AS opCd
+			, GROUP_CONCAT(B.OP_SEQ) AS opSeq
+		FROM
+			  WIT.WIT_QUST200T A
+		    , WIT.WIT_QUST110T B
+		WHERE A.USER_ID = #{userId}
+		AND B.OP_CD = A.OP_CD
+		AND B.OP_SEQ = A.OP_SEQ
+		AND B.END_DATE = '99991231'
+        GROUP BY B.OP_CD
+        ORDER BY B.OP_CD;
+	</select>
+	
+	<!-- 질문 삭제 -->
+	<delete id="deleteQuestionInfoByAll" parameterType="java.util.HashMap">
+		DELETE FROM WIT.WIT_QUST200T
+		WHERE USER_ID = #{userId}
+	</delete>
+	
+</mapper>
