@@ -213,7 +213,7 @@ public class UserController {
 	    String reqGubun = param.get("reqGubun") == null ? "" : (String) param.get("reqGubun");
 	    String reqState = "01";
 	    String reqContents = "요청드립니다.";
-	    System.out.println("categoryId :: " + categoryId);
+	    System.out.println("categoryId 11111:: " + categoryId);
 	    System.out.println("reqGubun :: " + reqGubun);
 	    System.out.println("reqUser :: " + reqUser);
 
