@@ -31,7 +31,7 @@ public class BoardController {
 	@PostMapping("/wit/getBoardList")
     public List<BoardDTO> getBoardList(@RequestBody HashMap<String, Object> paramMap) {
     	
-		System.out.println("boardService getBoardList 호출");
+		System.out.println("boardService getBoardList 호출"); 
 		System.out.println("bordNo ::: " + paramMap.get("bordNo"));
 		System.out.println("bordType ::: " + paramMap.get("bordType"));
 		System.out.println("searchText ::: " + paramMap.get("searchText"));
