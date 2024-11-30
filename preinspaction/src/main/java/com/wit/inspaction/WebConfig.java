@@ -12,7 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/WIT/**").allowedOrigins("http://ibjujundev.cafe24.com");
+        registry.addMapping("/WIT/**").allowedOrigins("http://ibjujundev.cafe24.com"); 
     }
 	
     @Override
