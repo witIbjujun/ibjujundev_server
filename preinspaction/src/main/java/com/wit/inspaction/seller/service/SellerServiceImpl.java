@@ -42,10 +42,10 @@ public class SellerServiceImpl implements SellerService{
 	 * @return List<SellerSendDTO>
 	 */
 	@Override
-	public SellerSendDTO getEstimateRequestInfoForSend() {
+	public SellerSendDTO getEstimateRequestInfoForSend(HashMap<String, Object> param) {
 		System.out.println("SellerServiceImpl getEstimateRequestInfoForSend 호출");
 
-		SellerSendDTO sellerSendDTO = sellerMapper.selectEstimateRequestInfoForSend();
+		SellerSendDTO sellerSendDTO = sellerMapper.selectEstimateRequestInfoForSend(param);
 
 		return sellerSendDTO;
 	}

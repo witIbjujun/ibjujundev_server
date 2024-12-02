@@ -63,11 +63,11 @@ public class SellerController {
 	 * @return SellerSendDTO
 	 */
 	@PostMapping("/wit/getEstimateRequestInfoForSend")
-    public SellerSendDTO getEstimateRequestInfoForSend() {
+    public SellerSendDTO getEstimateRequestInfoForSend(@RequestBody HashMap<String, Object> param) {
 
 		System.out.println("getEstimateRequestInfoForSend 호출");
 
-		SellerSendDTO sellerSendDTO = sellerService.getEstimateRequestInfoForSend();
+		SellerSendDTO sellerSendDTO = sellerService.getEstimateRequestInfoForSend(param);
 
 		System.out.println("견적발송 용 데이터 조회 ::: " + sellerSendDTO.getAptName());
 

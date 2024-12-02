@@ -8,10 +8,9 @@ public class SellerSendDTO {
 	private String content;					// 점검ID
     private String itemName;					// 점검순번
     private String itemImage;
-    private String customerContent;					// 점검명
+    private String reqContents;					// 점검명
     private String itemPrice1;				// 상위 점검ID
-    private String itemPrice2;			// 점검 상세 전체 건수
-
+    private String estimateContents;
 	/**
 	 * @return the sllrNo
 	 */
@@ -85,16 +84,16 @@ public class SellerSendDTO {
 		this.itemImage = itemImage;
 	}
 	/**
-	 * @return the customerContent
+	 * @return the reqContents
 	 */
-	public String getCustomerContent() {
-		return customerContent;
+	public String getReqContents() {
+		return reqContents;
 	}
 	/**
-	 * @param customerContent the customerContent to set
+	 * @param reqContents the reqContents to set
 	 */
-	public void setCustomerContent(String customerContent) {
-		this.customerContent = customerContent;
+	public void setReqContents(String reqContents) {
+		this.reqContents = reqContents;
 	}
 	/**
 	 * @return the itemPrice1
@@ -109,17 +108,16 @@ public class SellerSendDTO {
 		this.itemPrice1 = itemPrice1;
 	}
 	/**
-	 * @return the itemPrice2
+	 * @return the estimateContents
 	 */
-	public String getItemPrice2() {
-		return itemPrice2;
+	public String getEstimateContents() {
+		return estimateContents;
 	}
 	/**
-	 * @param itemPrice2 the itemPrice2 to set
+	 * @param estimateContents the estimateContents to set
 	 */
-	public void setItemPrice2(String itemPrice2) {
-		this.itemPrice2 = itemPrice2;
+	public void setEstimateContents(String estimateContents) {
+		this.estimateContents = estimateContents;
 	}
-
 
 }

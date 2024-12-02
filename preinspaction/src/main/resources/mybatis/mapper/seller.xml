@@ -7,61 +7,106 @@
 
 	<!-- 견적리스트 조회 -->
 	<select id="selectEstimateRequestList" parameterType="java.util.HashMap" resultType="EstimateRequestDTO">
-		select
-			est_dt AS estDt
-			, atp_name AS aptName
-			, item_image AS  itemImage
-			, (select cd_nm from wit_code000t where cd_cls = 'EST01' and appl_en_date = '99991231235959' and cd = stat) AS stat
-			, content AS content
-			, prsn_name AS prsnName
-			, auto_yn AS autoYn
-			from wit_estm000t
-			where sllr_no = 17
-			<if test="stat == null or stat.equals('')">
-			and stat != 01
-			</if>
-			<if test="stat !=null and !stat.equals('')">
-			and stat = 01
-			</if>
+		SELECT 	A.REQ_NO estNo
+		        , C.APT_NAME AS aptName
+		        , D.imagePath AS  itemImage
+			    , A.REQ_DATE estDt
+			    , A.REQ_CONTENTS reqContents
+			    , A.COMPANY_ID companyId
+			    , A.CATEGORY_ID categoryId
+		        , D.category_nm AS itemName
+			    , A.REQ_STATE   reqState
+		        , (select cd_nm from wit_code000t where cd_cls = 'EST01' and appl_en_date = '99991231235959' and cd = A.REQ_STATE) AS stat
+		        , B.estimate_contents content
+			    , A.REQ_USER
+		        , IF(B.auto_yn = 'Y', '바로 견적서비스 발송', '일반 견적서비스 발송') AS autoYn
+		        , E.NAME AS prsnName
+				, (SELECT category_nm FROM category WHERE category_id = A.category_id) AS categoryNm 
+				, B.estimate_amount itemPrice1
+		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E
+		WHERE   A.REQ_NO = B.REQ_NO
+		AND     A.CATEGORY_ID = A.CATEGORY_ID 
+		AND     A.COMPANY_ID = B.COMPANY_ID
+		AND 	A.SEQ = B.SEQ
+		AND 	B.END_DATE = '99991231'
+	    AND 	A.company_id  = 'COMP001'
+	    <if test="stat == null or stat.equals('')">
+			AND A.REQ_STATE != 01
+		</if>
+		<if test="stat !=null and !stat.equals('')">
+			AND A.REQ_STATE = 01
+		</if>
+        AND 	A.APT_NO = C.APT_NO
+        AND 	A.CATEGORY_ID = D.CATEGORY_ID
+        AND 	A.REQ_USER = E.CLERK_NO
+		ORDER BY A.REQ_DATE DESC	
 	</select>
 
 	<!-- 바로 견적리스트 조회 -->
 	<select id="selectAutoEstimateList" parameterType="java.util.HashMap" resultType="EstimateRequestDTO">
-		SELECT
-			est_no AS estNo
-			, item_name AS itemName
-			, atp_name AS aptName
-			, item_image AS  itemImage
-			, (select cd_nm from wit_code000t where cd_cls = 'EST01' and appl_en_date = '99991231235959' and cd = stat) AS stat
-			, content AS content
-			, prsn_name AS prsnName
-			, IF(auto_yn = 'Y', '바로 견적서비스 발송', '일반 견적서비스 발송') AS autoYn
-			,  CASE
-		            WHEN TIMESTAMPDIFF(SECOND, est_dt, NOW()) <![CDATA[<=]]> 10 THEN '방금 전'
-		            WHEN TIMESTAMPDIFF(SECOND, est_dt, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(SECOND, est_dt, NOW()), '초 전')
-		            WHEN TIMESTAMPDIFF(MINUTE, est_dt, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(MINUTE, est_dt, NOW()), '분 전')
-		            WHEN TIMESTAMPDIFF(HOUR, est_dt, NOW()) <![CDATA[<]]> 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, est_dt, NOW()), '시간 전')
+		SELECT 	A.REQ_NO estNo
+		        , C.APT_NAME AS aptName
+		        , D.imagePath AS  itemImage
+                ,  CASE
+		            WHEN TIMESTAMPDIFF(SECOND, A.REQ_DATE, NOW()) <![CDATA[<=]]> 10 THEN '방금 전'
+		            WHEN TIMESTAMPDIFF(SECOND, A.REQ_DATE, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(SECOND, A.REQ_DATE, NOW()), '초 전')
+		            WHEN TIMESTAMPDIFF(MINUTE, A.REQ_DATE, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(MINUTE, A.REQ_DATE, NOW()), '분 전')
+		            WHEN TIMESTAMPDIFF(HOUR, A.REQ_DATE, NOW()) <![CDATA[<]]> 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, A.REQ_DATE, NOW()), '시간 전')
 		            ELSE CONCAT(TIMESTAMPDIFF(DAY, est_dt, NOW()), '일 전') END  AS estDt
-		FROM wit_estm000t
-		WHERE sllr_no = #{sllrNo}
-		/* AND auto_yn = 'Y' */
-		AND stat != 01
-		AND est_dt BETWEEN DATE_ADD(NOW(), INTERVAL -1 WEEK) AND NOW()
+			    , A.REQ_CONTENTS reqContents
+			    , A.COMPANY_ID companyId
+			    , A.CATEGORY_ID categoryId
+		        , D.category_nm AS itemName
+			    , A.REQ_STATE   reqState
+		        , (select cd_nm from wit_code000t where cd_cls = 'EST01' and appl_en_date = '99991231235959' and cd = A.REQ_STATE) AS stat
+		        , B.estimate_contents content
+			    , A.REQ_USER
+		        , IF(B.auto_yn = 'Y', '바로 견적서비스 발송', '일반 견적서비스 발송') AS autoYn
+		        , E.NAME AS prsnName
+				, (SELECT category_nm FROM category WHERE category_id = A.category_id) AS categoryNm 
+				, B.estimate_amount itemPrice1
+		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E
+		WHERE   A.REQ_NO = B.REQ_NO
+		AND     A.CATEGORY_ID = A.CATEGORY_ID 
+		AND     A.COMPANY_ID = B.COMPANY_ID
+		AND 	A.SEQ = B.SEQ
+		AND 	B.END_DATE = '99991231'
+	    AND 	A.company_id  = 'COMP001'
+		AND     A.REQ_STATE != 01
+        AND 	A.APT_NO = C.APT_NO
+        AND 	A.CATEGORY_ID = D.CATEGORY_ID
+        AND 	A.REQ_USER = E.CLERK_NO
+        AND     A.REQ_DATE BETWEEN DATE_ADD(NOW(), INTERVAL -1 WEEK) AND NOW()
 	</select>
 
 	<!-- 견적발송 용 데이터 조회 -->
 	<select id="selectEstimateRequestInfoForSend" resultType="SellerSendDTO">
-		select
-		    sllr_no AS sllrNo
-		    , est_no AS  estNo
-		    , atp_name AS aptName
-			, content AS content
-			, item_image AS itemImage
-			, item_name AS itemName
-			, customer_content customerContent
-			, item_price1 itemPrice1
-		from wit_estm000t
-		where est_no = '3'
+		SELECT 	A.REQ_NO estNo
+		        , C.APT_NAME AS aptName
+		        , D.imagePath AS  itemImage
+			    , A.REQ_DATE estDt
+			    , A.REQ_CONTENTS reqContents
+			    , A.COMPANY_ID companyId
+			    , A.CATEGORY_ID categoryId
+		        , D.category_nm AS itemName
+			    , A.REQ_STATE   reqState
+		        , (select cd_nm from wit_code000t where cd_cls = 'EST01' and appl_en_date = '99991231235959' and cd = A.REQ_STATE) AS stat
+		        , B.estimate_contents customerContent
+			    , A.REQ_USER
+		        , E.NAME AS prsnName
+				, (SELECT category_nm FROM category WHERE category_id = A.category_id) AS categoryNm 
+				, B.estimate_amount itemPrice1
+		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E
+		WHERE   A.REQ_NO = B.REQ_NO
+		AND     A.CATEGORY_ID = A.CATEGORY_ID 
+		AND     A.COMPANY_ID = B.COMPANY_ID
+		AND 	A.SEQ = B.SEQ
+		AND 	B.END_DATE = '99991231'
+        AND 	A.APT_NO = C.APT_NO
+        AND 	A.CATEGORY_ID = D.CATEGORY_ID
+        AND 	A.REQ_USER = E.CLERK_NO
+        AND     A.REQ_NO = #{estNo}
+        AND     A.COMPANY_ID = #{sllrNo}
 	</select>
 
 	<!-- 견적발송 정보 저장 -->
@@ -89,11 +134,12 @@
 
 	<!-- 견적정보 수정 -->
 	<update id="updateEstimateInfo" parameterType="java.util.HashMap">
-		UPDATE wit_estm000t
-		SET  STAT = #{stat}
-			, customer_content = #{customerContent}
-			, ITEM_PRICE1 = #{itemPrice1}
-		WHERE EST_NO = #{estNo}
+		UPDATE request110t
+		SET  REQ_STATE = #{stat}
+			, estimate_contents = #{estimateContents}
+			, estimate_amount = #{itemPrice1}
+		WHERE REQ_NO = #{estNo}
+		AND   COMPANY_ID = #{sllrNo}
 	</update>
 
 	<!-- 판매자 프로필 저장 -->

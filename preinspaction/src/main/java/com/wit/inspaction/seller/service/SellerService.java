@@ -27,7 +27,7 @@ public interface SellerService {
 	 * 견적발송 용 데이터 조회
 	 * @return SellerSendDTO
 	 */
-	public SellerSendDTO getEstimateRequestInfoForSend();
+	public SellerSendDTO getEstimateRequestInfoForSend(HashMap<String, Object> paramMap);
 
 	/**
 	 * 견적발송 정보 저장

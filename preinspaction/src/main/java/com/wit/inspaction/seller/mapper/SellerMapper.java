@@ -38,9 +38,9 @@ public class SellerMapper {
 	 * @param param
 	 * @return SellerSendDTO
 	 */
-	public SellerSendDTO selectEstimateRequestInfoForSend() {
+	public SellerSendDTO selectEstimateRequestInfoForSend(HashMap<String, Object> param) {
 		// TODO Auto-generated method stub
-		return sql.selectOne(path + "selectEstimateRequestInfoForSend");
+		return sql.selectOne(path + "selectEstimateRequestInfoForSend", param);
 	}
 
 	/**
