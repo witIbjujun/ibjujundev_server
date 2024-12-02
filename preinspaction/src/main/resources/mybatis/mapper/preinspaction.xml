@@ -10,7 +10,7 @@
 		SELECT 
 			COUNT(S.INSP_ID) AS noCnt
 		FROM 
-			ibjujundev.wit_insp300t S
+			wit_insp300t S
 		WHERE CHECK_YN = 'N'
 	</select>
 
@@ -22,8 +22,8 @@
 		    , B.INSP_NM AS inspDetlNm
 		    , A.CHECK_YN AS checkYn
 		FROM
-			  ibjujundev.wit_insp300t A
-		    , ibjujundev.wit_insp100t B
+			  wit_insp300t A
+		    , wit_insp100t B
 		WHERE CHECK_YN = 'Y'
 		AND B.INSP_ID = A.INSP_DETL_CD
 		ORDER BY A.INSP_DETL_CD
@@ -37,22 +37,22 @@
 		    , A.INSP_NM AS inspNm
 		    , (SELECT COUNT(S1.INSP_ID) 
 				FROM 
-					ibjujundev.wit_insp100t S
-                    , ibjujundev.wit_insp100t S1
+					wit_insp100t S
+                    , wit_insp100t S1
 				WHERE S.UPP_INSP_ID = A.INSP_ID
                 AND S.INSP_LEVEL = '2'
 		        AND S.END_DATE = '99991231235959'
                 AND S1.UPP_INSP_ID = S.INSP_ID
                 AND S1.INSP_LEVEL = '3'
 		        AND S1.END_DATE = '99991231235959') AS inspDetlAllCnt
-		    , (SELECT COUNT(S.INSP_ID) FROM ibjujundev.wit_insp300t S
+		    , (SELECT COUNT(S.INSP_ID) FROM wit_insp300t S
 		    	WHERE S.INSP_ID = A.INSP_ID
 		    	AND CHECK_YN = 'Y') AS inspDetlChoiceCnt
-		    , (SELECT COUNT(S.INSP_ID) FROM ibjujundev.wit_insp300t S
+		    , (SELECT COUNT(S.INSP_ID) FROM wit_insp300t S
 		    	WHERE S.INSP_ID = A.INSP_ID
 		    	AND CHECK_YN = 'N') AS inspDetlNoCnt
 		FROM 
-			  ibjujundev.wit_insp100t A
+			  wit_insp100t A
 		WHERE A.END_DATE = '99991231235959'
 		AND A.INSP_LEVEL = '1'
 		ORDER BY A.INSP_SEQ
@@ -68,15 +68,15 @@
 		    , (SELECT 
 					COUNT(S.INSP_ID)
 				FROM 
-					ibjujundev.wit_insp100t S
-                    , ibjujundev.wit_insp300t S2
+					wit_insp100t S
+                    , wit_insp300t S2
 				WHERE S.END_DATE = '99991231235959'
 				AND S.INSP_LEVEL = '3'
                 AND S.UPP_INSP_ID = A.INSP_ID
                 AND S2.INSP_DETL_CD = S.INSP_ID
                 AND S2.CHECK_YN = 'Y') AS checkCnt
 		FROM 
-			  ibjujundev.wit_insp100t A
+			  wit_insp100t A
 		WHERE A.END_DATE = '99991231235959'
 		AND A.INSP_LEVEL = '2'
 		AND A.UPP_INSP_ID = #{inspId}
@@ -89,11 +89,11 @@
 			  A.INSP_ID AS inspId
 		    , A.INSP_SEQ AS inspSeq
 		    , A.INSP_NM AS inspNm
-		    , IFNULL((SELECT CHECK_YN FROM ibjujundev.wit_insp300t S
+		    , IFNULL((SELECT CHECK_YN FROM wit_insp300t S
 		    	WHERE S.INSP_ID = #{parentsInspId}
 		    	AND S.INSP_DETL_CD = A.INSP_ID), 'N') AS checkYn  
 		FROM 
-			  ibjujundev.wit_insp100t A
+			  wit_insp100t A
 		WHERE A.UPP_INSP_ID = #{inspId}
 		AND A.END_DATE = '99991231235959'
 		AND A.INSP_LEVEL = '3'
@@ -106,18 +106,18 @@
 			  A.INSP_ID AS inspId
 			, A.INSP_DETL_CD AS inspDetlId
 		    , A.INSP_DETL_NM AS inspDetlNm
-		    , IFNULL((SELECT CHECK_YN FROM ibjujundev.wit_insp300t S
+		    , IFNULL((SELECT CHECK_YN FROM wit_insp300t S
 		    	WHERE S.INSP_ID = A.INSP_ID
 		    	AND S.INSP_DETL_CD = A.INSP_DETL_CD), 'N') AS checkYn
 		FROM 
-			  ibjujundev.wit_insp200t A
+			  wit_insp200t A
 		WHERE A.INSP_ID = #{inspId}
 		AND A.END_DATE = '99991231235959'
 	</select>
 	
 	<!-- 사전점검 항목 저장 -->
 	<insert id="insertPreinspactionInfo" parameterType="java.util.HashMap">
-		INSERT INTO ibjujundev.wit_insp300t
+		INSERT INTO wit_insp300t
 		(
 			 INSP_ID
 			, INSP_DETL_CD
