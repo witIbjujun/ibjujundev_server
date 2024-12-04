@@ -95,6 +95,15 @@ public class UserMapper {
 	 * @param paramMap
 	 * @return int
 	 */
+	public int updateDetailRequestState(HashMap<String, Object> paramMap) {
+		return sql.update(path + "updateDetailRequestState", paramMap);
+	}
+	
+	/**
+	 * 사전점검 항목 저장
+	 * @param paramMap
+	 * @return int
+	 */
 	public int updateRequestState(HashMap<String, Object> paramMap) {
 		return sql.update(path + "updateRequestState", paramMap);
 	}

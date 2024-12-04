@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.wit.inspaction.preinspaction.PreinspactionController;
 import com.wit.inspaction.preinspaction.model.PreinspactionDetailDTO;
 import com.wit.inspaction.user.model.UserDTO;
 import com.wit.inspaction.user.service.UserService;
@@ -20,6 +23,9 @@ import com.wit.inspaction.user.service.UserService;
 
 @RestController
 public class UserController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+	
 	
 	@Autowired
 	private UserService userService;
@@ -31,11 +37,11 @@ public class UserController {
 	@RequestMapping("/wit/getCategoryList")
     public List<UserDTO> getCategoryList() {
     	
-		System.out.println("CompanyServiceImpl 호출");
+		logger.info("CompanyServiceImpl 호출");
 		
 		List<UserDTO> categoryList = userService.getCategoryList();
     	
-		System.out.println("카테고리 리스트 ::: " + categoryList.size());
+		logger.info("카테고리 리스트 ::: " + categoryList.size());
 		
         return categoryList;
     }
@@ -46,7 +52,7 @@ public class UserController {
 	 public class TestController {
 
 	     public String showTestPage() {
-	    	 System.out.println("온다온다." );
+	    	 logger.info("온다온다." );
 	         return "test"; // "test.jsp"를 렌더링
 	     }
 	 }
@@ -58,19 +64,19 @@ public class UserController {
 	 */
 	@RequestMapping("/wit/getCompanyList")
 	public List<UserDTO> getCompanyList(@RequestBody HashMap<String, Object> param) {
-		System.out.println("getCompanyList 호출");
+		logger.info("getCompanyList 호출");
 		
 		// 파라미터
 		String categoryId = param.get("categoryId") == null ? "" : (String) param.get("categoryId");
 		
-		System.out.println("categoryId :: " + categoryId);
+		logger.info("categoryId :: " + categoryId);
 		
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("categoryId", categoryId);
 		
 		List<UserDTO> companyList = userService.getCompanyList(paramMap);
     	
-		System.out.println("회사 상세 리스트 ::: " + companyList.size());
+		logger.info("회사 상세 리스트 ::: " + companyList.size());
 		
         return companyList;
     }
@@ -82,19 +88,19 @@ public class UserController {
 	 */
 	@RequestMapping("/wit/getNoticeList")
 	public List<UserDTO> getNoticeList(@RequestBody HashMap<String, Object> param) {
-		System.out.println("getNoticeList 호출");
+		logger.info("getNoticeList 호출");
 		
 		// 파라미터
 		String reqUser = param.get("reqUser") == null ? "" : (String) param.get("reqUser");
 		
-		System.out.println("reqUser :: " + reqUser);
+		logger.info("reqUser :: " + reqUser);
 		
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("reqUser", reqUser);
 		
 		List<UserDTO> noticeList = userService.getNoticeList(paramMap);
 		
-		System.out.println("회사 상세 리스트 ::: " + noticeList.size());
+		logger.info("회사 상세 리스트 ::: " + noticeList.size());
 		
 		return noticeList;
 	}
@@ -107,12 +113,12 @@ public class UserController {
 	 */
 	@RequestMapping("/wit/getUserInfo")
 	public UserDTO getUserInfo(@RequestBody HashMap<String, Object> param) {
-		System.out.println("getUserInfo 호출");
+		logger.info("getUserInfo 호출");
 		
 		// 파라미터
 		String kakaoId = param.get("kakaoId") == null ? "" : (String) param.get("kakaoId");
 		
-		System.out.println("kakaoId :: " + kakaoId);
+		logger.info("kakaoId :: " + kakaoId);
 		
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("kakaoId", kakaoId);
@@ -120,11 +126,11 @@ public class UserController {
 		UserDTO userInfo = userService.getUserInfo(paramMap);
 		
 		HashMap<String, Object> apmMap = new HashMap<String, Object>();
-		System.out.println("clerkNo :: " + userInfo.getClerkNo());
+		logger.info("clerkNo :: " + userInfo.getClerkNo());
 		apmMap.put("clerkNo", userInfo.getClerkNo());
 		
 		List<Map<String, String>> aptList = userService.getAptList(apmMap);
-		 System.out.println("아파트 이름 ::: " + aptList.size());
+		 logger.info("아파트 이름 ::: " + aptList.size());
 		List<String> aptNoList = new ArrayList<>();
         List<String> aptNameList = new ArrayList<>();
         for (Map<String, String> apt : aptList) {
@@ -132,7 +138,7 @@ public class UserController {
             aptNameList.add(apt.get("aptName"));
             
             
-            System.out.println("아파트 이름 ::: " + apt.get("aptName"));
+            logger.info("아파트 이름 ::: " + apt.get("aptName"));
             
         }
 
@@ -140,7 +146,7 @@ public class UserController {
         userInfo.setAptName(aptNameList);
         
 		
-		System.out.println("닉네임 ::: " + userInfo.getNickName());
+		logger.info("닉네임 ::: " + userInfo.getNickName());
 		
 		return userInfo;
 	}
@@ -152,16 +158,16 @@ public class UserController {
 	 */
 	@RequestMapping("/wit/getRequesDetailtList")
 	public List<UserDTO> getRequestList(@RequestBody HashMap<String, Object> param) {
-		System.out.println("getRequesDetailtList 호출");
+		logger.info("getRequesDetailtList 호출");
 		
     	String reqUser = param.get("reqUser") == null ? "" : (String) param.get("reqUser");
     	String categoryId = param.get("categoryId") == null ? "" : (String) param.get("categoryId");
 		String reqNo = param.get("reqNo") == null ? "" : (String) param.get("reqNo");
 		
-		System.out.println("categoryId :: " + categoryId);
-		System.out.println("reqUser :: " + reqUser);
-		System.out.println("reqNo :: " + reqNo);
-		System.out.println("reqUser :: " + reqUser);
+		logger.info("categoryId :: " + categoryId);
+		logger.info("reqUser :: " + reqUser);
+		logger.info("reqNo :: " + reqNo);
+		logger.info("reqUser :: " + reqUser);
 		
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("reqUser", reqUser);
@@ -170,7 +176,7 @@ public class UserController {
 		
 		List<UserDTO> reqList = userService.getRequesDetailtList(paramMap);
 		
-		System.out.println("신청리스트 ::: " + reqList.size());
+		logger.info("신청리스트 ::: " + reqList.size());
 		
 		return reqList;
 	}
@@ -183,7 +189,7 @@ public class UserController {
 	 */
 	@RequestMapping("/wit/getRequestAsisList")
 	public List<UserDTO> getRequestAsisList(@RequestBody HashMap<String, Object> param) {
-		System.out.println("getRequestAsisList 호출");
+		logger.info("getRequestAsisList 호출");
 		
 		String reqUser = param.get("reqUser") == null ? "" : (String) param.get("reqUser");
 	
@@ -193,7 +199,7 @@ public class UserController {
 		
 		List<UserDTO> reqList = userService.getRequestAsisList(paramMap);
 		
-		System.out.println("신청리스트 ::: " + reqList.size());
+		logger.info("신청리스트 ::: " + reqList.size());
 		
 		return reqList;
 	}
@@ -205,25 +211,25 @@ public class UserController {
 	 */
 	@RequestMapping("/wit/saveRequestInfo")
 	public int saveRequestInfo(@RequestBody HashMap<String, Object> param) {
-		System.out.println("saveRequestInfo 호출");
+		logger.info("saveRequestInfo 호출");
 		
 		// 파라미터 추출
 	    String reqUser = param.get("reqUser") == null ? "" : (String) param.get("reqUser");
 	    String categoryId = param.get("categoryId") == null ? "" : (String) param.get("categoryId");
 	    String reqGubun = param.get("reqGubun") == null ? "" : (String) param.get("reqGubun");
 	    
-	    String aptNo = param.get("aptNo") == null ? "" : (String) param.get("aptNo");
+	    String aptNo = param.get("aptNo") != null ? param.get("aptNo").toString() : "";
 	    
 	    String reqState = "01";
 	    String reqContents = "요청드립니다.";
-	    System.out.println("aptNo:: " + aptNo);
-	    System.out.println("categoryId 11111:: " + categoryId);
-	    System.out.println("reqGubun :: " + reqGubun);
-	    System.out.println("reqUser :: " + reqUser);
+	    logger.info("aptNo:: " + aptNo);
+	    logger.info("categoryId 11111:: " + categoryId);
+	    logger.info("reqGubun :: " + reqGubun);
+	    logger.info("reqUser :: " + reqUser);
 
 	    // companyIds 배열 추출
 	    List<String> companyIds = param.get("companyIds") != null ? (List<String>) param.get("companyIds") : new ArrayList<>();
-	    System.out.println("선택된 companyIds :: " + companyIds);
+	    logger.info("선택된 companyIds :: " + companyIds);
 		
 	    HashMap<String, Object> paramMap = new HashMap<>();
 	    paramMap.put("categoryId", categoryId);
@@ -247,19 +253,21 @@ public class UserController {
 	 */
 	@RequestMapping("/wit/saveTotalRequestInfo")
 	public int saveTotalRequestInfo(@RequestBody HashMap<String, Object> param) {
-		System.out.println("saveTotalRequestInfo 호출");
+		logger.info("saveTotalRequestInfo 호출");
 		
 		// 파라미터 추출
 	    String reqUser = param.get("reqUser") == null ? "" : (String) param.get("reqUser");
 	    String reqGubun = param.get("reqGubun") == null ? "" : (String) param.get("reqGubun");
+	    String aptNo = param.get("aptNo") != null ? param.get("aptNo").toString() : "";
 	    String reqState = "01";
 	    String reqContents = "요청드립니다.";
-	    System.out.println("reqGubun :: " + reqGubun);
-	    System.out.println("reqUser :: " + reqUser);
+	    logger.info("reqGubun :: " + reqGubun);
+	    logger.info("reqUser :: " + reqUser);
+	    logger.info("aptNo11111 :: " + aptNo);
 
 	    // companyIds 배열 추출
 	    List<String> categoryIds = param.get("categoryIds") != null ? (List<String>) param.get("categoryIds") : new ArrayList<>();
-	    System.out.println("선택된 categoryIds :: " + categoryIds);
+	    logger.info("선택된 categoryIds :: " + categoryIds);
 		
 	    HashMap<String, Object> paramMap = new HashMap<>();
 	    paramMap.put("categoryIds", categoryIds);
@@ -267,6 +275,7 @@ public class UserController {
 	    paramMap.put("reqUser", reqUser);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("reqState", reqState);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("reqContents", reqContents);  // 선택된 회사 ID 배열 추가
+	    paramMap.put("aptNo", aptNo);  // 선택된 회사 ID 배열 추가
 		
 	    int result = userService.saveTotalRequestInfo(paramMap);
 		
@@ -280,16 +289,16 @@ public class UserController {
 	 */
 	@RequestMapping("/wit/updateRequestState")
 	public int updateRequestState(@RequestBody HashMap<String, Object> param) {
-		System.out.println("requestStateUpdate 호출");
+		logger.info("requestStateUpdate 호출");
 		
 		// 파라미터 추출
 		String reqNo = param.get("reqNo") == null ? "" : (String) param.get("reqNo");
 		String seq = param.get("seq") == null ? "" : (String) param.get("seq");
 		String reqUser = param.get("reqUser") == null ? "" : (String) param.get("reqUser");
 		String reqState = param.get("reqState") == null ? "" : (String) param.get("reqState");
-		System.out.println("reqNo :: " + reqNo);
-		System.out.println("seq :: " + seq);
-		System.out.println("reqState :: " + reqState);
+		logger.info("reqNo :: " + reqNo);
+		logger.info("seq :: " + seq);
+		logger.info("reqState :: " + reqState);
 		
 		HashMap<String, Object> paramMap = new HashMap<>();
 		paramMap.put("reqNo", reqNo);
@@ -298,7 +307,44 @@ public class UserController {
 		paramMap.put("reqState", reqState);  // 선택된 회사 ID 배열 추가
 		
 		int result = userService.updateRequestState(paramMap);
-		System.out.println("resultresultresult :: " + result);
+		logger.info("resultresultresult :: " + result);
+		return result;
+	}
+	
+	
+	/**
+	 * 작업요청
+	 * @param param
+	 * @return List<UserDTO>
+	 */
+	@RequestMapping("/wit/updateDetailRequestState")
+	public int updateDetailRequestState(@RequestBody HashMap<String, Object> param) {
+		logger.info("requestStateUpdate 호출");
+		
+		// 파라미터 추출
+		String reqNo = param.get("reqNo") == null ? "" : (String) param.get("reqNo");
+		String seq = param.get("seq") == null ? "" : (String) param.get("seq");
+		String reqUser = param.get("reqUser") == null ? "" : (String) param.get("reqUser");
+		String reqState = param.get("reqState") == null ? "" : (String) param.get("reqState");
+		String estimateAmount = param.get("estimateAmount") == null ? "" : (String) param.get("estimateAmount");
+		String estimateContents = param.get("estimateContents") == null ? "" : (String) param.get("estimateContents");
+		logger.info("reqNo :: " + reqNo);
+		logger.info("seq :: " + seq);
+		logger.info("reqState :: " + reqState);
+		logger.info("estimateAmount :: " + estimateAmount);
+		logger.info("estimateContents :: " + estimateContents);
+		logger.info("PreinspactionServiceImpl 호출");
+		HashMap<String, Object> paramMap = new HashMap<>();
+		paramMap.put("reqNo", reqNo);
+		paramMap.put("seq", seq);  // 선택된 회사 ID 배열 추가
+		paramMap.put("reqUser", reqUser);  // 선택된 회사 ID 배열 추가
+		paramMap.put("reqState", reqState);  // 선택된 회사 ID 배열 추가
+		paramMap.put("estimateAmount", estimateAmount);  // 선택된 회사 ID 배열 추가
+		paramMap.put("estimateContents", estimateContents);  // 선택된 회사 ID 배열 추가
+		
+		int result = userService.updateRequestState(paramMap);
+		 result += userService.updateDetailRequestState(paramMap);
+		logger.info("resultresultresult :: " + result);
 		return result;
 	}
 	
@@ -310,15 +356,15 @@ public class UserController {
 	 */
 	@RequestMapping("/wit/updateMyInfo")
 	public int updateMyInfo(@RequestBody HashMap<String, Object> param) {
-		System.out.println("updateMyInfo 호출");
+		logger.info("updateMyInfo 호출");
 		
 		// 파라미터 추출
 		String clerkNo = param.get("clerkNo") == null ? "" : (String) param.get("clerkNo");
 		String nickName = param.get("nickName") == null ? "" : (String) param.get("nickName");
 		String mainAptNo = param.get("mainAptNo") == null ? "" : (String) param.get("mainAptNo");
-		System.out.println("clerkNo" + clerkNo);
-		System.out.println("nickName" + nickName);
-		System.out.println("mainAptNo" + mainAptNo);
+		logger.info("clerkNo" + clerkNo);
+		logger.info("nickName" + nickName);
+		logger.info("mainAptNo" + mainAptNo);
 		
 		HashMap<String, Object> paramMap = new HashMap<>();
 		paramMap.put("clerkNo", clerkNo);
@@ -327,7 +373,7 @@ public class UserController {
 		
 		int result = userService.updateUserInfo(paramMap);
 		
-		System.out.println("updateMyInfo :: " + result);
+		logger.info("updateMyInfo :: " + result);
 		return result;
 	}
 	

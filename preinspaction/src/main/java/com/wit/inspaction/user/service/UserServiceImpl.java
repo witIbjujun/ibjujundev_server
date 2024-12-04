@@ -124,6 +124,11 @@ public class UserServiceImpl implements UserService{
 		
 		return userMapper.updateRequestState(paramMap);
 	}
+	@Override
+	public int updateDetailRequestState(HashMap<String, Object> paramMap) {
+		
+		return userMapper.updateDetailRequestState(paramMap);
+	}
 	
 	@Override
 	public int updateUserInfo(HashMap<String, Object> paramMap) {
@@ -145,6 +150,7 @@ public class UserServiceImpl implements UserService{
 			System.out.println("reqNo==="+reqNo);
 			System.out.println("seq==="+loopCount++);
 			System.out.println("categoryId==="+categoryId);
+			System.out.println("aptNo1212121212==="+paramMap.get("aptNo"));
 			
 			paramMap.put("categoryId", categoryId);
 			
@@ -158,12 +164,10 @@ public class UserServiceImpl implements UserService{
 				 insertMap.put("reqUser", paramMap.get("reqUser"));
 				 insertMap.put("reqState", paramMap.get("reqState"));
 				 insertMap.put("reqContents", paramMap.get("reqContents"));
+				 insertMap.put("aptNo",  paramMap.get("aptNo"));
 				 insertMap.put("seq",  loopCount++);
 			     insertCount += userMapper.insertTotalRequestInfo(insertMap);
 			     insertMap.put("reqNo",  insertMap.get("reqNo"));
-		    	System.out.println("===================================");
-		    	System.out.println("reqNo==="+paramMap.get("reqNo"));
-		    	System.out.println("===================================");
 		        insertCount += userMapper.insertHistoryRequest(insertMap);
 			     
 			    }

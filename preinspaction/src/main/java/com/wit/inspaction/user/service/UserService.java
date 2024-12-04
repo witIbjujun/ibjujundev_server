@@ -82,6 +82,13 @@ public interface UserService {
 	public int updateRequestState(HashMap<String, Object> paramMap);
 	
 	/**
+	 * 업체에서 견적보내기
+	 * @param paramMap
+	 * @return
+	 */
+	public int updateDetailRequestState(HashMap<String, Object> paramMap);
+	
+	/**
 	 * 사전점검 항목 저장 토탈
 	 * @param paramMap
 	 * @return
