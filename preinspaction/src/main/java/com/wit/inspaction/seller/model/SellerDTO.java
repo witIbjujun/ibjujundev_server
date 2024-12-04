@@ -7,6 +7,7 @@ public class SellerDTO {
 	private String endDate;
 	private String serviceArea;
 	private String serviceItem;
+	private String categoryNm;
 	private String itemPrice1;
 	private String itemPrice2;
 	private String itemPrice3;
@@ -23,7 +24,8 @@ public class SellerDTO {
     private String address2;
     private String reqCnt;
     private String ingCnt;
-
+    private String rate;
+    private String clerkNo;
 	/**
 	 * @return the sllrNo
 	 */
@@ -83,6 +85,18 @@ public class SellerDTO {
 	 */
 	public void setServiceItem(String serviceItem) {
 		this.serviceItem = serviceItem;
+	}
+	/**
+	 * @return the categoryNm
+	 */
+	public String getCategoryNm() {
+		return categoryNm;
+	}
+	/**
+	 * @param categoryNm the categoryNm to set
+	 */
+	public void setCategoryNm(String categoryNm) {
+		this.categoryNm = categoryNm;
 	}
 	/**
 	 * @return the itemPrice1
@@ -276,7 +290,31 @@ public class SellerDTO {
 	public void setIngCnt(String ingCnt) {
 		this.ingCnt = ingCnt;
 	}
-
+	/**
+	 * @return the rate
+	 */
+	public String getRate() {
+		return rate;
+	}
+	/**
+	 * @param rate the rate to set
+	 */
+	public void setRate(String rate) {
+		this.rate = rate;
+	}
+	/**
+	 * @return the clerkNo
+	 */
+	public String getClerkNo() {
+		return clerkNo;
+	}
+	/**
+	 * @param clerkNo the clerkNo to set
+	 */
+	public void setClerkNo(String clerkNo) {
+		this.clerkNo = clerkNo;
+	}
+   
 
 
 }

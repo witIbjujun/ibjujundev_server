@@ -30,7 +30,7 @@ public class SellerServiceImpl implements SellerService{
 	 */
 	@Override
 	public List<EstimateRequestDTO> getEstimateRequestList(HashMap<String, Object> param) {
-		System.out.println("SellerServiceImpl getSellerDetailList 호출");
+		System.out.println("SellerServiceImpl getEstimateRequestList 호출");
 
 		List<EstimateRequestDTO> list = sellerMapper.selectEstimateRequestList(param);
 

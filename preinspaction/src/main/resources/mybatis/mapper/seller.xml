@@ -7,7 +7,8 @@
 
 	<!-- 견적리스트 조회 -->
 	<select id="selectEstimateRequestList" parameterType="java.util.HashMap" resultType="EstimateRequestDTO">
-		SELECT 	A.REQ_NO estNo
+		SELECT 	A.REQ_NO AS estNo
+		        , A.SEQ AS seq
 		        , C.APT_NAME AS aptName
 		        , D.imagePath AS  itemImage
 			    , A.REQ_DATE estDt
@@ -18,18 +19,16 @@
 			    , A.REQ_STATE   reqState
 		        , (select cd_nm from wit_code000t where cd_cls = 'EST01' and appl_en_date = '99991231235959' and cd = A.REQ_STATE) AS stat
 		        , B.estimate_contents content
-			    , A.REQ_USER
+			    , A.REQ_USER reqUser
 		        , IF(B.auto_yn = 'Y', '바로 견적서비스 발송', '일반 견적서비스 발송') AS autoYn
 		        , E.NAME AS prsnName
 				, (SELECT category_nm FROM category WHERE category_id = A.category_id) AS categoryNm 
 				, B.estimate_amount itemPrice1
 		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E
 		WHERE   A.REQ_NO = B.REQ_NO
-		AND     A.CATEGORY_ID = A.CATEGORY_ID 
-		AND     A.COMPANY_ID = B.COMPANY_ID
-		AND 	A.SEQ = B.SEQ
+		AND     A.SEQ = B.SEQ 
 		AND 	B.END_DATE = '99991231'
-	    AND 	A.company_id  = 'COMP001'
+	    AND 	A.company_id  = #{sllrNo}
 	    <if test="stat == null or stat.equals('')">
 			AND A.REQ_STATE != 01
 		</if>
@@ -60,16 +59,14 @@
 			    , A.REQ_STATE   reqState
 		        , (select cd_nm from wit_code000t where cd_cls = 'EST01' and appl_en_date = '99991231235959' and cd = A.REQ_STATE) AS stat
 		        , B.estimate_contents content
-			    , A.REQ_USER
+			    , A.REQ_USER AS reqUser
 		        , IF(B.auto_yn = 'Y', '바로 견적서비스 발송', '일반 견적서비스 발송') AS autoYn
 		        , E.NAME AS prsnName
 				, (SELECT category_nm FROM category WHERE category_id = A.category_id) AS categoryNm 
 				, B.estimate_amount itemPrice1
 		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E
 		WHERE   A.REQ_NO = B.REQ_NO
-		AND     A.CATEGORY_ID = A.CATEGORY_ID 
-		AND     A.COMPANY_ID = B.COMPANY_ID
-		AND 	A.SEQ = B.SEQ
+		AND     A.SEQ = B.SEQ 
 		AND 	B.END_DATE = '99991231'
 	    AND 	A.company_id  = 'COMP001'
 		AND     A.REQ_STATE != 01
@@ -82,6 +79,7 @@
 	<!-- 견적발송 용 데이터 조회 -->
 	<select id="selectEstimateRequestInfoForSend" resultType="SellerSendDTO">
 		SELECT 	A.REQ_NO estNo
+		        , A.SEQ AS seq
 		        , C.APT_NAME AS aptName
 		        , D.imagePath AS  itemImage
 			    , A.REQ_DATE estDt
@@ -91,22 +89,22 @@
 		        , D.category_nm AS itemName
 			    , A.REQ_STATE   reqState
 		        , (select cd_nm from wit_code000t where cd_cls = 'EST01' and appl_en_date = '99991231235959' and cd = A.REQ_STATE) AS stat
-		        , B.estimate_contents customerContent
-			    , A.REQ_USER
+		        , B.estimate_contents estimateContent
+			    , A.REQ_USER AS reqUser
 		        , E.NAME AS prsnName
 				, (SELECT category_nm FROM category WHERE category_id = A.category_id) AS categoryNm 
 				, B.estimate_amount itemPrice1
-		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E
+                , F.clerk_no AS sllrClerkNo
+		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E, wit_sllr000t F
 		WHERE   A.REQ_NO = B.REQ_NO
-		AND     A.CATEGORY_ID = A.CATEGORY_ID 
-		AND     A.COMPANY_ID = B.COMPANY_ID
-		AND 	A.SEQ = B.SEQ
+		AND     A.SEQ = B.SEQ 
 		AND 	B.END_DATE = '99991231'
         AND 	A.APT_NO = C.APT_NO
         AND 	A.CATEGORY_ID = D.CATEGORY_ID
         AND 	A.REQ_USER = E.CLERK_NO
+        AND     A.COMPANY_ID = F.SLLR_NO
         AND     A.REQ_NO = #{estNo}
-        AND     A.COMPANY_ID = #{sllrNo}
+        AND     A.SEQ = #{seq}
 	</select>
 
 	<!-- 견적발송 정보 저장 -->
@@ -195,6 +193,7 @@
 		       , end_date AS endDate
 		       , service_area AS serviceArea
 		       , service_item AS serviceItem
+		        , (SELECT CATEGORY_NM FROM category a WHERE a.category_id = service_item) AS categoryNm
 		       , item_price1 AS itemPrice1
 		       , item_price2 AS itemPrice2
 		       , item_price3 AS itemPrice3
@@ -211,6 +210,8 @@
 		       , address2 AS address2
 		       , (select count(est_no) from wit_estm000t where stat = '01' and sllr_no = '17') AS reqCnt /* 견적요청내역 건수 */
                , (select count(est_no) from wit_estm000t where stat != '01'and sllr_no = '17') AS ingCnt /* 거래내역 건수 */
+               , rate AS rate
+               , clerk_no AS clerkNo
 		FROM   wit_sllr000t
 		WHERE  SLLR_NO = #{sllrNo}
 	</select>

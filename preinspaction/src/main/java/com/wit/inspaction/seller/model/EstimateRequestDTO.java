@@ -3,15 +3,23 @@ package com.wit.inspaction.seller.model;
 public class EstimateRequestDTO {
 
 	private String estNo;					// 견적번호
-	private String itemName;				// 품목명
-	private String estDt;					// 견적발송일
+    private String seq;                     // 견적 SEQ 
     private String aptName;					// 아파트명
     private String itemImage;				// 이미지
-    private String stat;				    // 견적상태
+    private String estDt;					// 견적발송일
+    private String reqContents;				// 구매자 요청
+    private String companyId;               // 업체 ID
+    private String categoryId;              // 품목 ID
+	private String itemName;				// 품목명
+    private String reqState;				// 견적상태
+    private String stat;					// 견적상태명
     private String content;					// 업체 견적 발송 설명
-    private String prsnName;				// 요청자명
+    private String reqUser;                 // 요청자 
     private String autoYn;					// 바로견적 여부
-
+    private String prsnName;				// 요청자명
+    private String categoryNm;				// 품목명
+    private String itmePrice1;				// 견적금액
+    
 	/**
 	 * @return the estNo
 	 */
@@ -25,28 +33,16 @@ public class EstimateRequestDTO {
 		this.estNo = estNo;
 	}
 	/**
-	 * @return the itemName
+	 * @return the seq
 	 */
-	public String getItemName() {
-		return itemName;
+	public String getSeq() {
+		return seq;
 	}
 	/**
-	 * @param itemName the itemName to set
+	 * @param seq the seq to set
 	 */
-	public void setItemName(String itemName) {
-		this.itemName = itemName;
-	}
-	/**
-	 * @return the estDt
-	 */
-	public String getEstDt() {
-		return estDt;
-	}
-	/**
-	 * @param estDt the estDt to set
-	 */
-	public void setEstDt(String estDt) {
-		this.estDt = estDt;
+	public void setSeq(String seq) {
+		this.seq = seq;
 	}
 	/**
 	 * @return the aptName
@@ -73,6 +69,78 @@ public class EstimateRequestDTO {
 		this.itemImage = itemImage;
 	}
 	/**
+	 * @return the estDt
+	 */
+	public String getEstDt() {
+		return estDt;
+	}
+	/**
+	 * @param estDt the estDt to set
+	 */
+	public void setEstDt(String estDt) {
+		this.estDt = estDt;
+	}
+	/**
+	 * @return the reqContents
+	 */
+	public String getReqContents() {
+		return reqContents;
+	}
+	/**
+	 * @param reqContents the reqContents to set
+	 */
+	public void setReqContents(String reqContents) {
+		this.reqContents = reqContents;
+	}
+	/**
+	 * @return the companyId
+	 */
+	public String getCompanyId() {
+		return companyId;
+	}
+	/**
+	 * @param companyId the companyId to set
+	 */
+	public void setCompanyId(String companyId) {
+		this.companyId = companyId;
+	}
+	/**
+	 * @return the categoryId
+	 */
+	public String getCategoryId() {
+		return categoryId;
+	}
+	/**
+	 * @param categoryId the categoryId to set
+	 */
+	public void setCategoryId(String categoryId) {
+		this.categoryId = categoryId;
+	}
+	/**
+	 * @return the itemName
+	 */
+	public String getItemName() {
+		return itemName;
+	}
+	/**
+	 * @param itemName the itemName to set
+	 */
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
+	}
+	/**
+	 * @return the reqState
+	 */
+	public String getReqState() {
+		return reqState;
+	}
+	/**
+	 * @param reqState the reqState to set
+	 */
+	public void setReqState(String reqState) {
+		this.reqState = reqState;
+	}
+	/**
 	 * @return the stat
 	 */
 	public String getStat() {
@@ -97,16 +165,16 @@ public class EstimateRequestDTO {
 		this.content = content;
 	}
 	/**
-	 * @return the prsnName
+	 * @return the reqUser
 	 */
-	public String getPrsnName() {
-		return prsnName;
+	public String getReqUser() {
+		return reqUser;
 	}
 	/**
-	 * @param prsnName the prsnName to set
+	 * @param reqUser the reqUser to set
 	 */
-	public void setPrsnName(String prsnName) {
-		this.prsnName = prsnName;
+	public void setReqUser(String reqUser) {
+		this.reqUser = reqUser;
 	}
 	/**
 	 * @return the autoYn
@@ -120,8 +188,41 @@ public class EstimateRequestDTO {
 	public void setAutoYn(String autoYn) {
 		this.autoYn = autoYn;
 	}
-
-
-
+	/**
+	 * @return the prsnName
+	 */
+	public String getPrsnName() {
+		return prsnName;
+	}
+	/**
+	 * @param prsnName the prsnName to set
+	 */
+	public void setPrsnName(String prsnName) {
+		this.prsnName = prsnName;
+	}
+	/**
+	 * @return the categoryNm
+	 */
+	public String getCategoryNm() {
+		return categoryNm;
+	}
+	/**
+	 * @param categoryNm the categoryNm to set
+	 */
+	public void setCategoryNm(String categoryNm) {
+		this.categoryNm = categoryNm;
+	}
+	/**
+	 * @return the itmePrice1
+	 */
+	public String getItmePrice1() {
+		return itmePrice1;
+	}
+	/**
+	 * @param itmePrice1 the itmePrice1 to set
+	 */
+	public void setItmePrice1(String itmePrice1) {
+		this.itmePrice1 = itmePrice1;
+	}
 
 }

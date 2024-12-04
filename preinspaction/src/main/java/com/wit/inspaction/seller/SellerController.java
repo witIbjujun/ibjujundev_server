@@ -34,6 +34,7 @@ public class SellerController {
 		System.out.println("getEstimateRequestList 호출");
 
 		System.out.println("param stat :" + param.get("stat"));
+		System.out.println("param stat :" + param.get("sllrNo"));
 
 		List<EstimateRequestDTO> estimateRequestList = sellerService.getEstimateRequestList(param);
 

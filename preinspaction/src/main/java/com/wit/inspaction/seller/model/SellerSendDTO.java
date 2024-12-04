@@ -4,13 +4,23 @@ public class SellerSendDTO {
 
 	private String sllrNo;
 	private String estNo;
+	private String seq;
 	private String aptName;
-	private String content;					// 점검ID
-    private String itemName;					// 점검순번
-    private String itemImage;
-    private String reqContents;					// 점검명
-    private String itemPrice1;				// 상위 점검ID
-    private String estimateContents;
+	private String itemImage;
+	private String estDt;
+	private String reqContents;
+	private String companyId;					// 점검ID
+    private String categoryId;					// 점검순번
+    private String itemName;					// 점검명
+    private String reqState;				// 상위 점검ID
+    private String stat;
+    private String estimateContent;
+    private String reqUser;
+    private String prsnName;
+    private String categoryNm;
+    private String itemPrice1;
+    private String sllrClerkNo;
+    
 	/**
 	 * @return the sllrNo
 	 */
@@ -36,6 +46,18 @@ public class SellerSendDTO {
 		this.estNo = estNo;
 	}
 	/**
+	 * @return the seq
+	 */
+	public String getSeq() {
+		return seq;
+	}
+	/**
+	 * @param seq the seq to set
+	 */
+	public void setSeq(String seq) {
+		this.seq = seq;
+	}
+	/**
 	 * @return the aptName
 	 */
 	public String getAptName() {
@@ -46,30 +68,6 @@ public class SellerSendDTO {
 	 */
 	public void setAptName(String aptName) {
 		this.aptName = aptName;
-	}
-	/**
-	 * @return the content
-	 */
-	public String getContent() {
-		return content;
-	}
-	/**
-	 * @param content the content to set
-	 */
-	public void setContent(String content) {
-		this.content = content;
-	}
-	/**
-	 * @return the itemName
-	 */
-	public String getItemName() {
-		return itemName;
-	}
-	/**
-	 * @param itemName the itemName to set
-	 */
-	public void setItemName(String itemName) {
-		this.itemName = itemName;
 	}
 	/**
 	 * @return the itemImage
@@ -84,6 +82,18 @@ public class SellerSendDTO {
 		this.itemImage = itemImage;
 	}
 	/**
+	 * @return the estDt
+	 */
+	public String getEstDt() {
+		return estDt;
+	}
+	/**
+	 * @param estDt the estDt to set
+	 */
+	public void setEstDt(String estDt) {
+		this.estDt = estDt;
+	}
+	/**
 	 * @return the reqContents
 	 */
 	public String getReqContents() {
@@ -94,6 +104,114 @@ public class SellerSendDTO {
 	 */
 	public void setReqContents(String reqContents) {
 		this.reqContents = reqContents;
+	}
+	/**
+	 * @return the companyId
+	 */
+	public String getCompanyId() {
+		return companyId;
+	}
+	/**
+	 * @param companyId the companyId to set
+	 */
+	public void setCompanyId(String companyId) {
+		this.companyId = companyId;
+	}
+	/**
+	 * @return the categoryId
+	 */
+	public String getCategoryId() {
+		return categoryId;
+	}
+	/**
+	 * @param categoryId the categoryId to set
+	 */
+	public void setCategoryId(String categoryId) {
+		this.categoryId = categoryId;
+	}
+	/**
+	 * @return the itemName
+	 */
+	public String getItemName() {
+		return itemName;
+	}
+	/**
+	 * @param itemName the itemName to set
+	 */
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
+	}
+	/**
+	 * @return the reqState
+	 */
+	public String getReqState() {
+		return reqState;
+	}
+	/**
+	 * @param reqState the reqState to set
+	 */
+	public void setReqState(String reqState) {
+		this.reqState = reqState;
+	}
+	/**
+	 * @return the stat
+	 */
+	public String getStat() {
+		return stat;
+	}
+	/**
+	 * @param stat the stat to set
+	 */
+	public void setStat(String stat) {
+		this.stat = stat;
+	}
+	/**
+	 * @return the estimateContent
+	 */
+	public String getEstimateContent() {
+		return estimateContent;
+	}
+	/**
+	 * @param estimateContent the estimateContent to set
+	 */
+	public void setEstimateContent(String estimateContent) {
+		this.estimateContent = estimateContent;
+	}
+	/**
+	 * @return the reqUser
+	 */
+	public String getReqUser() {
+		return reqUser;
+	}
+	/**
+	 * @param reqUser the reqUser to set
+	 */
+	public void setReqUser(String reqUser) {
+		this.reqUser = reqUser;
+	}
+	/**
+	 * @return the prsnName
+	 */
+	public String getPrsnName() {
+		return prsnName;
+	}
+	/**
+	 * @param prsnName the prsnName to set
+	 */
+	public void setPrsnName(String prsnName) {
+		this.prsnName = prsnName;
+	}
+	/**
+	 * @return the categoryNm
+	 */
+	public String getCategoryNm() {
+		return categoryNm;
+	}
+	/**
+	 * @param categoryNm the categoryNm to set
+	 */
+	public void setCategoryNm(String categoryNm) {
+		this.categoryNm = categoryNm;
 	}
 	/**
 	 * @return the itemPrice1
@@ -108,16 +226,16 @@ public class SellerSendDTO {
 		this.itemPrice1 = itemPrice1;
 	}
 	/**
-	 * @return the estimateContents
+	 * @return the sllrClerkNo
 	 */
-	public String getEstimateContents() {
-		return estimateContents;
+	public String getSllrClerkNo() {
+		return sllrClerkNo;
 	}
 	/**
-	 * @param estimateContents the estimateContents to set
+	 * @param sllrClerkNo the sllrClerkNo to set
 	 */
-	public void setEstimateContents(String estimateContents) {
-		this.estimateContents = estimateContents;
+	public void setSllrClerkNo(String sllrClerkNo) {
+		this.sllrClerkNo = sllrClerkNo;
 	}
 
 }
