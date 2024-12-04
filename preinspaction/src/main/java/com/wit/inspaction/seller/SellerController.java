@@ -3,11 +3,14 @@ package com.wit.inspaction.seller;
 import java.util.HashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.wit.inspaction.preinspaction.PreinspactionController;
 import com.wit.inspaction.seller.model.CashDTO;
 import com.wit.inspaction.seller.model.CashHistoryDTO;
 import com.wit.inspaction.seller.model.CashRechargeSetDTO;
@@ -17,12 +20,19 @@ import com.wit.inspaction.seller.model.EstimateRequestDTO;
 import com.wit.inspaction.seller.model.SellerDTO;
 import com.wit.inspaction.seller.model.SellerSendDTO;
 import com.wit.inspaction.seller.service.SellerService;
+import com.wit.inspaction.user.service.UserService;
 
 @RestController
 public class SellerController {
+	
+	// logger
+	private static final Logger logger = LoggerFactory.getLogger(PreinspactionController.class);
 
 	@Autowired
 	private SellerService sellerService;
+	
+	@Autowired
+	private UserService userService;
 
 	/**
 	 * 견적리스트 조회
@@ -34,7 +44,7 @@ public class SellerController {
 		System.out.println("getEstimateRequestList 호출");
 
 		System.out.println("param stat :" + param.get("stat"));
-		System.out.println("param stat :" + param.get("sllrNo"));
+		System.out.println("param sllrNo :" + param.get("sllrNo"));
 
 		List<EstimateRequestDTO> estimateRequestList = sellerService.getEstimateRequestList(param);
 
@@ -107,15 +117,30 @@ public class SellerController {
 
 		System.out.println("updateEstimateInfo 호출");
 
+		String reqNo = (String) param.get("estNo");
 		String estNo = (String) param.get("estNo");
-		String customerContent = (String) param.get("customerContent");
-		String itemPrice1 = (String) param.get("itemPrice1");
-		String stat = (String) param.get("stat");
-
-		System.out.println(estNo + " ::: " + customerContent + " ::: " + itemPrice1 + " ::: " + stat);
-
-		int result = sellerService.updateEstimateInfo(param);
-
+		String seq = (String) param.get("seq");
+		String estimateContents = (String) param.get("estimateContent");
+		String estimateAmount = (String) param.get("itemPrice1");
+		String reqState = (String) param.get("stat");
+		String reqUser = (String) param.get("sllrClerkNo");
+		String sllrNo = (String) param.get("sllrNo");
+		
+		HashMap<String, Object> updateMap = new HashMap<String, Object>();
+		updateMap.put("reqState", reqState);
+		updateMap.put("estimateAmount", estimateAmount);
+		updateMap.put("estimateContents", estimateContents);
+		updateMap.put("reqUser", reqUser);
+		updateMap.put("reqNo", reqNo);
+		updateMap.put("seq", seq);
+		
+		int result = userService.updateDetailRequestState(updateMap);
+		
+		logger.info(":::::::::::::::::::::::::::::::::::::::");
+		logger.info("견적 발송 상태 update 호출 : " + result);
+		logger.info("견적 발송 상태 update 호출 reqState : " + reqState);
+		logger.info(":::::::::::::::::::::::::::::::::::::::");
+		
 		CashDTO cashDTO = sellerService.getCashInfo(param);
 
 		String cashNo = cashDTO.getCashNo();
@@ -123,7 +148,7 @@ public class SellerController {
 		param.put("cashNo", cashNo);
 
 		// stat 02 : 진행대기일 경우 (견적을 발송) 정의된 cash 만큼 캐시 차감해야함
-		if("02".equals(stat)) {
+		if("02".equals(reqState)) {
 			result = sellerService.insertCashHistoryInfo(param);
 
 			// 캐시 정보 수정
