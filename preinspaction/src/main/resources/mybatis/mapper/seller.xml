@@ -68,7 +68,7 @@
 		WHERE   A.REQ_NO = B.REQ_NO
 		AND     A.SEQ = B.SEQ 
 		AND 	B.END_DATE = '99991231'
-	    AND 	A.company_id  = 'COMP001'
+	    AND 	A.company_id = #{sllrNo}
 		AND     A.REQ_STATE != 01
         AND 	A.APT_NO = C.APT_NO
         AND 	A.CATEGORY_ID = D.CATEGORY_ID
@@ -208,8 +208,8 @@
 		       , zip_code AS zipCode
 		       , address1 AS address1
 		       , address2 AS address2
-		       , (select count(est_no) from wit_estm000t where stat = '01' and sllr_no = '17') AS reqCnt /* 견적요청내역 건수 */
-               , (select count(est_no) from wit_estm000t where stat != '01'and sllr_no = '17') AS ingCnt /* 거래내역 건수 */
+		       , (select count(req_no) from request100t where req_state = '01' and company_id = #{sllrNo}) AS reqCnt /* 견적요청내역 건수 */
+               , (select count(req_no) from request100t where req_state != '01'and company_id = #{sllrNo}) AS ingCnt /* 거래내역 건수 */
                , rate AS rate
                , clerk_no AS clerkNo
 		FROM   wit_sllr000t
