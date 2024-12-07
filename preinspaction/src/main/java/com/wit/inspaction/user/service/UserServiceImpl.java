@@ -4,12 +4,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.wit.inspaction.preinspaction.mapper.PreinspactionMapper;
 import com.wit.inspaction.preinspaction.model.PreinspactionDTO;
 import com.wit.inspaction.preinspaction.model.PreinspactionDetailDTO;
+import com.wit.inspaction.user.UserController;
 import com.wit.inspaction.user.mapper.UserMapper;
 import com.wit.inspaction.user.model.UserDTO;
 
@@ -18,6 +21,8 @@ import com.wit.inspaction.user.model.UserDTO;
  */
 @Service
 public class UserServiceImpl implements UserService{
+	
+	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	
 	@Autowired
 	private UserMapper userMapper;
@@ -28,7 +33,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public List<UserDTO> getCategoryList() {
 		
-		System.out.println("UserServiceImpl getCategoryList 호출");
+		logger.info("UserServiceImpl getCategoryList 호출");
 		
 		List<UserDTO> list = userMapper.selectCategoryList();
 		
@@ -38,7 +43,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public List<UserDTO> getCompanyList(HashMap<String, Object> paramMap) {
 		
-		System.out.println("UserServiceImpl getCompanyList 호출");
+		logger.info("UserServiceImpl getCompanyList 호출");
 
 		List<UserDTO> list = userMapper.selectCompanyList(paramMap);
 		
@@ -48,7 +53,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public List<UserDTO> getNoticeList(HashMap<String, Object> paramMap) {
 		
-		System.out.println("UserServiceImpl getNoticeList 호출");
+		logger.info("UserServiceImpl getNoticeList 호출");
 		
 		List<UserDTO> list = userMapper.selectNoticeList(paramMap);
 		
@@ -58,7 +63,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public UserDTO getUserInfo(HashMap<String, Object> paramMap) {
 		
-		System.out.println("UserServiceImpl getUserInfo 호출");
+		logger.info("UserServiceImpl getUserInfo 호출");
 		
 		UserDTO userInfo = userMapper.selectUserInfo(paramMap);
 		
@@ -68,7 +73,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public List<Map<String, String>> getAptList(HashMap<String, Object> paramMap) {
 		
-		System.out.println("UserServiceImpl getAptList 호출");
+		logger.info("UserServiceImpl getAptList 호출");
 		
 		List<Map<String, String>> aptList = userMapper.selectAptList(paramMap);
 		
@@ -79,7 +84,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public List<UserDTO> getRequesDetailtList(HashMap<String, Object> paramMap) {
 		
-		System.out.println("UserServiceImpl getRequesDetailtList 호출");
+		logger.info("UserServiceImpl getRequesDetailtList 호출");
 		
 		List<UserDTO> list = userMapper.selectRequestDetailList(paramMap);
 		
@@ -89,7 +94,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public List<UserDTO> getRequestAsisList(HashMap<String, Object> paramMap) {
 		
-		System.out.println("UserServiceImpl getRequestAsisList 호출");
+		logger.info("UserServiceImpl getRequestAsisList 호출");
 		
 		List<UserDTO> list = userMapper.selectRequesAsistList(paramMap);
 		
@@ -105,14 +110,14 @@ public class UserServiceImpl implements UserService{
 	    int loopCount = 0;  // 루프 카운터 변수
 
 	    for (String companyId : companyIds) {
-	    	System.out.println("companyId==="+companyId);
+	    	logger.info("companyId==="+companyId);
 	        paramMap.put("companyId", companyId);
 	        paramMap.put("seq",  loopCount++);
 	        insertCount += userMapper.insertRequestInfo(paramMap);
 	        paramMap.put("reqNo",  paramMap.get("reqNo"));
-	    	System.out.println("===================================");
-	    	System.out.println("reqNo==="+paramMap.get("reqNo"));
-	    	System.out.println("===================================");
+	    	logger.info("===================================");
+	    	logger.info("reqNo==="+paramMap.get("reqNo"));
+	    	logger.info("===================================");
 	        insertCount += userMapper.insertHistoryRequest(paramMap);
 	    }
 	    // 총 삽입된 건수 반환
@@ -147,10 +152,10 @@ public class UserServiceImpl implements UserService{
 		
 		int loopCount = 0;  // 루프 카운터 변수
 		for (String categoryId : categoryIds) {
-			System.out.println("reqNo==="+reqNo);
-			System.out.println("seq==="+loopCount++);
-			System.out.println("categoryId==="+categoryId);
-			System.out.println("aptNo1212121212==="+paramMap.get("aptNo"));
+			logger.info("reqNo==="+reqNo);
+			logger.info("seq==="+loopCount++);
+			logger.info("categoryId==="+categoryId);
+			logger.info("aptNo1212121212==="+paramMap.get("aptNo"));
 			
 			paramMap.put("categoryId", categoryId);
 			

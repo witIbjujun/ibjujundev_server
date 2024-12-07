@@ -217,8 +217,7 @@ public class UserController {
 	    String reqUser = param.get("reqUser") == null ? "" : (String) param.get("reqUser");
 	    String categoryId = param.get("categoryId") == null ? "" : (String) param.get("categoryId");
 	    String reqGubun = param.get("reqGubun") == null ? "" : (String) param.get("reqGubun");
-	    
-	    String aptNo = param.get("aptNo") != null ? param.get("aptNo").toString() : "";
+	    String aptNo = param.get("aptNo") == null ? "1" : (String) param.get("aptNo").toString();
 	    
 	    String reqState = "01";
 	    String reqContents = "요청드립니다.";

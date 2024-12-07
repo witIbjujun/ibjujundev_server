@@ -79,14 +79,14 @@
 	SELECT  A.REQ_NO reqNo,
             A.CATEGORY_ID categoryId,
             (SELECT category_nm FROM category WHERE category_id = A.category_id) AS categoryNm ,
-             (SELECT  COALESCE(estimate_amount, "") FROM request110t WHERE REQ_NO = A.REQ_NO AND CATEGORY_ID= A.CATEGORY_ID AND COMPANY_ID= B.COMPANY_ID) AS estimateAmount ,
-             (SELECT RATE FROM company WHERE category_id = A.category_id AND company_id = B.COMPANY_ID) AS rate ,
-    COALESCE((SELECT estimate_contents FROM request110t WHERE REQ_NO = A.REQ_NO AND CATEGORY_ID = A.CATEGORY_ID AND COMPANY_ID  = B.COMPANY_ID),'견적대기중') estimateContents,
+             (SELECT  COALESCE(estimate_amount, "") FROM request110t WHERE REQ_NO = A.REQ_NO AND CATEGORY_ID= A.CATEGORY_ID AND company_id= B.company_id) AS estimateAmount ,
+             (SELECT RATE FROM wit_sllr000t WHERE service_item = A.category_id AND sllr_no = B.COMPANY_ID) AS rate ,
+    COALESCE((SELECT estimate_contents FROM request110t WHERE REQ_NO = A.REQ_NO AND CATEGORY_ID = A.CATEGORY_ID AND company_id  = B.company_id),'견적대기중') estimateContents,
               (SELECT COUNT(*) 
      FROM request100t C 
      WHERE C.REQ_NO = A.REQ_NO AND C.CATEGORY_ID = A.CATEGORY_ID) AS companyCnt,
-            COALESCE(B.COMPANY_ID, '견적요청') AS companyId,
-           (SELECT COMPANY_nm FROM company WHERE category_id = A.category_id AND company_id = B.COMPANY_ID) AS companyNm,
+            COALESCE(B.company_id, '견적요청') AS companyId,
+           (SELECT store_name FROM wit_sllr000t WHERE service_item = A.category_id AND sllr_no = B.company_id) AS companyNm,
             B.REQ_DATE AS req_date,
             DATE_FORMAT(B.REQ_DATE, '%c월 %e일') AS reqDateInfo,
      CASE
@@ -111,7 +111,7 @@ FROM
      GROUP BY REQ_NO, CATEGORY_ID) A
 LEFT JOIN 
     (SELECT REQ_NO, CATEGORY_ID, 
-            MIN(COMPANY_ID) AS COMPANY_ID, 
+            MIN(company_id) AS company_id, 
             MIN(REQ_DATE) AS REQ_DATE, 
              MIN(REQ_STATE) AS REQ_STATE
      FROM request100t
@@ -178,7 +178,7 @@ ORDER BY  B.REQ_DATE DESC, A.CATEGORY_ID
 	<insert id="insertRequestInfo" parameterType="java.util.HashMap">
 	INSERT INTO request100t (
         req_no,
-        company_id,
+        sllr_no,
         category_id,
         APT_NO,
         req_gubun,
@@ -218,7 +218,6 @@ ORDER BY  B.REQ_DATE DESC, A.CATEGORY_ID
 	<update id="updateRequestState" parameterType="java.util.HashMap">
 		UPDATE request100t
 		  SET req_state = #{reqState}
-		     ,
 		     ,UPDATE_DT =  SYSDATE() 
 		     ,UPDATE_USER = #{reqUser}
 		WHERE REQ_NO =   #{reqNo}
@@ -253,7 +252,7 @@ ORDER BY  B.REQ_DATE DESC, A.CATEGORY_ID
         REQ_NO,
         SEQ,
         END_DATE,
-        company_id,
+        sllr_no,
         category_id,
         req_user,
         req_date,
