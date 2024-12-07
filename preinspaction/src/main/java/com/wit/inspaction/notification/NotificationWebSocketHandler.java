@@ -40,7 +40,7 @@ public class NotificationWebSocketHandler extends TextWebSocketHandler {
         for (WebSocketSession session2 : sessions) {
             if (session2.isOpen()) {
                 try {
-                	System.out.println("session2 ::: " + session2.getId());
+                	logger.info("메세지호출 ::: " + session2.getId());
                 	session2.sendMessage(message);
                 } catch (Exception e) {
                     logger.error("Error sending message to session: " + session.getId(), e);
