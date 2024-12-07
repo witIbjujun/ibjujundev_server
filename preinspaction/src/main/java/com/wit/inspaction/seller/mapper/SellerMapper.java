@@ -213,5 +213,16 @@ public class SellerMapper {
 		System.out.println("############# selectCodeList : " + param);
 		return sql.selectList(path + "selectCodeList", param);
 	}
+	
+	/**
+	 * 판매자 게시판 정보 수정
+	 * @param param
+	 * @return
+	 */
+	public int updateSellerBordInfo(HashMap<String, Object> param) {
+		System.out.println("############# updateSellerBordInfo : " + param);
+		
+		return sql.update(path + "updateSellerBordInfo", param);
+	}
 
 }

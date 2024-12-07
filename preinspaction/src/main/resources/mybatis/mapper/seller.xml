@@ -182,9 +182,16 @@
 			, #{zipCode}
 			, #{address1}
 			, #{address2}
-
 		)
 	</insert>
+	
+	<!-- 게시판 정보 수정 -->
+	<update id="updateSellerBordInfo" parameterType="java.util.HashMap">
+		UPDATE wit_sllr000t
+		SET  bord_no = #{sllrNo}
+			, BORD_TYPE = 'C1'
+		WHERE SLLR_NO = #{sllrNo}
+	</update>
 
 	<!-- 판매자 프로필 조회 -->
 	<select id="selectSellerInfo" parameterType="int" resultType="SellerDTO">
@@ -212,6 +219,8 @@
                , (select count(req_no) from request100t where req_state != '01'and company_id = #{sllrNo}) AS ingCnt /* 거래내역 건수 */
                , rate AS rate
                , clerk_no AS clerkNo
+               , bord_no AS bordNo
+               , bord_type AS bordType
 		FROM   wit_sllr000t
 		WHERE  SLLR_NO = #{sllrNo}
 	</select>

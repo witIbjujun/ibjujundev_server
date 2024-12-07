@@ -172,9 +172,13 @@ public class SellerController {
 
 		System.out.println("storeName : " + storeName);
 
-		int result = sellerService.saveSellerProfile(param);
+		int sllrNo = sellerService.saveSellerProfile(param);
+		
+		param.put("sllrNo", sllrNo);
+		
+		int result = sellerService.updateSellerBordInfo(param);
 
-        return result;
+        return sllrNo;
     }
 
 	/**

@@ -184,4 +184,11 @@ public class SellerServiceImpl implements SellerService{
 
 		return sellerMapper.selectCodeList(param);
 	}
+
+	@Override
+	public int updateSellerBordInfo(HashMap<String, Object> param) {
+		System.out.println("SellerServiceImpl updateSellerBordInfo 호출");
+		
+		return sellerMapper.updateSellerBordInfo(param);
+	}
 }

@@ -146,5 +146,12 @@ public interface SellerService {
 	 * @return
 	 */
 	public List<CodeDTO> getCodeList(HashMap<String, Object> param);
+	
+	/**
+	 * 판매자 게시판 정보 수정
+	 * @param param
+	 * @return
+	 */
+	public int updateSellerBordInfo(HashMap<String, Object> param);
 
 }

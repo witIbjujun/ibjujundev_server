@@ -26,6 +26,9 @@ public class SellerDTO {
     private String ingCnt;
     private String rate;
     private String clerkNo;
+    private String bordNo;
+    private String bordType;
+    
 	/**
 	 * @return the sllrNo
 	 */
@@ -314,7 +317,30 @@ public class SellerDTO {
 	public void setClerkNo(String clerkNo) {
 		this.clerkNo = clerkNo;
 	}
-   
+	/**
+	 * @return the bordNo
+	 */
+	public String getBordNo() {
+		return bordNo;
+	}
+	/**
+	 * @param bordNo the bordNo to set
+	 */
+	public void setBordNo(String bordNo) {
+		this.bordNo = bordNo;
+	}
+	/**
+	 * @return the bordType
+	 */
+	public String getBordType() {
+		return bordType;
+	}
+	/**
+	 * @param bordType the bordType to set
+	 */
+	public void setBordType(String bordType) {
+		this.bordType = bordType;
+	}
 
 
 }
