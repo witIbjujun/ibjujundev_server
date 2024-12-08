@@ -97,23 +97,12 @@ public class BoardController {
 		
 		System.out.println("boardService saveBoardInfo 호출");
 		
-		// 게시판 번호 조회
-//		／／int bordNo = boardService.getNewBordNo(paramMap);
-		
-		String bordNo = paramMap.get("bordNo") == null ? "" : (String) paramMap.get("bordNo");
-		
-		paramMap.put("bordNo", bordNo);
-		paramMap.put("bordSubTitle","22");
 		System.out.println("게시판 번호 ::: " + paramMap.get("bordNo"));
 		System.out.println("게시판 bordType ::: " + paramMap.get("bordType"));
 		System.out.println("게시판 bordTitle ::: " + paramMap.get("bordTitle"));
 		System.out.println("게시판 bordSubTitle ::: " + paramMap.get("bordSubTitle"));
 		System.out.println("게시판 bordContent ::: " + paramMap.get("bordContent"));
 		System.out.println("게시판 creUser ::: " + paramMap.get("creUser"));
-		
-		
-		
-	
 		
 		// 게시판 저장
 		int result = boardService.saveBoardInfo(paramMap);
@@ -139,7 +128,7 @@ public class BoardController {
 					
 					HashMap<String, Object> fileInfo = fileList.get(i);
 					fileInfo.put("bizCd", "B001");
-					fileInfo.put("bizKey", bordNo);
+					fileInfo.put("bizKey", paramMap.get("bordNo"));
 					fileInfo.put("fileType", "01");
 					fileInfo.put("creUser", "테스트");
 					
@@ -271,7 +260,16 @@ public class BoardController {
 			System.out.println("file.getSize() :::" + file.getSize());
 			
 			// 저장할 경로 설정
-			String filePath = "D:/eclipse_node/eclipse-workspace/preinspaction/src/main/resources/file/WIT/" + file.getOriginalFilename();
+			String filePath = "/ibjujundev/tomcat/webapps/FILE/ibjujun/" + file.getOriginalFilename();
+			
+			System.out.println(filePath);
+			
+			File file22 = new File(filePath);
+			
+			System.out.println("file221 ::: " + file22.getAbsolutePath());
+			System.out.println("file222 ::: " + file22.getCanonicalPath());
+			System.out.println("file223 ::: " + file22.getPath());
+			
             file.transferTo(new File(filePath));
             
             HashMap<String, Object> fileParam = new HashMap<String, Object>();

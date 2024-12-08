@@ -12,12 +12,12 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/WIT/**").allowedOrigins("http://ibjujundev.cafe24.com"); 
+        registry.addMapping("/WIT/**").allowedOrigins("http://ibjujundev.cafe24.com");
     }
 	
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
     	// 파일 시스템의 경로
-    	registry.addResourceHandler("/WIT/**").addResourceLocations("file:/D:/eclipse_node/eclipse-workspace/preinspaction/src/main/resources/file/WIT/"); 
+    	registry.addResourceHandler("/WIT/**").addResourceLocations("file:/ibjujundev/tomcat/webapps/FILE/ibjujun/");
     }
 }
