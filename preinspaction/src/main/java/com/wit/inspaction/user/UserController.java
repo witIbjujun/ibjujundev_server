@@ -117,11 +117,14 @@ public class UserController {
 		
 		// 파라미터
 		String kakaoId = param.get("kakaoId") == null ? "" : (String) param.get("kakaoId");
+		String clerkNo = param.get("clerkNo") == null ? "" : (String) param.get("clerkNo");
 		
 		logger.info("kakaoId :: " + kakaoId);
+		logger.info("clerkNo :: " + clerkNo);
 		
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("kakaoId", kakaoId);
+		paramMap.put("clerkNo", clerkNo);
 		
 		UserDTO userInfo = userService.getUserInfo(paramMap);
 		

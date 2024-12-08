@@ -134,7 +134,8 @@ public class SellerController {
 		updateMap.put("reqNo", reqNo);
 		updateMap.put("seq", seq);
 		
-		int result = userService.updateDetailRequestState(updateMap);
+		int result = userService.updateRequestState(updateMap);
+		   result += userService.updateDetailRequestState(updateMap);
 		
 		logger.info(":::::::::::::::::::::::::::::::::::::::");
 		logger.info("견적 발송 상태 update 호출 : " + result);

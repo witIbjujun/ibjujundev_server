@@ -81,10 +81,19 @@
             (SELECT category_nm FROM category WHERE category_id = A.category_id) AS categoryNm ,
              (SELECT  COALESCE(estimate_amount, "") FROM request110t WHERE REQ_NO = A.REQ_NO AND CATEGORY_ID= A.CATEGORY_ID AND company_id= B.company_id) AS estimateAmount ,
              (SELECT RATE FROM wit_sllr000t WHERE service_item = A.category_id AND sllr_no = B.COMPANY_ID) AS rate ,
-    COALESCE((SELECT estimate_contents FROM request110t WHERE REQ_NO = A.REQ_NO AND CATEGORY_ID = A.CATEGORY_ID AND company_id  = B.company_id),'견적대기중') estimateContents,
-              (SELECT COUNT(*) 
-     FROM request100t C 
-     WHERE C.REQ_NO = A.REQ_NO AND C.CATEGORY_ID = A.CATEGORY_ID) AS companyCnt,
+      CASE 
+        WHEN B.REQ_STATE = '01' THEN COALESCE((SELECT estimate_contents FROM request110t WHERE REQ_NO = A.REQ_NO AND CATEGORY_ID = A.CATEGORY_ID AND company_id = B.company_id), '견적대기중')
+        WHEN B.REQ_STATE = '02' THEN '진행대기'
+        WHEN B.REQ_STATE = '03' THEN '작업진행'
+        WHEN B.REQ_STATE = '04' THEN '진행완료'
+        WHEN B.REQ_STATE = '05' THEN '견적취소'
+        ELSE '상태미정'  END AS estimateContents,
+              (SELECT CASE 
+                         WHEN COUNT(*) = 0 THEN '-' 
+                         ELSE CAST(COUNT(*) AS CHAR) 
+                          END AS companyCnt
+                FROM request100t C 
+               WHERE C.REQ_NO = A.REQ_NO AND C.CATEGORY_ID = A.CATEGORY_ID  AND  REQ_STATE IN ('02','03','04') ) AS companyCnt,
             COALESCE(B.company_id, '견적요청') AS companyId,
            (SELECT store_name FROM wit_sllr000t WHERE service_item = A.category_id AND sllr_no = B.company_id) AS companyNm,
             B.REQ_DATE AS req_date,
@@ -102,7 +111,7 @@ FROM
     (SELECT REQ_NO, CATEGORY_ID 
      FROM request100t
      WHERE REQ_USER = #{reqUser}	
-     	<if test="reqNo != null">
+     <if test="reqNo != null">
 		AND A.REQ_NO = #{reqNo}
 	</if>
 	<if test="seq != null">
@@ -111,11 +120,17 @@ FROM
      GROUP BY REQ_NO, CATEGORY_ID) A
 LEFT JOIN 
     (SELECT REQ_NO, CATEGORY_ID, 
-            MIN(company_id) AS company_id, 
-            MIN(REQ_DATE) AS REQ_DATE, 
-             MIN(REQ_STATE) AS REQ_STATE
+            MAX(company_id) AS company_id, 
+            MAX(REQ_DATE) AS REQ_DATE, 
+             MAX(REQ_STATE) AS REQ_STATE
      FROM request100t
-      WHERE REQ_STATE in ('01','02')
+     WHERE REQ_USER = #{reqUser}	
+      <if test="reqNo != null">
+		AND A.REQ_NO = #{reqNo}
+	</if>
+	<if test="seq != null">
+		AND A.SEQ = #{seq}
+	</if>
      GROUP BY REQ_NO, CATEGORY_ID) B
 ON A.REQ_NO = B.REQ_NO 
 AND A.CATEGORY_ID = B.CATEGORY_ID
@@ -135,7 +150,7 @@ ORDER BY  B.REQ_DATE DESC, A.CATEGORY_ID
       ,COALESCE(B.estimate_amount, "") AS estimateAmount
       ,B.estimate_contents estimateContents
       ,(SELECT category_nm FROM category WHERE category_id = B.category_id) AS categoryNm 
-       ,(SELECT COMPANY_nm FROM company WHERE category_id = A.category_id AND company_id = B.company_id) AS companyNm
+       ,(SELECT store_name FROM wit_sllr000t WHERE service_item = A.category_id AND sllr_no = B.company_id) AS companyNm
        ,  CASE
             WHEN TIMESTAMPDIFF(SECOND, B.REQ_DATE, NOW()) <![CDATA[<=]]> 10 THEN '방금 전'
             WHEN TIMESTAMPDIFF(SECOND, B.REQ_DATE, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(SECOND, B.REQ_DATE, NOW()), '초 전')
@@ -162,7 +177,15 @@ ORDER BY  B.REQ_DATE DESC, A.CATEGORY_ID
 		      ,A.APT_NO   mainAptNo    
 		      ,(SELECT APT_NAME FROM apt000t WHERE APT_NO  = A.APT_NO ) mainAptNm
 		FROM prsn000t A
-		WHERE A.KAKAO_ID = #{kakaoId}	
+		WHERE 1=1
+	<if test="kakaoId != null and kakaoId != ''">
+		AND A.KAKAO_ID = #{kakaoId}	
+	</if>
+	<if test="clerkNo != null and clerkNo != ''">
+		AND A.CLERK_NO = #{clerkNo}
+	</if>
+	
+		
 	</select>
 	
 	<!--알림 리스트 조회 -->
@@ -178,7 +201,7 @@ ORDER BY  B.REQ_DATE DESC, A.CATEGORY_ID
 	<insert id="insertRequestInfo" parameterType="java.util.HashMap">
 	INSERT INTO request100t (
         req_no,
-        sllr_no,
+        company_id,
         category_id,
         APT_NO,
         req_gubun,
@@ -252,7 +275,7 @@ ORDER BY  B.REQ_DATE DESC, A.CATEGORY_ID
         REQ_NO,
         SEQ,
         END_DATE,
-        sllr_no,
+        company_id,
         category_id,
         req_user,
         req_date,
