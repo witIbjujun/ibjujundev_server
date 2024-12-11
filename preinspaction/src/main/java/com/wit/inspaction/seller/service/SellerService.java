@@ -153,5 +153,6 @@ public interface SellerService {
 	 * @return
 	 */
 	public int updateSellerBordInfo(HashMap<String, Object> param);
+	
 
 }

@@ -191,4 +191,5 @@ public class SellerServiceImpl implements SellerService{
 		
 		return sellerMapper.updateSellerBordInfo(param);
 	}
+
 }

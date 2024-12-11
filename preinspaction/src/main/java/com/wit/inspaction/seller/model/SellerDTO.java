@@ -2,32 +2,36 @@ package com.wit.inspaction.seller.model;
 
 public class SellerDTO {
 
-	private int sllrNo;					// 판매자번호
-	private String storeName;
-	private String endDate;
-	private String serviceArea;
-	private String serviceItem;
-	private String categoryNm;
-	private String itemPrice1;
-	private String itemPrice2;
-	private String itemPrice3;
-	private String sllrContent;
-	private String sllrImage;
-    private String name;
-    private String ceoName;
-    private String email;
-    private String storeCode;
-    private String storeImage;
-    private String hp;
-    private String zipCode;
-    private String address1;
-    private String address2;
-    private String reqCnt;
-    private String ingCnt;
-    private String rate;
-    private String clerkNo;
-    private String bordNo;
-    private String bordType;
+	private int sllrNo;					// 업체번호
+	private String storeName;           // 업체명
+	private String endDate;             // endDate
+	private String serviceArea;         // 지역
+	private String serviceAreaNm;       // 지역명
+	private String serviceItem;	        // 품목코드
+	private String categoryNm;          // 품목명 
+	private String itemPrice1;          // 가격1
+	private String sllrContent;         // 판매자 설명
+	private String sllrImage;           // 이미지
+    private String name;                // 성명
+    private String ceoName;             // CEO명
+    private String email;               // 이메일
+    private String storeCode;           // 사업자번호
+    private String storeImage;          // 사업자 인증 이미지
+    private String hp;                  // 전화번호  
+    private String zipCode;             // 우편번호
+    private String address1;            // 주소
+    private String address2;            // 상세주소
+    private String reqCnt;              // 요청받은 건수
+    private String ingCnt;              // 진행중 건수
+    private String rate;                // 별점 
+    private String clerkNo;             // 입주전 가입자 번호 
+    private String bordNo;              // 게시판번호
+    private String bordType;            // 게시판타입 C1 : 업체후기
+    private String openDate;            // 개업일자
+    private String asGbn;               // AS 구분
+    private String asGbnNm;             // AS 구분명
+    private String bizCertification;    // 사업자인증 상태
+    private String bizCertificationNm;  // 사업자인증 상태명
     
 	/**
 	 * @return the sllrNo
@@ -78,6 +82,18 @@ public class SellerDTO {
 		this.serviceArea = serviceArea;
 	}
 	/**
+	 * @return the serviceAreaNm
+	 */
+	public String getServiceAreaNm() {
+		return serviceAreaNm;
+	}
+	/**
+	 * @param serviceAreaNm the serviceAreaNm to set
+	 */
+	public void setServiceAreaNm(String serviceAreaNm) {
+		this.serviceAreaNm = serviceAreaNm;
+	}
+	/**
 	 * @return the serviceItem
 	 */
 	public String getServiceItem() {
@@ -112,30 +128,6 @@ public class SellerDTO {
 	 */
 	public void setItemPrice1(String itemPrice1) {
 		this.itemPrice1 = itemPrice1;
-	}
-	/**
-	 * @return the itemPrice2
-	 */
-	public String getItemPrice2() {
-		return itemPrice2;
-	}
-	/**
-	 * @param itemPrice2 the itemPrice2 to set
-	 */
-	public void setItemPrice2(String itemPrice2) {
-		this.itemPrice2 = itemPrice2;
-	}
-	/**
-	 * @return the itemPrice3
-	 */
-	public String getItemPrice3() {
-		return itemPrice3;
-	}
-	/**
-	 * @param itemPrice3 the itemPrice3 to set
-	 */
-	public void setItemPrice3(String itemPrice3) {
-		this.itemPrice3 = itemPrice3;
 	}
 	/**
 	 * @return the sllrContent
@@ -340,6 +332,66 @@ public class SellerDTO {
 	 */
 	public void setBordType(String bordType) {
 		this.bordType = bordType;
+	}
+	/**
+	 * @return the openDate
+	 */
+	public String getOpenDate() {
+		return openDate;
+	}
+	/**
+	 * @param openDate the openDate to set
+	 */
+	public void setOpenDate(String openDate) {
+		this.openDate = openDate;
+	}
+	/**
+	 * @return the asGbn
+	 */
+	public String getAsGbn() {
+		return asGbn;
+	}
+	/**
+	 * @param asGbn the asGbn to set
+	 */
+	public void setAsGbn(String asGbn) {
+		this.asGbn = asGbn;
+	}
+	/**
+	 * @return the asGbnNm
+	 */
+	public String getAsGbnNm() {
+		return asGbnNm;
+	}
+	/**
+	 * @param asGbnNm the asGbnNm to set
+	 */
+	public void setAsGbnNm(String asGbnNm) {
+		this.asGbnNm = asGbnNm;
+	}
+	/**
+	 * @return the bizCertification
+	 */
+	public String getBizCertification() {
+		return bizCertification;
+	}
+	/**
+	 * @param bizCertification the bizCertification to set
+	 */
+	public void setBizCertification(String bizCertification) {
+		this.bizCertification = bizCertification;
+	}
+	/**
+	 * @return the bizCertificationNm
+	 */
+	public String getBizCertificationNm() {
+		return bizCertificationNm;
+	}
+	/**
+	 * @param bizCertificationNm the bizCertificationNm to set
+	 */
+	public void setBizCertificationNm(String bizCertificationNm) {
+		this.bizCertificationNm = bizCertificationNm;
 	}
 
 

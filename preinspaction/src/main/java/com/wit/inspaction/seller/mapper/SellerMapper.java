@@ -225,4 +225,5 @@ public class SellerMapper {
 		return sql.update(path + "updateSellerBordInfo", param);
 	}
 
+
 }
