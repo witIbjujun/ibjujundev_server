@@ -221,13 +221,14 @@ public class UserController {
 	    String categoryId = param.get("categoryId") == null ? "" : (String) param.get("categoryId");
 	    String reqGubun = param.get("reqGubun") == null ? "" : (String) param.get("reqGubun");
 	    String aptNo = param.get("aptNo") == null ? "1" : (String) param.get("aptNo").toString();
+	    String reqContents = param.get("reqContents") == null ? "" : (String) param.get("reqContents");
 	    
 	    String reqState = "01";
-	    String reqContents = "요청드립니다.";
 	    logger.info("aptNo:: " + aptNo);
 	    logger.info("categoryId 11111:: " + categoryId);
 	    logger.info("reqGubun :: " + reqGubun);
 	    logger.info("reqUser :: " + reqUser);
+	    logger.info("reqContents :: " + reqContents);
 
 	    // companyIds 배열 추출
 	    List<String> companyIds = param.get("companyIds") != null ? (List<String>) param.get("companyIds") : new ArrayList<>();
@@ -241,6 +242,7 @@ public class UserController {
 	    paramMap.put("reqState", reqState);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("reqContents", reqContents);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("aptNo", aptNo);  // 선택된 회사 ID 배열 추가
+	    paramMap.put("reqContents", reqContents);  // 선택된 회사 ID 배열 추가
 		
 	    int result = userService.saveRequestInfo(paramMap);
 		
@@ -261,11 +263,12 @@ public class UserController {
 	    String reqUser = param.get("reqUser") == null ? "" : (String) param.get("reqUser");
 	    String reqGubun = param.get("reqGubun") == null ? "" : (String) param.get("reqGubun");
 	    String aptNo = param.get("aptNo") != null ? param.get("aptNo").toString() : "";
+	    String reqContents = param.get("reqContents") == null ? "" : (String) param.get("reqContents");
 	    String reqState = "01";
-	    String reqContents = "요청드립니다.";
 	    logger.info("reqGubun :: " + reqGubun);
 	    logger.info("reqUser :: " + reqUser);
 	    logger.info("aptNo11111 :: " + aptNo);
+	    logger.info("reqContents :: " + reqContents);
 
 	    // companyIds 배열 추출
 	    List<String> categoryIds = param.get("categoryIds") != null ? (List<String>) param.get("categoryIds") : new ArrayList<>();
