@@ -194,7 +194,7 @@
 	</update>
 
 	<!-- 판매자 프로필 조회 -->
-	<select id="selectSellerInfo" parameterType="int" resultType="SellerDTO">
+	<select id="selectSellerInfo" parameterType="java.util.HashMap" resultType="SellerDTO">
 		SELECT sllr_no AS sllrNo
 		       , store_name AS storeName
 		       , end_date AS endDate
