@@ -176,30 +176,20 @@ public class QuestionController {
 	@PostMapping("/wit/deleteQuestionInfo")
 	public ResponseEntity<?> deleteQuestionInfo(@RequestBody HashMap<String, Object> paramMap) {
     	
-		// 질문 코드
-		String qustCd = (String) paramMap.get("qustCd") == null ? "" : (String) paramMap.get("qustCd");
-		// 옵션 코드
-		String opCd = (String) paramMap.get("opCd") == null ? "" : (String) paramMap.get("opCd");
 		// 등록자
 		String userId = (String) paramMap.get("userId") == null ? "" : (String) paramMap.get("userId");
+		// 순번
+		String seq = (String) paramMap.get("seq") == null ? "" : (String) paramMap.get("seq");
 		// 결과코드
 		int deleteResult = 0;
 		
-		String[] opCdList = opCd.split(",");
+		// 삭제 파라미터
+		HashMap<String, Object> delMap = new HashMap<String, Object>();
+		delMap.put("seq", seq);
+		delMap.put("userId", userId);
 		
-		for (int idx = 0; idx < opCdList.length; idx++) {
-			// 삭제 파라미터
-			HashMap<String, Object> delMap = new HashMap<String, Object>();
-			delMap.put("qustCd", qustCd);
-			delMap.put("opCd", opCdList[idx]);
-			delMap.put("userId", userId);
-			
-			// 기존 질문 삭제 (한번만) 
-			if (idx == 0) {
-				deleteResult = questionService.deleteQuestionInfo(delMap);
-				System.out.println("삭제 ::: " + deleteResult);
-			}
-		}
+		deleteResult = questionService.deleteQuestionInfoBySeq(delMap);
+		System.out.println("삭제 ::: " + deleteResult);
 		
 		// 결과값 저장 MAP
 		Map<String, Object> resultMap = new HashMap<String, Object>();

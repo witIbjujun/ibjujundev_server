@@ -61,6 +61,16 @@ public class QuestionServiceImpl implements QuestionService{
 	public int deleteQuestionInfo(HashMap<String, Object> param) {
 		return questionMapper.deleteQuestionInfo(param);
 	}
+	
+	/**
+	 * 질문 삭제
+	 * @param param
+	 * @return int
+	 */
+	@Override
+	public int deleteQuestionInfoBySeq(HashMap<String, Object> param) {
+		return questionMapper.deleteQuestionInfoBySeq(param);
+	}
 
 	/**
 	 * 저장 질문 조회

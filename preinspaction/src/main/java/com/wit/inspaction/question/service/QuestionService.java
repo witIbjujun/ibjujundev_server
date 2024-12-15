@@ -41,6 +41,13 @@ public interface QuestionService {
 	 * @return int
 	 */
 	public int deleteQuestionInfo(HashMap<String, Object> param);
+	
+	/**
+	 * 질문 삭제
+	 * @param param
+	 * @return int
+	 */
+	public int deleteQuestionInfoBySeq(HashMap<String, Object> param);
 
 	/**
 	 * 저장 질문 조회

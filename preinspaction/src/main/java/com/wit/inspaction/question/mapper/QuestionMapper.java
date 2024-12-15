@@ -59,6 +59,15 @@ public class QuestionMapper {
 	public int deleteQuestionInfo(HashMap<String, Object> param) {
 		return sql.delete(path + "deleteQuestionInfo", param);
 	}
+	
+	/**
+	 * 질문 삭제
+	 * @param param
+	 * @return int
+	 */
+	public int deleteQuestionInfoBySeq(HashMap<String, Object> param) {
+		return sql.delete(path + "deleteQuestionInfoBySeq", param);
+	}
 
 	/**
 	 * 저장 질문 조회

@@ -16,7 +16,7 @@
 			, QUST_TYPE AS qustType
 			, REM AS rem
 		FROM
-			WIT.WIT_QUST100T
+			wit_qust100t
 		WHERE QUST_CD = #{qustCd}
 		AND END_DATE = '99991231'
 	</select>
@@ -31,7 +31,7 @@
 			, OP_SUB_TITLE AS opSubTitle
 			, OP_CONTENTS AS opContents
 		FROM
-			WIT.WIT_QUST110T
+			wit_qust110t
 		WHERE OP_CD = #{opCd}
 		AND END_DATE = '99991231'
 		ORDER BY OP_SEQ ASC
@@ -39,7 +39,7 @@
 
 	<!-- 질문 저장 -->
 	<insert id="saveQuestionInfo" parameterType="java.util.HashMap">
-		INSERT INTO WIT.WIT_QUST200T
+		INSERT INTO wit_qust200t
 		(
 			  QUST_CD
 			, OP_CD
@@ -57,7 +57,7 @@
 			, #{userId}
 			, (SELECT 
 				IFNULL(COUNT(S.QUST_CD), 0) 
-			  FROM WIT.WIT_QUST200T S
+			  FROM wit_qust200t S
 			   WHERE S.USER_ID = #{userId})
 			, #{userId}
 			, NOW()
@@ -66,10 +66,17 @@
 	
 	<!-- 질문 삭제 -->
 	<delete id="deleteQuestionInfo" parameterType="java.util.HashMap">
-		DELETE FROM WIT.WIT_QUST200T
+		DELETE FROM wit_qust200t
 		WHERE QUST_CD = #{qustCd}
 		AND OP_CD = #{opCd}
 		AND USER_ID = #{userId}
+	</delete>
+	
+	<!-- 질문 삭제 -->
+	<delete id="deleteQuestionInfoBySeq" parameterType="java.util.HashMap">
+		DELETE FROM wit_qust200t
+		WHERE USER_ID = #{userId}
+		AND SEQ >= #{seq}
 	</delete>
 	
 	<!-- 저장 질문 조회 -->
@@ -82,8 +89,8 @@
 		    , B.QUST_TYPE AS qustType
 		    , B.REM AS rem
 		FROM
-			  WIT.WIT_QUST200T A
-		    , WIT.WIT_QUST100T B
+			  wit_qust200t A
+		    , wit_qust100t B
 		WHERE A.USER_ID = #{userId}
 		AND B.QUST_CD = A.QUST_CD
 		AND B.END_DATE = '99991231'
@@ -97,8 +104,8 @@
 			  B.OP_CD AS opCd
 			, GROUP_CONCAT(B.OP_SEQ) AS opSeq
 		FROM
-			  WIT.WIT_QUST200T A
-		    , WIT.WIT_QUST110T B
+			  wit_qust200t A
+		    , wit_qust110t B
 		WHERE A.USER_ID = #{userId}
 		AND B.OP_CD = A.OP_CD
 		AND B.OP_SEQ = A.OP_SEQ
@@ -109,7 +116,7 @@
 	
 	<!-- 질문 삭제 -->
 	<delete id="deleteQuestionInfoByAll" parameterType="java.util.HashMap">
-		DELETE FROM WIT.WIT_QUST200T
+		DELETE FROM wit_qust200t
 		WHERE USER_ID = #{userId}
 	</delete>
 	
