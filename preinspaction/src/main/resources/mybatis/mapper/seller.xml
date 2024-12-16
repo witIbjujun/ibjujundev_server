@@ -276,7 +276,8 @@
 		FROM   wit_sllr000t
 		WHERE  BIZ_CERTIFICATION IS NOT NULL
 		<if test="storeName !=null and !storeName.equals('')">
-			AND A.STORE_NAME = #{storeName}
+			AND STORE_NAME LIKE CONCAT('%', #{storeName}, '%')
+			
 		</if>
 	</select>
 
