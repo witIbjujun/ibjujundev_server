@@ -10,6 +10,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wit.inspaction.board.service.BoardService;
+import com.wit.inspaction.board.service.BoardServiceImpl;
 import com.wit.inspaction.preinspaction.PreinspactionController;
 import com.wit.inspaction.seller.model.CashDTO;
 import com.wit.inspaction.seller.model.CashHistoryDTO;
@@ -33,6 +39,9 @@ public class SellerController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private BoardServiceImpl boardServiceImpl;
 
 	/**
 	 * 견적리스트 조회
@@ -215,13 +224,45 @@ public class SellerController {
 	 * 사업자 정보 수정
 	 * @param param
 	 * @return int
+	 * @throws JsonProcessingException 
+	 * @throws JsonMappingException 
 	 */
 	@PostMapping("/wit/updateSellerInfo")
-    public int updateSellerInfo(@RequestBody HashMap<String, Object> param) {
+    public int updateSellerInfo(@RequestBody HashMap<String, Object> param) throws Exception {
 
 		System.out.println("updateSellerInfo 호출");
 
 		int result = sellerService.updateSellerInfo(param);
+		
+		if (result > 0) {
+			
+			// 파일 Json
+			String fileJson = (String) param.get("fileInfo") == null ? "" : (String) param.get("fileInfo");
+
+			System.out.println("게시판 fileInfo ::: " + param.get("fileInfo"));
+			
+			// JSON 문자열을 List<HashMap<String, Object>>로 변환
+			
+			if(!fileJson.isEmpty()) {
+				ObjectMapper objectMapper = new ObjectMapper();
+				List<HashMap<String, Object>> fileList = objectMapper.readValue(fileJson, new TypeReference<List<HashMap<String, Object>>>(){});
+				
+				// 파일 저장
+				for (int i = 0; i < fileList.size(); i++) {
+					
+					HashMap<String, Object> fileInfo = fileList.get(i);
+					fileInfo.put("bizCd", "SR01");
+					fileInfo.put("bizKey", param.get("sllrNo"));
+					fileInfo.put("fileType", "01");
+					fileInfo.put("creUser", "테스트");
+					
+					int fileResult = boardServiceImpl.saveFileInfo(fileInfo);
+					
+					System.out.println("파일 등록 ::: " + fileResult);
+				}
+			}
+			
+		}
 
         return result;
     }

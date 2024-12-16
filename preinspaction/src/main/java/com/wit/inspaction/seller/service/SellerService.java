@@ -3,6 +3,8 @@ package com.wit.inspaction.seller.service;
 import java.util.HashMap;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.wit.inspaction.seller.model.CashDTO;
 import com.wit.inspaction.seller.model.CashHistoryDTO;
 import com.wit.inspaction.seller.model.CashRechargeSetDTO;
@@ -15,6 +17,7 @@ import com.wit.inspaction.seller.model.SellerSendDTO;
 /**
  * 사전점검 서비스
  */
+@Service
 public interface SellerService {
 
 	/**
