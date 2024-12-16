@@ -224,6 +224,27 @@ public class SellerMapper {
 		
 		return sql.update(path + "updateSellerBordInfo", param);
 	}
+	
+	/**
+	 * 사업자 인증 상태 수정
+	 * @param param
+	 * @return
+	 */
+	public int updateBizCertification(HashMap<String, Object> param) {
+		System.out.println("############# updateBizCertification : " + param);
+		
+		return sql.update(path + "updateBizCertification", param);
+	}
+	
+	/**
+	 * 사업자 목록 조회
+	 * @param param
+	 * @return
+	 */
+	public List<SellerDTO> selectSellerList(HashMap<String, Object> param) {
+		System.out.println("############# selectSellerList : " + param);
+		return sql.selectList(path + "selectSellerList", param);
+	}
 
 
 }

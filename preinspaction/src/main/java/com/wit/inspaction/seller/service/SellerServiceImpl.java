@@ -192,4 +192,18 @@ public class SellerServiceImpl implements SellerService{
 		return sellerMapper.updateSellerBordInfo(param);
 	}
 
+	@Override
+	public int updateBizCertification(HashMap<String, Object> param) {
+		System.out.println("SellerServiceImpl updateBizCertification 호출");
+		
+		return sellerMapper.updateBizCertification(param);
+	}
+
+	@Override
+	public List<SellerDTO> getSellerList(HashMap<String, Object> param) {
+		System.out.println("SellerServiceImpl getSellerList 호출");
+
+		return sellerMapper.selectSellerList(param);
+	}
+
 }

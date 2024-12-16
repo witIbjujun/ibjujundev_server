@@ -32,7 +32,7 @@ public class SellerDTO {
     private String asGbnNm;             // AS 구분명
     private String bizCertification;    // 사업자인증 상태
     private String bizCertificationNm;  // 사업자인증 상태명
-    
+    private String bizCertificationDate;    // 사업자인증 요청일
 	/**
 	 * @return the sllrNo
 	 */
@@ -393,6 +393,17 @@ public class SellerDTO {
 	public void setBizCertificationNm(String bizCertificationNm) {
 		this.bizCertificationNm = bizCertificationNm;
 	}
-
+	/**
+	 * @return the bizCertificationDate
+	 */
+	public String getBizCertificationDate() {
+		return bizCertificationDate;
+	}
+	/**
+	 * @param bizCertificationDate the bizCertificationDate to set
+	 */
+	public void setBizCertificationDate(String bizCertificationDate) {
+		this.bizCertificationDate = bizCertificationDate;
+	}
 
 }

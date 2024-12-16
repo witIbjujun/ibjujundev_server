@@ -196,6 +196,20 @@ public class SellerController {
 
         return sellerDTO;
     }
+	
+	/**
+	 * 사업자 목록 조회
+	 * @return List<EstimateRequestDTO>
+	 */
+	@PostMapping("/wit/getSellerList")
+    public List<SellerDTO> getSellerList(@RequestBody HashMap<String, Object> param) {
+
+		System.out.println("getSellerList 호출");
+
+		List<SellerDTO> sellerList = sellerService.getSellerList(param);
+
+        return sellerList;
+    }
 
 	/**
 	 * 사업자 정보 수정
@@ -386,6 +400,20 @@ public class SellerController {
         return codeList;
     }
 	
+	/**
+	 * 사업자 인증 상태 수정
+	 * @param param
+	 * @return int
+	 */
+	@PostMapping("/wit/updateBizCertification")
+    public int updateBizCertification(@RequestBody HashMap<String, Object> param) {
+
+		System.out.println("updateBizCertification 호출");
+
+		int result = sellerService.updateBizCertification(param);
+
+        return result;
+    }
 
 
 }
