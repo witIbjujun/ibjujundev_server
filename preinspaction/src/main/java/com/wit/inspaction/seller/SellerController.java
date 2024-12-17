@@ -14,7 +14,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wit.inspaction.board.service.BoardService;
+import com.wit.inspaction.board.model.BoardDTO;
 import com.wit.inspaction.board.service.BoardServiceImpl;
 import com.wit.inspaction.preinspaction.PreinspactionController;
 import com.wit.inspaction.seller.model.CashDTO;
@@ -122,7 +122,7 @@ public class SellerController {
 	 * @return int
 	 */
 	@PostMapping("/wit/updateEstimateInfo")
-    public int  updateEstimateInfo(@RequestBody HashMap<String, Object> param) {
+    public int  updateEstimateInfo(@RequestBody HashMap<String, Object> param) throws Exception {
 
 		System.out.println("updateEstimateInfo 호출");
 
@@ -163,6 +163,36 @@ public class SellerController {
 
 			// 캐시 정보 수정
 			result = sellerService.updateCashInfo(param);
+			
+			if (result > 0) {
+				
+				// 파일 Json
+				String fileJson = (String) param.get("fileInfo") == null ? "" : (String) param.get("fileInfo");
+
+				System.out.println("게시판 fileInfo ::: " + param.get("fileInfo"));
+				
+				// JSON 문자열을 List<HashMap<String, Object>>로 변환
+				
+				if(!fileJson.isEmpty()) {
+					ObjectMapper objectMapper = new ObjectMapper();
+					List<HashMap<String, Object>> fileList = objectMapper.readValue(fileJson, new TypeReference<List<HashMap<String, Object>>>(){});
+					
+					// 파일 저장
+					for (int i = 0; i < fileList.size(); i++) {
+						
+						HashMap<String, Object> fileInfo = fileList.get(i);
+						fileInfo.put("bizCd", "RQ01");
+						fileInfo.put("bizKey", reqNo + "^" + seq);
+						fileInfo.put("fileType", "01");
+						fileInfo.put("creUser", "테스트");
+						
+						int fileResult = boardServiceImpl.saveFileInfo(fileInfo);
+						
+						System.out.println("파일 등록 ::: " + fileResult);
+					}
+				}
+				
+			}
 		}
 
         return result;
@@ -456,5 +486,19 @@ public class SellerController {
         return result;
     }
 
+	/**
+	 * 판매자 이미지 목록 조회
+	 * @return List<BoardDTO>
+	 */
+	@PostMapping("/wit/getSellerDetailImageList")
+    public List<BoardDTO> getSellerDetailImageList(@RequestBody HashMap<String, Object> param) {
 
+		System.out.println("getSellerDetailImageList 호출");
+
+		List<BoardDTO> sellerDetailImageList = sellerService.getSellerDetailImageList(param);
+
+		System.out.println("판매자 이미지 목록 조회 ::: " + sellerDetailImageList.size());
+
+        return sellerDetailImageList;
+    }
 }

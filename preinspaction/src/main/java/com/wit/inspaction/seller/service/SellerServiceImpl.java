@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.wit.inspaction.board.model.BoardDTO;
 import com.wit.inspaction.seller.mapper.SellerMapper;
 import com.wit.inspaction.seller.model.CashDTO;
 import com.wit.inspaction.seller.model.CashHistoryDTO;
@@ -204,6 +205,13 @@ public class SellerServiceImpl implements SellerService{
 		System.out.println("SellerServiceImpl getSellerList 호출");
 
 		return sellerMapper.selectSellerList(param);
+	}
+
+	@Override
+	public List<BoardDTO> getSellerDetailImageList(HashMap<String, Object> param) {
+		System.out.println("SellerServiceImpl getSellerDetailImageList 호출");
+
+		return sellerMapper.selectSellerDetailImageList(param);
 	}
 
 }

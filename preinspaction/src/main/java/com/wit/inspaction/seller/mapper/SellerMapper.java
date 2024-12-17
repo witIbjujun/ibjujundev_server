@@ -7,6 +7,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.wit.inspaction.board.model.BoardDTO;
 import com.wit.inspaction.seller.model.CashDTO;
 import com.wit.inspaction.seller.model.CashHistoryDTO;
 import com.wit.inspaction.seller.model.CashRechargeSetDTO;
@@ -244,6 +245,16 @@ public class SellerMapper {
 	public List<SellerDTO> selectSellerList(HashMap<String, Object> param) {
 		System.out.println("############# selectSellerList : " + param);
 		return sql.selectList(path + "selectSellerList", param);
+	}
+	
+	/**
+	 * 판매자 이미지 목록 조회
+	 * @param param
+	 * @return
+	 */
+	public List<BoardDTO> selectSellerDetailImageList(HashMap<String, Object> param) {
+		System.out.println("############# selectSellerDetailImageList : " + param);
+		return sql.selectList(path + "selectSellerDetailImageList", param);
 	}
 
 

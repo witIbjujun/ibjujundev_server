@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.wit.inspaction.board.model.BoardDTO;
 import com.wit.inspaction.seller.model.CashDTO;
 import com.wit.inspaction.seller.model.CashHistoryDTO;
 import com.wit.inspaction.seller.model.CashRechargeSetDTO;
@@ -170,6 +171,13 @@ public interface SellerService {
 	 * @return
 	 */
 	public List<SellerDTO> getSellerList(HashMap<String, Object> param);
+	
+	/**
+	 * 판매자 이미지 목록 조회
+	 * @param param
+	 * @return
+	 */
+	public List<BoardDTO> getSellerDetailImageList(HashMap<String, Object> param);
 	
 
 }

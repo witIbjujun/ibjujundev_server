@@ -215,7 +215,7 @@
 		       , ceo_name AS ceoName
 		       , email AS email
 		       , store_code AS storeCode
-		       , store_image AS storeImage
+		       , (SELECT CONCAT(B.FILE_LOC, B.FILE_ID) FROM wit_file000t B WHERE BIZ_CD = 'SR01' AND BIZ_KEY = SLLR_NO LIMIT 1 ) AS storeImage
 		       , hp AS hp
 		       , zip_code AS zipCode
 		       , address1 AS address1
@@ -235,7 +235,7 @@
 		WHERE  SLLR_NO = #{sllrNo}
 	</select>
 	
-	<!-- 판매자 프로필 조회 -->
+	<!-- 판매자 프로필 목록 조회 -->
 	<select id="selectSellerList" parameterType="java.util.HashMap" resultType="SellerDTO">
 		SELECT sllr_no AS sllrNo
 		       , store_name AS storeName
@@ -251,7 +251,7 @@
 		       , ceo_name AS ceoName
 		       , email AS email
 		       , store_code AS storeCode
-		       , store_image AS storeImage
+		       , (SELECT CONCAT(B.FILE_LOC, B.FILE_ID) FROM wit_file000t B WHERE BIZ_CD = 'SR01' AND BIZ_KEY = SLLR_NO LIMIT 1 ) AS storeImage
 		       , hp AS hp
 		       , zip_code AS zipCode
 		       , address1 AS address1
@@ -279,6 +279,8 @@
 			AND STORE_NAME LIKE CONCAT('%', #{storeName}, '%')
 			
 		</if>
+		ORDER BY  (CASE WHEN BIZ_CERTIFICATION = '01' THEN 0 ELSE 1 END),
+                  BIZ_CERTIFICATION_DATE ASC
 	</select>
 
 	<!-- 캐시정보 조회 -->
@@ -554,6 +556,16 @@
             #{item}
         </foreach>
 		AND    APPL_EN_DATE = '99991231235959'
+	</select>
+	
+	<!-- 판매자 이미지 조회 -->
+	<select id="selectSellerDetailImageList" parameterType="java.util.HashMap" resultType="BoardDTO">
+		SELECT 
+			CONCAT(S.FILE_LOC, S.FILE_ID) AS imagePath
+		FROM wit_file000t S
+		WHERE S.BIZ_CD = #{bizCd}
+		AND S.BIZ_KEY = #{bizKey}
+		ORDER BY S.FILE_SEQ
 	</select>
 
 </mapper>
