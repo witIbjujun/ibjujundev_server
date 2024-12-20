@@ -123,6 +123,23 @@ public class UserServiceImpl implements UserService{
 	    // 총 삽입된 건수 반환
 	    return insertCount;
 	}
+	@Override
+	public int userCheckCount(HashMap<String, Object> paramMap) {
+		
+		 int userCount = userMapper.userCheckCount(paramMap);
+		
+		return userCount;
+	}
+	
+	@Override
+	public int insertUserInfo(HashMap<String, Object> paramMap) {
+		
+		
+		 int userCount = userMapper.insertUserInfo(paramMap);
+		
+		// 총 삽입된 건수 반환
+		return userCount;
+	}
 	
 	@Override
 	public int updateRequestState(HashMap<String, Object> paramMap) {

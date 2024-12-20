@@ -82,6 +82,38 @@ public class UserController {
     }
 	
 	/**
+	 * 아파트 목록
+	 * @param param
+	 * @return List<UserDTO>
+	 */
+	@RequestMapping("/wit/getAptList")
+	public UserDTO getAptList(@RequestBody HashMap<String, Object> param) {
+		logger.info("getAptList 호출");
+		
+		HashMap<String, Object> apmMap = new HashMap<String, Object>();
+		apmMap.put("gubun", "N");
+		
+		List<Map<String, String>> aptList = userService.getAptList(apmMap);
+		
+		UserDTO userInfo = new UserDTO();
+
+		 logger.info("아파트 이름 ::: " + aptList.size());
+		 List<String> aptNoList = new ArrayList<>();
+         List<String> aptNameList = new ArrayList<>();
+       for (Map<String, String> apt : aptList) {
+           aptNoList.add(apt.get("aptNo"));
+           aptNameList.add(apt.get("aptName"));
+           logger.info("아파트 이름 ::: " + apt.get("aptName"));
+           
+       }
+       userInfo.setAptNo(aptNoList);
+       userInfo.setAptName(aptNameList);
+
+		
+		return userInfo;
+	}
+	
+	/**
 	 * 회사 목록
 	 * @param param
 	 * @return List<UserDTO>
@@ -107,6 +139,31 @@ public class UserController {
 	
 	
 	/**
+	 * 사용자 정보조회
+	 * @param param
+	 * @return List<UserDTO>
+	 */
+	@RequestMapping("/wit/getChckUserInfo")
+	public int getChckUserInfo(@RequestBody HashMap<String, Object> param) {
+		logger.info("getChckUserInfo 호출");
+		
+		// 파라미터
+		String kakaoId = param.get("kakaoId") == null ? "" : (String) param.get("kakaoId");
+		logger.info("kakaoId :: " + kakaoId);
+		
+		HashMap<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("kakaoId", kakaoId);
+		
+		int cnt = userService.userCheckCount(paramMap);
+		
+		logger.info("사용자 ::: " + cnt);
+		
+		return cnt;
+	}
+	
+	
+	
+	/**
 	 * 내정보 조회 
 	 * @param param
 	 * @return List<UserDTO>
@@ -117,21 +174,40 @@ public class UserController {
 		
 		// 파라미터
 		String kakaoId = param.get("kakaoId") == null ? "" : (String) param.get("kakaoId");
+		String nickName = param.get("nickName") == null ? "" : (String) param.get("nickName");
+		String profileImageUrl = param.get("profileImageUrl") == null ? "" : (String) param.get("profileImageUrl");
+		String email = param.get("email") == null ? "" : (String) param.get("email");
 		String clerkNo = param.get("clerkNo") == null ? "" : (String) param.get("clerkNo");
-		
+		String role = param.get("role") == null ? "user" : (String) param.get("role");
 		logger.info("kakaoId :: " + kakaoId);
+		logger.info("nickName :: " + nickName);
+		logger.info("profileImageUrl :: " + profileImageUrl);
+		logger.info("email :: " + email);
 		logger.info("clerkNo :: " + clerkNo);
+		logger.info("role :: " + role);
 		
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("kakaoId", kakaoId);
+		paramMap.put("nickName", nickName);
+		paramMap.put("profileImageUrl", profileImageUrl);
+		paramMap.put("email", email);
 		paramMap.put("clerkNo", clerkNo);
+		paramMap.put("role", role);
 		
+		int cnt = userService.userCheckCount(paramMap);
+		
+		if(cnt == 0 ) {
+			//계정생성
+			
+	      int userCnt = userService.insertUserInfo(paramMap);
+		}
+		  
 		UserDTO userInfo = userService.getUserInfo(paramMap);
 		
 		HashMap<String, Object> apmMap = new HashMap<String, Object>();
 		logger.info("clerkNo :: " + userInfo.getClerkNo());
 		apmMap.put("clerkNo", userInfo.getClerkNo());
-		
+		apmMap.put("gubun", "A");
 		List<Map<String, String>> aptList = userService.getAptList(apmMap);
 		 logger.info("아파트 이름 ::: " + aptList.size());
 		List<String> aptNoList = new ArrayList<>();

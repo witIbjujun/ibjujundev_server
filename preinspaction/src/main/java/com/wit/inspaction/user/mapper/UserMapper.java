@@ -123,6 +123,23 @@ public class UserMapper {
 	 * @param paramMap
 	 * @return int
 	 */
+	public int userCheckCount(HashMap<String, Object> paramMap) {
+		return sql.selectOne(path + "userCheckCount", paramMap);
+	}
+	
+	/**
+	 * 사전점검 항목 저장
+	 * @param paramMap
+	 * @return int
+	 */
+	public int insertUserInfo(HashMap<String, Object> paramMap) {
+		return sql.update(path + "insertUserInfo", paramMap);
+	}
+	/**
+	 * 사전점검 항목 저장
+	 * @param paramMap
+	 * @return int
+	 */
 	public int insertHistoryRequest(HashMap<String, Object> paramMap) {
 		return sql.update(path + "insertHistoryRequest", paramMap);
 	}

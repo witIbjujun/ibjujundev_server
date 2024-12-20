@@ -24,7 +24,6 @@ public interface UserService {
 	 */
 	public List<UserDTO> getCompanyList(HashMap<String, Object> paramMap);
 	
-	
 	/**
 	 * 신청이력조회 
 	 * @param paramMap
@@ -52,6 +51,21 @@ public interface UserService {
 	 * @return
 	 */
 	public UserDTO getUserInfo(HashMap<String, Object> paramMap);
+	
+	/**
+	 * 유저 등록 체크 
+	 * @param param
+	 * @return int
+	 */
+	public int userCheckCount(HashMap<String, Object> paramMap);
+	
+	/**
+	 * 유저 등록 체크 
+	 * @param param
+	 * @return int
+	 */
+	public int insertUserInfo(HashMap<String, Object> paramMap);
+	
 	
 	/**
 	 * 내정보 

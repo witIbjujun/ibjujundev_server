@@ -17,6 +17,12 @@
         WHERE  A.END_DATE = '99991231'
 	</select>
 	
+	<!-- 사전점검 항목 리스트 조회 -->
+	<select id="userCheckCount" parameterType="java.util.HashMap" resultType="int">
+		SELECT COUNT(CLERK_NO) CNT
+        FROM  prsn000t 
+        WHERE KAKAO_ID = #{kakaoId}
+	</select>
 	
 	<!-- 사전점검 상세항목 리스트 조회 -->
 	<select id="selectCompanyList" parameterType="java.util.HashMap" resultType="UserDTO">
@@ -193,8 +199,11 @@ ORDER BY  B.REQ_DATE DESC, A.CATEGORY_ID
 		SELECT APT_NO aptNo
 		       ,APT_NAME aptName
 		FROM apt000t 
-		WHERE CLERK_NO = #{clerkNo}	
-		AND END_DATE = '99991231'
+		WHERE END_DATE = '99991231'
+		 <if test="gubun == 'A'">
+		AND CLERK_NO = #{clerkNo}	
+		</if>
+	
 	</select>
 	
 	<!-- 사전점검 항목 저장 -->
@@ -298,6 +307,36 @@ ORDER BY  B.REQ_DATE DESC, A.CATEGORY_ID
         #{estimateContents}
                 
     )
+	</insert>
+	
+	<!-- 유저등록 -->
+	<insert id="insertUserInfo" parameterType="java.util.HashMap">
+		
+		 <selectKey keyProperty="clerkNo" resultType="String" order="BEFORE">
+        	SELECT IFNULL(MAX(CAST(CLERK_NO AS UNSIGNED)), 0) + 1
+        	FROM prsn000t
+  		  </selectKey>
+		INSERT INTO prsn000t (
+		    CLERK_NO, 
+		    KAKAO_ID, 
+		    ROLE, 
+		    NICK_NAME, 
+		    NAME, 
+		    END_DATE, 
+		    REG_DATE, 
+		    REG_USER, 
+		    imageUrl
+		) VALUES (
+		      #{clerkNo},
+		      #{kakaoId},
+		      #{role},
+		      #{nickName},
+		      #{name},
+		      '99991231',
+		      #{reqUser}, 
+		      SYSDATE(),  
+		      #{profileImageUrl}
+		)
 	</insert>
 	
 	
