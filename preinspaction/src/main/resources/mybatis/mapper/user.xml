@@ -199,11 +199,7 @@ ORDER BY  B.REQ_DATE DESC, A.CATEGORY_ID
 		SELECT APT_NO aptNo
 		       ,APT_NAME aptName
 		FROM apt000t 
-		WHERE END_DATE = '99991231'
-		 <if test="gubun == 'A'">
-		AND CLERK_NO = #{clerkNo}	
-		</if>
-	
+		WHERE END_DATE = '99991231'	
 	</select>
 	
 	<!-- 사전점검 항목 저장 -->
