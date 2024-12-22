@@ -80,6 +80,16 @@ public class UserServiceImpl implements UserService{
 		return aptList;
 	}
 	
+	@Override
+	public List<Map<String, String>> getMyAptList(HashMap<String, Object> paramMap) {
+		
+		logger.info("UserServiceImpl getMyAptList 호출");
+		
+		List<Map<String, String>> aptList = userMapper.selectMyAptList(paramMap);
+		
+		return aptList;
+	}
+	
 	
 	@Override
 	public List<UserDTO> getRequesDetailtList(HashMap<String, Object> paramMap) {

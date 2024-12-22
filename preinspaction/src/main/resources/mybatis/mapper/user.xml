@@ -21,7 +21,13 @@
 	<select id="userCheckCount" parameterType="java.util.HashMap" resultType="int">
 		SELECT COUNT(CLERK_NO) CNT
         FROM  prsn000t 
-        WHERE KAKAO_ID = #{kakaoId}
+        WHERE 1=1
+        <if test="kakaoId != null and kakaoId != ''">
+		AND KAKAO_ID = #{kakaoId}	
+		</if>
+		<if test="clerkNo != null and clerkNo != ''">
+		AND CLERK_NO = #{clerkNo}
+		</if>
 	</select>
 	
 	<!-- 사전점검 상세항목 리스트 조회 -->
@@ -202,6 +208,16 @@ ORDER BY  B.REQ_DATE DESC, A.CATEGORY_ID
 		WHERE END_DATE = '99991231'	
 	</select>
 	
+	<!--알림 리스트 조회 -->
+	<select id="selectMyAptList" parameterType="java.util.HashMap" resultType="java.util.Map">
+		SELECT a.APT_NO aptNo
+		       ,a.APT_NAME aptName
+		FROM apt000t a , prsn000t b
+		WHERE a.APT_NO = b.APT_NO
+        AND  b.clerk_no = #{clerkNo}
+        AND  a.END_DATE = '99991231'
+	</select>
+	
 	<!-- 사전점검 항목 저장 -->
 	<insert id="insertRequestInfo" parameterType="java.util.HashMap">
 	INSERT INTO request100t (
@@ -318,6 +334,7 @@ ORDER BY  B.REQ_DATE DESC, A.CATEGORY_ID
 		    ROLE, 
 		    NICK_NAME, 
 		    NAME, 
+		    APT_NO,
 		    END_DATE, 
 		    REG_DATE, 
 		    REG_USER, 
@@ -328,13 +345,13 @@ ORDER BY  B.REQ_DATE DESC, A.CATEGORY_ID
 		      #{role},
 		      #{nickName},
 		      #{name},
+		      #{aptNo},
 		      '99991231',
 		      #{reqUser}, 
 		      SYSDATE(),  
 		      #{profileImageUrl}
 		)
 	</insert>
-	
 	
 	<!-- 사전점검 항목 저장 -->
 	<insert id="insertTotalRequestInfo" parameterType="java.util.HashMap">

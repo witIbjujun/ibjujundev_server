@@ -179,12 +179,15 @@ public class UserController {
 		String email = param.get("email") == null ? "" : (String) param.get("email");
 		String clerkNo = param.get("clerkNo") == null ? "" : (String) param.get("clerkNo");
 		String role = param.get("role") == null ? "user" : (String) param.get("role");
+		String aptNo = param.get("aptNo") == null ? "" : (String) param.get("aptNo");
+		
 		logger.info("kakaoId :: " + kakaoId);
 		logger.info("nickName :: " + nickName);
 		logger.info("profileImageUrl :: " + profileImageUrl);
 		logger.info("email :: " + email);
 		logger.info("clerkNo :: " + clerkNo);
 		logger.info("role :: " + role);
+		logger.info("aptNo :: " + aptNo);
 		
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("kakaoId", kakaoId);
@@ -193,6 +196,7 @@ public class UserController {
 		paramMap.put("email", email);
 		paramMap.put("clerkNo", clerkNo);
 		paramMap.put("role", role);
+		paramMap.put("aptNo", aptNo);
 		
 		int cnt = userService.userCheckCount(paramMap);
 		
@@ -208,7 +212,7 @@ public class UserController {
 		logger.info("clerkNo :: " + userInfo.getClerkNo());
 		apmMap.put("clerkNo", userInfo.getClerkNo());
 		apmMap.put("gubun", "A");
-		List<Map<String, String>> aptList = userService.getAptList(apmMap);
+		List<Map<String, String>> aptList = userService.getMyAptList(apmMap);
 		 logger.info("아파트 이름 ::: " + aptList.size());
 		List<String> aptNoList = new ArrayList<>();
         List<String> aptNameList = new ArrayList<>();

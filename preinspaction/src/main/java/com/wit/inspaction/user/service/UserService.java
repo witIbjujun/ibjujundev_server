@@ -75,6 +75,13 @@ public interface UserService {
 	public List<Map<String, String>> getAptList(HashMap<String, Object> paramMap);
 	
 	/**
+	 * 내정보 
+	 * @param paramMap
+	 * @return
+	 */
+	public List<Map<String, String>> getMyAptList(HashMap<String, Object> paramMap);
+	
+	/**
 	 * 사전점검 항목 저장
 	 * @param param
 	 * @return int
