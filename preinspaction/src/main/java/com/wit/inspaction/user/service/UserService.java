@@ -44,6 +44,12 @@ public interface UserService {
 	 * @return List<UserDTO>
 	 */
 	public List<UserDTO> getNoticeList(HashMap<String, Object> paramMap);
+	/**
+	 * 아파트_평형 목록
+	 * @param paramMap
+	 * @return List<UserDTO>
+	 */
+	public List<UserDTO> getAptPyoungList(HashMap<String, Object> paramMap);
 	
 	/**
 	 * 내정보 

@@ -32,9 +32,38 @@ public class UserDTO {
     private String name;
     private String mainAptNo;               // 메인아파트 번호
     private String mainAptNm;               // 메인아파트 이름
+    private String mainAptPyoung;               // 메인아파트 이름
+    private String updownGubun;               // 메인아파트 이름
+    private String type;               // 메인아파트 이름
+    private String price;               // 메인아파트 이름
     private List<String> aptNo;               // 아파트 번호 리스트
     private List<String> aptName;             // 아파트 이름 리스트
 
+    
+	public String getUpdownGubun() {
+		return updownGubun;
+	}
+	public void setUpdownGubun(String updownGubun) {
+		this.updownGubun = updownGubun;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public String getPrice() {
+		return price;
+	}
+	public void setPrice(String price) {
+		this.price = price;
+	}
+	public String getMainAptPyoung() {
+		return mainAptPyoung;
+	}
+	public void setMainAptPyoung(String mainAptPyoung) {
+		this.mainAptPyoung = mainAptPyoung;
+	}
 	public String getMainAptNm() {
 		return mainAptNm;
 	}

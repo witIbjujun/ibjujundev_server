@@ -59,6 +59,15 @@ public class UserServiceImpl implements UserService{
 		
 		return list;
 	}
+	@Override
+	public List<UserDTO> getAptPyoungList(HashMap<String, Object> paramMap) {
+		
+		logger.info("UserServiceImpl getAptPyoungList 호출");
+		
+		List<UserDTO> list = userMapper.selectAptPyoungList(paramMap);
+		
+		return list;
+	}
 	
 	@Override
 	public UserDTO getUserInfo(HashMap<String, Object> paramMap) {

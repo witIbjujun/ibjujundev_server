@@ -153,6 +153,19 @@ ORDER BY  B.REQ_DATE DESC, A.CATEGORY_ID
 	
 	
 	<!--알림 리스트 조회 -->
+	<select id="selectAptPyoungList" parameterType="java.util.HashMap" resultType="UserDTO">
+		SELECT APT_NO mainAptNo
+	      ,PYOUNG mainAptPyoung
+	      ,TYPE type
+	      ,PRICE price
+	      ,UPDOWN_GUBUN updownGubun
+	FROM apt100t
+	WHERE APT_NO = #{aptNo}	
+	AND END_DATE = '99991231'
+	ORDER BY PYOUNG 
+	</select>
+	
+	<!--알림 리스트 조회 -->
 	<select id="selectNoticeList" parameterType="java.util.HashMap" resultType="UserDTO">
 	SELECT A.REQ_NO
       ,A.SEQ
@@ -282,8 +295,7 @@ ORDER BY  B.REQ_DATE DESC, A.CATEGORY_ID
 	<!-- 사전점검 항목 저장 -->
 	<update id="updateUserInfo" parameterType="java.util.HashMap">
 		UPDATE prsn000t
-		  SET APT_NO = #{mainAptNo}
-		     ,NICK_NAME = #{nickName}
+		  SET NICK_NAME = #{nickName}
 		     ,UDT_DATE =  SYSDATE() 
 		     ,UDT_USER = #{clerkNo}
 		WHERE CLERK_NO =  #{clerkNo}

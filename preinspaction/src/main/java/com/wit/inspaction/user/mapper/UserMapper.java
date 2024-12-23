@@ -48,6 +48,15 @@ public class UserMapper {
 	/**
 	 * 회사 상세 리스트
 	 * @param paramMap
+	 * @return List<UserDTO>
+	 */
+	public List<UserDTO> selectAptPyoungList(HashMap<String, Object> paramMap) {
+		return sql.selectList(path + "selectAptPyoungList", paramMap);
+	}
+	
+	/**
+	 * 회사 상세 리스트
+	 * @param paramMap
 	 * @return List<String>
 	 */
 	public List<Map<String, String>> selectAptList(HashMap<String, Object> paramMap) {

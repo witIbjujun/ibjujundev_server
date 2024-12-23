@@ -114,6 +114,25 @@ public class UserController {
 	}
 	
 	/**
+	 * 아파트_평형 목록
+	 * @param param
+	 * @return List<UserDTO>
+	 */
+	@RequestMapping("/wit/getAptPyoungList")
+	public  List<UserDTO> getAptPyoungList(@RequestBody HashMap<String, Object> param) {
+		logger.info("getAptPyoungList 호출");
+		
+		String aptNo = param.get("aptNo") == null ? "" : (String) param.get("aptNo");
+		
+		HashMap<String, Object> apmMap = new HashMap<String, Object>();
+		apmMap.put("aptNo", aptNo);
+		  logger.info("아파트 aptNo ::: " + aptNo);
+		List<UserDTO> pyoungList = userService.getAptPyoungList(apmMap);
+		
+		return pyoungList;
+	}
+	
+	/**
 	 * 회사 목록
 	 * @param param
 	 * @return List<UserDTO>
