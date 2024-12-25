@@ -31,11 +31,11 @@ public class UserServiceImpl implements UserService{
 	 * 사전점검 리스트 조회
 	 */
 	@Override
-	public List<UserDTO> getCategoryList() {
+	public List<UserDTO> getCategoryList(HashMap<String, Object> paramMap) {
 		
 		logger.info("UserServiceImpl getCategoryList 호출");
 		
-		List<UserDTO> list = userMapper.selectCategoryList();
+		List<UserDTO> list = userMapper.selectCategoryList(paramMap);
 		
 		return list;
 	}

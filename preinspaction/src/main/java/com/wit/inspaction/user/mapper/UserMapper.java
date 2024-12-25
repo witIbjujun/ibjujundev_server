@@ -22,8 +22,8 @@ public class UserMapper {
 	 * 사전점검 항목 리스트 조회
 	 * @return <UserDTO>
 	 */
-	public List<UserDTO> selectCategoryList() {
-		return sql.selectList(path + "selectCategoryList");
+	public List<UserDTO> selectCategoryList(HashMap<String, Object> paramMap) {
+		return sql.selectList(path + "selectCategoryList", paramMap);
 	}
 	
 	

@@ -35,11 +35,16 @@ public class UserController {
 	 * @return List<UserDTO>
 	 */
 	@RequestMapping("/wit/getCategoryList")
-    public List<UserDTO> getCategoryList() {
+    public List<UserDTO> getCategoryList(@RequestBody HashMap<String, Object> param) {
     	
 		logger.info("CompanyServiceImpl 호출");
 		
-		List<UserDTO> categoryList = userService.getCategoryList();
+		String categoryId = param.get("categoryId") == null ? "" : (String) param.get("categoryId");
+		
+		HashMap<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("categoryId", categoryId);
+		
+		List<UserDTO> categoryList = userService.getCategoryList(paramMap);
     	
 		logger.info("카테고리 리스트 ::: " + categoryList.size());
 		
@@ -80,6 +85,31 @@ public class UserController {
 		
         return companyList;
     }
+	
+	/**
+	 * 회사 목록
+	 * @param param
+	 * @return List<UserDTO>
+	 */
+	@RequestMapping("/wit/getCategoryInfo")
+	public List<UserDTO> getCategoryInfo(@RequestBody HashMap<String, Object> param) {
+		logger.info("getCategoryInfo 호출");
+		
+		// 파라미터
+		String categoryId = param.get("categoryId") == null ? "" : (String) param.get("categoryId");
+		
+		logger.info("categoryId :: " + categoryId);
+		
+		HashMap<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("categoryId", categoryId);
+		
+		List<UserDTO> companyList = userService.getCategoryList(paramMap);
+    	
+		logger.info("회사 상세 리스트 ::: " + companyList.size());
+		
+        return companyList;
+    }
+	
 	
 	/**
 	 * 아파트 목록
@@ -199,6 +229,7 @@ public class UserController {
 		String clerkNo = param.get("clerkNo") == null ? "" : (String) param.get("clerkNo");
 		String role = param.get("role") == null ? "user" : (String) param.get("role");
 		String aptNo = param.get("aptNo") == null ? "" : (String) param.get("aptNo");
+		String pyoung = param.get("pyoung") == null ? "" : (String) param.get("pyoung");
 		
 		logger.info("kakaoId :: " + kakaoId);
 		logger.info("nickName :: " + nickName);
@@ -207,6 +238,7 @@ public class UserController {
 		logger.info("clerkNo :: " + clerkNo);
 		logger.info("role :: " + role);
 		logger.info("aptNo :: " + aptNo);
+		logger.info("pyoung :: " + pyoung);
 		
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("kakaoId", kakaoId);
@@ -216,6 +248,7 @@ public class UserController {
 		paramMap.put("clerkNo", clerkNo);
 		paramMap.put("role", role);
 		paramMap.put("aptNo", aptNo);
+		paramMap.put("pyoung", pyoung);
 		
 		int cnt = userService.userCheckCount(paramMap);
 		

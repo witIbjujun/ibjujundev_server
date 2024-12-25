@@ -15,7 +15,7 @@ public interface UserService {
 	 * 사전점검 항목 리스트 조회
 	 * @return List<UserDTO>
 	 */
-	public List<UserDTO> getCategoryList();
+	public List<UserDTO> getCategoryList(HashMap<String, Object> paramMap);
 	
 	/**
 	 * 회사 상세 리스트
