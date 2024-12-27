@@ -213,5 +213,17 @@ public class SellerServiceImpl implements SellerService{
 
 		return sellerMapper.selectSellerDetailImageList(param);
 	}
+	
+	@Override
+	public List<CashDTO> getPointInfoList(HashMap<String, Object> param) {
+		System.out.println("SellerServiceImpl getPointInfoList 호출");
+		return sellerMapper.selectPointInfoList(param);
+	}
+	
+	@Override
+	public List<CashHistoryDTO> getPointInfoDetailList(HashMap<String, Object> param) {
+		System.out.println("SellerServiceImpl getPointInfoDetailList 호출");
+		return sellerMapper.selectPointInfoDetailList(param);
+	}
 
 }

@@ -179,5 +179,18 @@ public interface SellerService {
 	 */
 	public List<BoardDTO> getSellerDetailImageList(HashMap<String, Object> param);
 	
-
+	/**
+	 * 포인트 관리 목록
+	 * @param param
+	 * @return List<CashDTO>
+	 */
+	public List<CashDTO> getPointInfoList(HashMap<String, Object> param);
+	
+	/**
+	 * 포인트 관리 상세 목록
+	 * @param param
+	 * @return List<CashHistoryDTO>
+	 */
+	public List<CashHistoryDTO> getPointInfoDetailList(HashMap<String, Object> param);
+	
 }

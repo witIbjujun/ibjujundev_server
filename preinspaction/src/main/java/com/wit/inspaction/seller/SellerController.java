@@ -501,4 +501,33 @@ public class SellerController {
 
         return sellerDetailImageList;
     }
+	
+	/**
+	 * 포인트 관리 목록
+	 * @return List<CashDTO>
+	 */
+	@PostMapping("/wit/getPointInfoList")
+    public List<CashDTO> getPointInfoList(@RequestBody HashMap<String, Object> param) {
+
+		System.out.println("getPointInfoList 호출");
+
+		List<CashDTO> getPointInfoList = sellerService.getPointInfoList(param);
+
+        return getPointInfoList;
+    }
+	
+	/**
+	 * 포인트 관리 상세 목록
+	 * @return List<CashHistoryDTO>
+	 */
+	@PostMapping("/wit/getPointInfoDetailList")
+    public List<CashHistoryDTO> getPointInfoDetailList(@RequestBody HashMap<String, Object> param) {
+
+		System.out.println("getPointInfoDetailList 호출");
+
+		List<CashHistoryDTO> getPointInfoDetailList = sellerService.getPointInfoDetailList(param);
+
+        return getPointInfoDetailList;
+    }
+	
 }

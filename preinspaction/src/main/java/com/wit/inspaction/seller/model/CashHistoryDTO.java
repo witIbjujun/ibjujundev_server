@@ -9,6 +9,7 @@ public class CashHistoryDTO {
 	private String cashNo;
 	private String cashSeq;
 	private String cashGbn;
+	private String cashGbnNm;
 	private String cash;
 	private String estNo;
 	private String itemName;
@@ -64,6 +65,18 @@ public class CashHistoryDTO {
 	 */
 	public void setCashGbn(String cashGbn) {
 		this.cashGbn = cashGbn;
+	}
+	/**
+	 * @return the cashGbnNm
+	 */
+	public String getCashGbnNm() {
+		return cashGbnNm;
+	}
+	/**
+	 * @param cashGbnNm the cashGbnNm to set
+	 */
+	public void setCashGbnNm(String cashGbnNm) {
+		this.cashGbnNm = cashGbnNm;
 	}
 	/**
 	 * @return the cash

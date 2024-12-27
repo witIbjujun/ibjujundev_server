@@ -567,5 +567,44 @@
 		AND S.BIZ_KEY = #{bizKey}
 		ORDER BY S.FILE_SEQ
 	</select>
+	
+	<!-- 판매자 이미지 조회 -->
+	<select id="selectPointInfoList" parameterType="java.util.HashMap" resultType="CashDTO">
+		SELECT
+			  A.SLLR_NO AS sllrNo
+			, A.STORE_NAME AS storeName
+			, B.CASH_NO AS cashNo
+			, IFNULL(B.CASH, 0) AS cash
+			, IFNULL(B.BONUS_CASH, 0) AS bonusCash
+		FROM
+			  wit_sllr000t A
+			, wit_cash000t B
+		WHERE B.SLLR_NO = A.SLLR_NO
+	<if test="storeName !=null and !storeName.equals('')">
+		AND A.STORE_NAME LIKE CONCAT('%', #{storeName}, '%')
+	</if>
+		ORDER BY CONVERT(A.SLLR_NO, UNSIGNED)
+	</select>
+	
+	<!-- 판매자 이미지 조회 -->
+	<select id="selectPointInfoDetailList" parameterType="java.util.HashMap" resultType="CashHistoryDTO">
+		SELECT
+			A.CASH_NO AS cashNo
+			, A.CASH_SEQ AS cashSeq
+			, A.SLLR_NO AS sllrNo
+			, A.CASH_GBN AS cashGbn
+			, CASE
+				WHEN A.CASH_GBN = '01' THEN '캐시충전'
+				WHEN A.CASH_GBN = '02' THEN '캐시사용'
+				WHEN A.CASH_GBN = '03' THEN '보너스캐시 충전'
+				WHEN A.CASH_GBN = '04' THEN '보너스캐시 사용'
+			  END AS cashGbnNm
+			, A.CASH AS cash
+			, A.CRE_DT AS creDt
+		FROM
+			wit_cash100t A
+		WHERE CASH_NO = #{cashNo}
+		ORDER BY CASH_SEQ DESC
+	</select>
 
 </mapper>

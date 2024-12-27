@@ -256,6 +256,26 @@ public class SellerMapper {
 		System.out.println("############# selectSellerDetailImageList : " + param);
 		return sql.selectList(path + "selectSellerDetailImageList", param);
 	}
+	
+	/**
+	 * 포인트 관리 목록
+	 * @param param
+	 * @return List<CashDTO>
+	 */
+	public List<CashDTO> selectPointInfoList(HashMap<String, Object> param) {
+		System.out.println("############# selectPointInfoList : " + param);
+		return sql.selectList(path + "selectPointInfoList", param);
+	}
+	
+	/**
+	 * 포인트 관리 상세 목록
+	 * @param param
+	 * @return List<CashHistoryDTO>
+	 */
+	public List<CashHistoryDTO> selectPointInfoDetailList(HashMap<String, Object> param) {
+		System.out.println("############# selectPointInfoDetailList : " + param);
+		return sql.selectList(path + "selectPointInfoDetailList", param);
+	}
 
 
 }

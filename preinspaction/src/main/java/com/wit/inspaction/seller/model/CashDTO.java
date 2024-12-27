@@ -4,12 +4,14 @@ public class CashDTO {
 
 	private String sllrNo;
 	private String cashNo;
+	private String storeName;
 	private String cash;
+	private String bonusCash;
 	private String creDt;
 	private String creUser;
 	private String updDt;
 	private String updUser;
-
+	
 	/**
 	 * @return the sllrNo
 	 */
@@ -35,6 +37,18 @@ public class CashDTO {
 		this.cashNo = cashNo;
 	}
 	/**
+	 * @return the storeName
+	 */
+	public String getStoreName() {
+		return storeName;
+	}
+	/**
+	 * @param storeName the storeName to set
+	 */
+	public void setStoreName(String storeName) {
+		this.storeName = storeName;
+	}
+	/**
 	 * @return the cash
 	 */
 	public String getCash() {
@@ -45,6 +59,18 @@ public class CashDTO {
 	 */
 	public void setCash(String cash) {
 		this.cash = cash;
+	}
+	/**
+	 * @return the bonusCash
+	 */
+	public String getBonusCash() {
+		return bonusCash;
+	}
+	/**
+	 * @param bonusCash the bonusCash to set
+	 */
+	public void setBonusCash(String bonusCash) {
+		this.bonusCash = bonusCash;
 	}
 	/**
 	 * @return the creDt
