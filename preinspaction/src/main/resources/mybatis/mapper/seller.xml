@@ -356,8 +356,8 @@
 	<update id="updateCashInfo" parameterType="java.util.HashMap">
 		UPDATE wit_cash000t
 		SET  CASH = (SELECT T.CASH
-		             FROM   (SELECT CASE WHEN B.CASH_GBN = '01' THEN A.CASH + B.CASH
-							            ELSE A.CASH - B.CASH
+		             FROM   (SELECT CASE WHEN B.CASH_GBN = '01' THEN IFNULL(A.CASH, 0) + B.CASH
+							            ELSE IFNULL(A.CASH, 0) - B.CASH
 							            END  AS CASH
 							 FROM   wit_cash000t A, wit_cash100t B
 							 WHERE  A.SLLR_NO = #{sllrNo}
@@ -368,6 +368,30 @@
 		     ,UPD_USER = #{updUser}
 		WHERE SLLR_NO = #{sllrNo}
 		AND   CASH_NO = #{cashNo}
+	</update>
+	
+	<!-- 보너스 캐시정보 수정 -->
+	<update id="updateBonusCashInfo" parameterType="java.util.HashMap">
+		UPDATE wit_cash000t A SET 
+			  BONUS_CASH = (
+									    SELECT 
+									        CASE 
+									            WHEN B.CASH_GBN = '03' THEN IFNULL(A.BONUS_CASH, 0) + B.CASH
+									            ELSE IFNULL(A.BONUS_CASH, 0) - B.CASH
+									        END AS CASH
+									    FROM wit_cash100t B
+									    WHERE 
+									        A.SLLR_NO = #{sllrNo}
+									        AND A.CASH_NO = #{cashNo}
+									        AND A.CASH_NO = B.CASH_NO 
+									        AND B.CASH_GBN IN ('03', '04')
+									    ORDER BY CAST(B.CASH_SEQ AS UNSIGNED) DESC 
+									    LIMIT 1)
+			, UPD_DT = SYSDATE()
+			, UPD_USER = #{updUser}
+		WHERE SLLR_NO = #{sllrNo}
+		AND CASH_NO = #{cashNo}
+		
 	</update>
 
 	<!-- 업체 정보 수정 -->
@@ -604,7 +628,7 @@
 		FROM
 			wit_cash100t A
 		WHERE CASH_NO = #{cashNo}
-		ORDER BY CASH_SEQ DESC
+		ORDER BY CRE_DT DESC
 	</select>
 
 </mapper>

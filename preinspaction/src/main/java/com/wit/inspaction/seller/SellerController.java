@@ -347,15 +347,24 @@ public class SellerController {
 	 */
 	@PostMapping("/wit/updateCashInfo")
     public int updateCashInfo(@RequestBody HashMap<String, Object> param) {
-
-		System.out.println("updateCashInfo 호출");
+		
+		// 01 : 캐쉬 저장, 03 : 포인트 저장
+		String cashGbn = (String) param.get("cashGbn") == null ? "01" : (String) param.get("cashGbn") ;
+		
+		System.out.println("updateCashInfo 호출 ::: " + param);
 
 		// 캐시 이력 등록
 		int result = sellerService.insertCashHistoryInfo(param);
 
-		// 캐시 정보 수정
-		result = sellerService.updateCashInfo(param);
-
+		// 포인트 저장
+		if ("03".equals(cashGbn)) {
+			// 캐시 정보 수정
+			result = sellerService.updateBonusCashInfo(param);
+		} else {
+			// 캐시 정보 수정
+			result = sellerService.updateCashInfo(param);
+		}
+		
         return result;
     }
 

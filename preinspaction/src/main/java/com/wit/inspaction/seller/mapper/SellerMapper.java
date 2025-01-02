@@ -111,7 +111,18 @@ public class SellerMapper {
 	 * @return int
 	 */
 	public int updateCashInfo(HashMap<String, Object> param) {
+		System.out.println("############# updateCashInfo : " + param);
 		return sql.update(path + "updateCashInfo", param);
+	}
+	
+	/**
+	 * 보너스 캐시 정보 수정
+	 * @param param
+	 * @return int
+	 */
+	public int updateBonusCashInfo(HashMap<String, Object> param) {
+		System.out.println("############# updateBonusCashInfo : " + param);
+		return sql.update(path + "updateBonusCashInfo", param);
 	}
 
 	/**

@@ -80,6 +80,13 @@ public interface SellerService {
 	 * @return int
 	 */
 	public int updateCashInfo(HashMap<String, Object> param);
+	
+	/**
+	 * 보너스 캐시 정보 수정
+	 * @param param
+	 * @return int
+	 */
+	public int updateBonusCashInfo(HashMap<String, Object> param);
 
 	/**
 	 * 판매자 정보 수정

@@ -99,6 +99,11 @@ public class SellerServiceImpl implements SellerService{
 	public int updateCashInfo(HashMap<String, Object> param) {
 		return sellerMapper.updateCashInfo(param);
 	}
+	
+	@Override
+	public int updateBonusCashInfo(HashMap<String, Object> param) {
+		return sellerMapper.updateBonusCashInfo(param);
+	}
 
 	@Override
 	public int updateSellerInfo(HashMap<String, Object> param) {
