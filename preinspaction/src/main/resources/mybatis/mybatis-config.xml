@@ -33,6 +33,7 @@
     	<typeAlias alias="CashHistoryDTO" type="com.wit.inspaction.seller.model.CashHistoryDTO"/>
     	<typeAlias alias="CashRechargeSetDTO" type="com.wit.inspaction.seller.model.CashRechargeSetDTO"/>
     	<typeAlias alias="DirectEstimateSetDTO" type="com.wit.inspaction.seller.model.DirectEstimateSetDTO"/>
+    	<typeAlias alias="EstimateCntDTO" type="com.wit.inspaction.seller.model.EstimateCntDTO"/>
 		
 		<!-- 공통코드 -->
     	<typeAlias alias="CodeDTO" type="com.wit.inspaction.seller.model.CodeDTO"/>

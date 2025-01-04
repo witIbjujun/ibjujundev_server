@@ -610,7 +610,7 @@
 		ORDER BY CONVERT(A.SLLR_NO, UNSIGNED)
 	</select>
 	
-	<!-- 판매자 이미지 조회 -->
+	<!-- 판매자 캐시 이력 조회 -->
 	<select id="selectPointInfoDetailList" parameterType="java.util.HashMap" resultType="CashHistoryDTO">
 		SELECT
 			A.CASH_NO AS cashNo
@@ -630,5 +630,30 @@
 		WHERE CASH_NO = #{cashNo}
 		ORDER BY CRE_DT DESC
 	</select>
+	
+	<!-- 업체별 견적 카운트 조회 -->
+	<select id="selectEstimateCntList" parameterType="java.util.HashMap" resultType="EstimateCntDTO">	
+		SELECT
+			  A.SLLR_NO AS sllrNo
+			, A.STORE_NAME AS storeName
+			, (SELECT COUNT(S.REQ_NO) FROM request100t S
+				WHERE S.COMPANY_ID = A.SLLR_NO
+				AND S.REQ_STATE = '01') AS waitCnt
+			, (SELECT COUNT(S.REQ_NO) FROM request100t S
+				WHERE S.COMPANY_ID = A.SLLR_NO
+				AND S.REQ_STATE NOT IN ('01', '05')) AS goingCnt
+			, (SELECT COUNT(S.REQ_NO) FROM request100t S
+				WHERE S.COMPANY_ID = A.SLLR_NO
+				AND S.REQ_STATE = '05') AS cencelCnt
+		FROM
+			wit_sllr000t A
+	<if test="storeName !=null and !storeName.equals('')">
+		WHERE  A.STORE_NAME LIKE CONCAT('%', #{storeName}, '%')
+	</if>
+		GROUP BY SLLR_NO
+		ORDER BY SLLR_NO
+	</select>
+	
+	
 
 </mapper>

@@ -11,6 +11,7 @@ import com.wit.inspaction.seller.model.CashHistoryDTO;
 import com.wit.inspaction.seller.model.CashRechargeSetDTO;
 import com.wit.inspaction.seller.model.CodeDTO;
 import com.wit.inspaction.seller.model.DirectEstimateSetDTO;
+import com.wit.inspaction.seller.model.EstimateCntDTO;
 import com.wit.inspaction.seller.model.EstimateRequestDTO;
 import com.wit.inspaction.seller.model.SellerDTO;
 import com.wit.inspaction.seller.model.SellerSendDTO;
@@ -199,5 +200,12 @@ public interface SellerService {
 	 * @return List<CashHistoryDTO>
 	 */
 	public List<CashHistoryDTO> getPointInfoDetailList(HashMap<String, Object> param);
+	
+	/**
+	 * 업체별 견적 카운트 조회
+	 * @param param
+	 * @return List<EstimateCntDTO>
+	 */
+	public List<EstimateCntDTO> getEstimateCntList(HashMap<String, Object> param);
 	
 }

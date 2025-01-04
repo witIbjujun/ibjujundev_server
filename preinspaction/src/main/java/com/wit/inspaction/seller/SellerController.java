@@ -22,6 +22,7 @@ import com.wit.inspaction.seller.model.CashHistoryDTO;
 import com.wit.inspaction.seller.model.CashRechargeSetDTO;
 import com.wit.inspaction.seller.model.CodeDTO;
 import com.wit.inspaction.seller.model.DirectEstimateSetDTO;
+import com.wit.inspaction.seller.model.EstimateCntDTO;
 import com.wit.inspaction.seller.model.EstimateRequestDTO;
 import com.wit.inspaction.seller.model.SellerDTO;
 import com.wit.inspaction.seller.model.SellerSendDTO;
@@ -576,5 +577,21 @@ public class SellerController {
 
         return fileResult;
     }
+	
+	/**
+	 * 업체별 견적 카운트 조회
+	 * @return List<EstimateCntDTO>
+	 */
+	@PostMapping("/wit/getEstimateCntList")
+    public List<EstimateCntDTO> getEstimateCntList(@RequestBody HashMap<String, Object> param) {
+
+		System.out.println("getPointInfoDetailList 호출");
+
+		List<EstimateCntDTO> getEstimateCntList = sellerService.getEstimateCntList(param);
+
+        return getEstimateCntList;
+    }
+	
+	
 	
 }
