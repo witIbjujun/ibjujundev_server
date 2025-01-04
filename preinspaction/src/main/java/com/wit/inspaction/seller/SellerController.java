@@ -539,4 +539,42 @@ public class SellerController {
         return getPointInfoDetailList;
     }
 	
+	/**
+	 * 포인트 관리 상세 목록
+	 * @return List<CashHistoryDTO>
+	 */
+	@PostMapping("/wit/saveSellerBizImage")
+    public int saveSellerBizImage(@RequestBody HashMap<String, Object> param) throws Exception {
+
+			int fileResult = 0;
+			
+			// 파일 Json
+			String fileJson = (String) param.get("fileInfo") == null ? "" : (String) param.get("fileInfo");
+
+			System.out.println("게시판 fileInfo ::: " + param.get("fileInfo"));
+			
+			// JSON 문자열을 List<HashMap<String, Object>>로 변환
+			
+			if(!fileJson.isEmpty()) {
+				ObjectMapper objectMapper = new ObjectMapper();
+				List<HashMap<String, Object>> fileList = objectMapper.readValue(fileJson, new TypeReference<List<HashMap<String, Object>>>(){});
+				
+				// 파일 저장
+				for (int i = 0; i < fileList.size(); i++) {
+					
+					HashMap<String, Object> fileInfo = fileList.get(i);
+					fileInfo.put("bizCd", "SR02");
+					fileInfo.put("bizKey", param.get("sllrNo"));
+					fileInfo.put("fileType", "01");
+					fileInfo.put("creUser", "테스트");
+					
+					fileResult = boardServiceImpl.saveFileInfo(fileInfo);
+					
+					System.out.println("파일 등록 ::: " + fileResult);
+				}
+			}
+
+        return fileResult;
+    }
+	
 }
