@@ -430,7 +430,7 @@
 				,A.cash_seq AS cashSeq
 				,IF(A.cash_gbn = '01', '포인트충전', '견적서비스') AS cashGbn  /* 01 : 포인트충전, 02 : 견적서비스 */
 				,IF(A.cash_gbn = '01', A.cash, CONCAT('-', A.cash)) AS cash
-				,IF(A.cash_gbn = '01','포인트충전',(select item_name from wit_estm000t where est_no = A.EST_NO)) itemName
+				,IF(A.cash_gbn = '01','포인트충전',(select category_nm from category where category_id IN (select category_id from request100t where req_no = A.est_no) LIMIT 1) ) itemName
 				,A.cre_user AS creUser
 				,  CASE
 		            WHEN TIMESTAMPDIFF(SECOND, A.cre_dt, NOW()) <![CDATA[<=]]> 10 THEN '방금 전'
