@@ -21,7 +21,7 @@
 		        , B.estimate_contents content
 			    , A.REQ_USER reqUser
 		        , IF(B.auto_yn = 'Y', '바로 견적서비스 발송', '일반 견적서비스 발송') AS autoYn
-		        , E.NAME AS prsnName
+		        , E.NICK_NAME AS prsnName
 				, (SELECT category_nm FROM category WHERE category_id = A.category_id) AS categoryNm 
 				, B.estimate_amount itemPrice1
 		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E
@@ -61,7 +61,7 @@
 		        , B.estimate_contents content
 			    , A.REQ_USER AS reqUser
 		        , IF(B.auto_yn = 'Y', '바로 견적서비스 발송', '일반 견적서비스 발송') AS autoYn
-		        , E.NAME AS prsnName
+		        , E.NICK_NAME AS prsnName
 				, (SELECT category_nm FROM category WHERE category_id = A.category_id) AS categoryNm 
 				, B.estimate_amount itemPrice1
 		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E
@@ -91,7 +91,7 @@
 		        , (select cd_nm from wit_code000t where cd_cls = 'EST01' and appl_en_date = '99991231235959' and cd = A.REQ_STATE) AS stat
 		        , B.estimate_contents estimateContent
 			    , A.REQ_USER AS reqUser
-		        , E.NAME AS prsnName
+		        , E.NICK_NAME AS prsnName
 				, (SELECT category_nm FROM category WHERE category_id = A.category_id) AS categoryNm 
 				, B.estimate_amount itemPrice1
                 , F.clerk_no AS sllrClerkNo
