@@ -35,7 +35,8 @@ public class SellerDTO {
     private String bizCertificationDate;    // 사업자인증 요청일
     private String imagePbizCertificationDate;    // 사업자인증 요청일
     private String imagePath; // 
-    
+    private String categoryContent; // 품목설명
+    private String categoryImage; // 품목이미지
 	/**
 	 * @return the sllrNo
 	 */
@@ -432,6 +433,32 @@ public class SellerDTO {
 	public void setImagePath(String imagePath) {
 		this.imagePath = imagePath;
 	}
+	/**
+	 * @return the categoryContent
+	 */
+	public String getCategoryContent() {
+		return categoryContent;
+	}
+	/**
+	 * @param categoryContent the categoryContent to set
+	 */
+	public void setCategoryContent(String categoryContent) {
+		this.categoryContent = categoryContent;
+	}
+	/**
+	 * @return the categoryImage
+	 */
+	public String getCategoryImage() {
+		return categoryImage;
+	}
+	/**
+	 * @param categoryImage the categoryImage to set
+	 */
+	public void setCategoryImage(String categoryImage) {
+		this.categoryImage = categoryImage;
+	}
     
+    
+	
 	
 }

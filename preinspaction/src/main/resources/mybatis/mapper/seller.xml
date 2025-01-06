@@ -166,6 +166,7 @@
 			, OPEN_DATE
 			, AS_GBN 
 			, BIZ_CERTIFICATION
+			, CATEGORY_CONTENT
 		) VALUES (
 			  #{storeName}
 			, '99991231'
@@ -188,6 +189,7 @@
 			, #{openDate}
 			, #{asGbn}
 			, #{bizCertification}
+			, #{categoryContent}
 		)
 	</insert>
 	
@@ -231,6 +233,7 @@
                , (SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'AS01' AND APPL_EN_DATE = '99991231235959' AND CD = service_area) asGbnNm
                , BIZ_CERTIFICATION AS bizCertification
                , (SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'BIZ01' AND APPL_EN_DATE = '99991231235959' AND CD = BIZ_CERTIFICATION) bizCertificationNm
+               , category_content AS categoryContent
 		FROM   wit_sllr000t
 		WHERE  SLLR_NO = #{sllrNo}
 	</select>
@@ -273,6 +276,7 @@
 		            WHEN TIMESTAMPDIFF(MINUTE, BIZ_CERTIFICATION_DATE, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(MINUTE, BIZ_CERTIFICATION_DATE, NOW()), '분 전')
 		            WHEN TIMESTAMPDIFF(HOUR, BIZ_CERTIFICATION_DATE, NOW()) <![CDATA[<]]> 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, BIZ_CERTIFICATION_DATE, NOW()), '시간 전')
 		            ELSE CONCAT(TIMESTAMPDIFF(DAY, BIZ_CERTIFICATION_DATE, NOW()), '일 전') END  AS bizCertificationDate
+		       , category_content AS categoryContent     
 		FROM   wit_sllr000t
 		WHERE  BIZ_CERTIFICATION IS NOT NULL
 		<if test="storeName !=null and !storeName.equals('')">
@@ -412,6 +416,7 @@
 		       ,address2 = #{address2}
 		       ,OPEN_DATE  = #{openDate}
                ,AS_GBN  = #{asGbn}
+               ,category_content  = #{categoryContent}
 		WHERE  SLLR_NO = #{sllrNo}
 	</update>
 	
