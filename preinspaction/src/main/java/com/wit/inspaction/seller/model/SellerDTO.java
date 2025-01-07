@@ -37,6 +37,8 @@ public class SellerDTO {
     private String imagePath; // 
     private String categoryContent; // 품목설명
     private String categoryImage; // 품목이미지
+    private String rateFlag; // 품목이미지
+    
 	/**
 	 * @return the sllrNo
 	 */
@@ -457,8 +459,17 @@ public class SellerDTO {
 	public void setCategoryImage(String categoryImage) {
 		this.categoryImage = categoryImage;
 	}
-    
-    
-	
+	/**
+	 * @return the rateFlag
+	 */
+	public String getRateFlag() {
+		return rateFlag;
+	}
+	/**
+	 * @param rateFlag the rateFlag to set
+	 */
+	public void setRateFlag(String rateFlag) {
+		this.rateFlag = rateFlag;
+	}
 	
 }

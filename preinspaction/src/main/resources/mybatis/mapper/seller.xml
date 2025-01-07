@@ -217,7 +217,8 @@
 		       , ceo_name AS ceoName
 		       , email AS email
 		       , store_code AS storeCode
-		       , (SELECT CONCAT(B.FILE_LOC, B.FILE_ID) FROM wit_file000t B WHERE BIZ_CD = 'SR01' AND BIZ_KEY = SLLR_NO LIMIT 1 ) AS storeImage
+		       /* , (SELECT CONCAT(B.FILE_LOC, B.FILE_ID) FROM wit_file000t B WHERE BIZ_CD = 'SR01' AND BIZ_KEY = SLLR_NO LIMIT 1 ) AS storeImage */
+		       , STORE_IMAGE AS storeImage
 		       , hp AS hp
 		       , zip_code AS zipCode
 		       , address1 AS address1
@@ -230,10 +231,11 @@
                , bord_type AS bordType
                , OPEN_DATE AS openDate
                , AS_GBN AS asGbn
-               , (SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'AS01' AND APPL_EN_DATE = '99991231235959' AND CD = service_area) asGbnNm
+               , (SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'AS01' AND APPL_EN_DATE = '99991231235959' AND CD = as_gbn) asGbnNm
                , BIZ_CERTIFICATION AS bizCertification
                , (SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'BIZ01' AND APPL_EN_DATE = '99991231235959' AND CD = BIZ_CERTIFICATION) bizCertificationNm
                , category_content AS categoryContent
+               , CASE WHEN rate >= 4.5 THEN 'Y' ELSE 'N' END AS rateFlag
 		FROM   wit_sllr000t
 		WHERE  SLLR_NO = #{sllrNo}
 	</select>
@@ -267,7 +269,7 @@
                , bord_type AS bordType
                , OPEN_DATE AS openDate
                , AS_GBN AS asGbn
-               , (SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'AS01' AND APPL_EN_DATE = '99991231235959' AND CD = service_area) asGbnNm
+               , (SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'AS01' AND APPL_EN_DATE = '99991231235959' AND CD = as_gbn) asGbnNm
                , BIZ_CERTIFICATION AS bizCertification
                , (SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'BIZ01' AND APPL_EN_DATE = '99991231235959' AND CD = BIZ_CERTIFICATION) bizCertificationNm
                ,  CASE
