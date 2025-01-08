@@ -629,6 +629,9 @@
 				WHEN A.CASH_GBN = '04' THEN '보너스캐시 사용'
 			  END AS cashGbnNm
 			, A.CASH AS cash
+			, (SELECT S.CATEGORY_NM FROM category S
+				 WHERE S.CATEGORY_ID IN (SELECT MAX(S1.CATEGORY_ID) from request100t S1 
+				 									WHERE S1.REQ_NO = A.EST_NO)) AS itemName
 			, A.CRE_DT AS creDt
 		FROM
 			wit_cash100t A
