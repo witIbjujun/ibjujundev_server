@@ -217,8 +217,7 @@
 		       , ceo_name AS ceoName
 		       , email AS email
 		       , store_code AS storeCode
-		       /* , (SELECT CONCAT(B.FILE_LOC, B.FILE_ID) FROM wit_file000t B WHERE BIZ_CD = 'SR01' AND BIZ_KEY = SLLR_NO LIMIT 1 ) AS storeImage */
-		       , STORE_IMAGE AS storeImage
+		       , (SELECT CONCAT(B.FILE_LOC, B.FILE_ID) FROM wit_file000t B WHERE BIZ_CD = 'SR01' AND BIZ_KEY = SLLR_NO LIMIT 1 ) AS storeImage
 		       , hp AS hp
 		       , zip_code AS zipCode
 		       , address1 AS address1
@@ -231,11 +230,10 @@
                , bord_type AS bordType
                , OPEN_DATE AS openDate
                , AS_GBN AS asGbn
-               , (SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'AS01' AND APPL_EN_DATE = '99991231235959' AND CD = as_gbn) asGbnNm
+               , (SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'AS01' AND APPL_EN_DATE = '99991231235959' AND CD = service_area) asGbnNm
                , BIZ_CERTIFICATION AS bizCertification
                , (SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'BIZ01' AND APPL_EN_DATE = '99991231235959' AND CD = BIZ_CERTIFICATION) bizCertificationNm
                , category_content AS categoryContent
-               , CASE WHEN rate >= 4.5 THEN 'Y' ELSE 'N' END AS rateFlag
 		FROM   wit_sllr000t
 		WHERE  SLLR_NO = #{sllrNo}
 	</select>
@@ -269,7 +267,7 @@
                , bord_type AS bordType
                , OPEN_DATE AS openDate
                , AS_GBN AS asGbn
-               , (SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'AS01' AND APPL_EN_DATE = '99991231235959' AND CD = as_gbn) asGbnNm
+               , (SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'AS01' AND APPL_EN_DATE = '99991231235959' AND CD = service_area) asGbnNm
                , BIZ_CERTIFICATION AS bizCertification
                , (SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'BIZ01' AND APPL_EN_DATE = '99991231235959' AND CD = BIZ_CERTIFICATION) bizCertificationNm
                ,  CASE
@@ -599,20 +597,20 @@
 		ORDER BY S.FILE_SEQ
 	</select>
 	
-	<!-- 판매자 이미지 조회 -->
+	<!-- 포인트 리스트 조회 -->
 	<select id="selectPointInfoList" parameterType="java.util.HashMap" resultType="CashDTO">
 		SELECT
-			  A.SLLR_NO AS sllrNo
-			, A.STORE_NAME AS storeName
-			, B.CASH_NO AS cashNo
-			, IFNULL(B.CASH, 0) AS cash
-			, IFNULL(B.BONUS_CASH, 0) AS bonusCash
+		    A.SLLR_NO AS sllrNo,
+		    A.STORE_NAME AS storeName,
+		    B.CASH_NO AS cashNo,
+		    IFNULL(B.CASH, 0) AS cash,
+		    IFNULL(B.BONUS_CASH, 0) AS bonusCash
 		FROM
-			  wit_sllr000t A
-			, wit_cash000t B
-		WHERE B.SLLR_NO = A.SLLR_NO
+		    wit_sllr000t A
+		LEFT JOIN wit_cash000t B 
+		ON B.SLLR_NO = A.SLLR_NO
 	<if test="storeName !=null and !storeName.equals('')">
-		AND A.STORE_NAME LIKE CONCAT('%', #{storeName}, '%')
+		 WHERE A.STORE_NAME LIKE CONCAT('%', #{storeName}, '%')
 	</if>
 		ORDER BY CONVERT(A.SLLR_NO, UNSIGNED)
 	</select>
@@ -648,10 +646,7 @@
 				AND S.REQ_STATE = '01') AS waitCnt
 			, (SELECT COUNT(S.REQ_NO) FROM request100t S
 				WHERE S.COMPANY_ID = A.SLLR_NO
-				AND S.REQ_STATE NOT IN ('01', '05')) AS goingCnt
-			, (SELECT COUNT(S.REQ_NO) FROM request100t S
-				WHERE S.COMPANY_ID = A.SLLR_NO
-				AND S.REQ_STATE = '05') AS cencelCnt
+				AND S.REQ_STATE != '01') AS goingCnt
 		FROM
 			wit_sllr000t A
 	<if test="storeName !=null and !storeName.equals('')">
