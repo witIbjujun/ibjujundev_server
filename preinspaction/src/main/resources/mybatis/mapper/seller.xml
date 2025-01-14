@@ -432,13 +432,17 @@
 	<!-- 캐시 이력 목록 -->
 	<select id="selectCashHistoryList" parameterType="java.util.HashMap" resultType="CashHistoryDTO">
 		SELECT
-				A.sllr_no AS sllrNo
-				,A.cash_no AS cashNo
-				,A.cash_seq AS cashSeq
-				,IF(A.cash_gbn = '01', '포인트충전', '견적서비스') AS cashGbn  /* 01 : 포인트충전, 02 : 견적서비스 */
-				,IF(A.cash_gbn = '01', A.cash, CONCAT('-', A.cash)) AS cash
-				,IF(A.cash_gbn = '01','포인트충전',(select category_nm from category where category_id IN (select category_id from request100t where req_no = A.est_no) LIMIT 1) ) itemName
-				,A.cre_user AS creUser
+				A.SLLR_NO AS sllrNo
+				,A.CASH_NO AS cashNo
+				,A.CASH_SEQ AS cashSeq
+				,(SELECT CD_NM FROM wit_code000t B WHERE B.CD_CLS = 'CS01' AND B.CD = A.CASH_GBN) AS cashGbn  /* 01 : 포인트충전, 02 : 견적서비스 */
+				,CASE WHEN A.CASH_GBN = '01' THEN  A.CASH
+                      WHEN A.CASH_GBN = '02' THEN  CONCAT('-', A.CASH)
+                      WHEN A.CASH_GBN = '03' THEN  A.cash
+                      WHEN A.CASH_GBN = '02' THEN  CONCAT('-', A.CASH)
+                      END AS cash
+				,IF(A.CASH_GBN = '02',(SELECT CATEGORY_NM FROM category WHERE CATEGORY_ID IN (SELECT CATEGORY_ID FROM request100t WHERE REQ_NO = A.EST_NO) LIMIT 1), (SELECT CD_NM FROM wit_code000t B WHERE B.CD_CLS = 'CS01' AND B.CD = A.CASH_GBN)) itemName
+				,A.CRE_USER AS creUser
 				,  CASE
 		            WHEN TIMESTAMPDIFF(SECOND, A.cre_dt, NOW()) <![CDATA[<=]]> 10 THEN '방금 전'
 		            WHEN TIMESTAMPDIFF(SECOND, A.cre_dt, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(SECOND, A.cre_dt, NOW()), '초 전')
@@ -447,7 +451,7 @@
 		            ELSE CONCAT(TIMESTAMPDIFF(DAY, A.cre_dt, NOW()), '일 전') END  AS creDt
 		FROM  wit_cash100t A
 		WHERE A.SLLR_NO = #{sllrNo}
-		ORDER BY cash_no, CAST(A.CASH_SEQ AS UNSIGNED) desc
+		ORDER BY CASH_NO, CAST(A.CASH_SEQ AS UNSIGNED) DESC
 	</select>
 
 	<!-- 캐시 설정 목록 -->
@@ -624,12 +628,7 @@
 			, A.CASH_SEQ AS cashSeq
 			, A.SLLR_NO AS sllrNo
 			, A.CASH_GBN AS cashGbn
-			, CASE
-				WHEN A.CASH_GBN = '01' THEN '캐시충전'
-				WHEN A.CASH_GBN = '02' THEN '캐시사용'
-				WHEN A.CASH_GBN = '03' THEN '보너스캐시 충전'
-				WHEN A.CASH_GBN = '04' THEN '보너스캐시 사용'
-			  END AS cashGbnNm
+			,(SELECT CD_NM FROM wit_code000t B WHERE B.CD_CLS = 'CS01' AND B.CD = A.CASH_GBN) AS cashGbnNm  
 			, A.CASH AS cash
 			, (SELECT S.CATEGORY_NM FROM category S
 				 WHERE S.CATEGORY_ID IN (SELECT MAX(S1.CATEGORY_ID) from request100t S1 
@@ -661,6 +660,12 @@
 		ORDER BY SLLR_NO
 	</select>
 	
+<!--	SELECT * 
+FROM wit_bord100t a, request100t b
+where a.bord_type = 'C1'
+and   a.del_yn = 'N'
+and   a.BORD_NO = b.req_no
+and   a.BORD_SEQ = b.seq;-->
 	
 
 </mapper>
