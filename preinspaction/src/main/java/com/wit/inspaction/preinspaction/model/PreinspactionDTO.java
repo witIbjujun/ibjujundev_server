@@ -5,12 +5,20 @@ public class PreinspactionDTO {
 	private String inspId;					// 점검ID 
     private String inspSeq;					// 점검순번
     private String inspNm;					// 점검명
+    private String inspComt;				// 점검 상세
     private String uppInspId;				// 상위 점검ID
     private String inspDetlAllCnt;			// 점검 상세 전체 건수
     private String inspDetlChoiceCnt;		// 점검 상세 건수
     private String inspDetlNoCnt;			// 점검 안한 건수
     private String checkYn;
     private String checkCnt;
+    private String inspImg;					// 점검이미지
+    private String checkDate;				// 하자 일자
+    private String reprDate;				// 수리 일자
+    private String checkComt;				// 하자 설명
+    private String checkImg1;				// 하자 이미지 1
+    private String checkImg2;				// 하자 이미지 2
+    private String checkImg3;				// 하자 이미지 3
     
 	/**
 	 * @return the inspId
@@ -47,6 +55,18 @@ public class PreinspactionDTO {
 	 */
 	public void setInspNm(String inspNm) {
 		this.inspNm = inspNm;
+	}
+	/**
+	 * @return the inspComt
+	 */
+	public String getInspComt() {
+		return inspComt;
+	}
+	/**
+	 * @param inspComt the inspComt to set
+	 */
+	public void setInspComt(String inspComt) {
+		this.inspComt = inspComt;
 	}
 	/**
 	 * @return the uppInspId
@@ -119,6 +139,90 @@ public class PreinspactionDTO {
 	 */
 	public void setCheckCnt(String checkCnt) {
 		this.checkCnt = checkCnt;
+	}
+	/**
+	 * @return the inspImg
+	 */
+	public String getInspImg() {
+		return inspImg;
+	}
+	/**
+	 * @param inspImg the inspImg to set
+	 */
+	public void setInspImg(String inspImg) {
+		this.inspImg = inspImg;
+	}
+	/**
+	 * @return the checkDate
+	 */
+	public String getCheckDate() {
+		return checkDate;
+	}
+	/**
+	 * @param checkDate the checkDate to set
+	 */
+	public void setCheckDate(String checkDate) {
+		this.checkDate = checkDate;
+	}
+	/**
+	 * @return the reprDate
+	 */
+	public String getReprDate() {
+		return reprDate;
+	}
+	/**
+	 * @param reprDate the reprDate to set
+	 */
+	public void setReprDate(String reprDate) {
+		this.reprDate = reprDate;
+	}
+	/**
+	 * @return the checkComt
+	 */
+	public String getCheckComt() {
+		return checkComt;
+	}
+	/**
+	 * @param checkComt the checkComt to set
+	 */
+	public void setCheckComt(String checkComt) {
+		this.checkComt = checkComt;
+	}
+	/**
+	 * @return the checkImg1
+	 */
+	public String getCheckImg1() {
+		return checkImg1;
+	}
+	/**
+	 * @param checkImg1 the checkImg1 to set
+	 */
+	public void setCheckImg1(String checkImg1) {
+		this.checkImg1 = checkImg1;
+	}
+	/**
+	 * @return the checkImg2
+	 */
+	public String getCheckImg2() {
+		return checkImg2;
+	}
+	/**
+	 * @param checkImg2 the checkImg2 to set
+	 */
+	public void setCheckImg2(String checkImg2) {
+		this.checkImg2 = checkImg2;
+	}
+	/**
+	 * @return the checkImg3
+	 */
+	public String getCheckImg3() {
+		return checkImg3;
+	}
+	/**
+	 * @param checkImg3 the checkImg3 to set
+	 */
+	public void setCheckImg3(String checkImg3) {
+		this.checkImg3 = checkImg3;
 	}
 	
 }

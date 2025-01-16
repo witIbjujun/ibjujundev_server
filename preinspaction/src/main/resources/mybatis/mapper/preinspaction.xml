@@ -51,6 +51,7 @@
 		    , (SELECT COUNT(S.INSP_ID) FROM wit_insp300t S
 		    	WHERE S.INSP_ID = A.INSP_ID
 		    	AND CHECK_YN = 'N') AS inspDetlNoCnt
+		    , A.INSP_IMG AS inspImg
 		FROM 
 			  wit_insp100t A
 		WHERE A.END_DATE = '99991231235959'
@@ -89,9 +90,28 @@
 			  A.INSP_ID AS inspId
 		    , A.INSP_SEQ AS inspSeq
 		    , A.INSP_NM AS inspNm
+		    , A.INSP_COMT AS inspComt
 		    , IFNULL((SELECT CHECK_YN FROM wit_insp300t S
 		    	WHERE S.INSP_ID = #{parentsInspId}
-		    	AND S.INSP_DETL_CD = A.INSP_ID), 'N') AS checkYn  
+		    	AND S.INSP_DETL_CD = A.INSP_ID), 'D') AS checkYn  
+		    , IFNULL((SELECT CHECK_DATE FROM wit_insp300t S
+		    	WHERE S.INSP_ID = #{parentsInspId}
+		    	AND S.INSP_DETL_CD = A.INSP_ID), NULL) AS checkDate 
+		    , IFNULL((SELECT REPR_DATE FROM wit_insp300t S
+		    	WHERE S.INSP_ID = #{parentsInspId}
+		    	AND S.INSP_DETL_CD = A.INSP_ID), NULL) AS reprDate  
+		    , IFNULL((SELECT CHECK_COMT FROM wit_insp300t S
+		    	WHERE S.INSP_ID = #{parentsInspId}
+		    	AND S.INSP_DETL_CD = A.INSP_ID), '') AS checkComt  
+		    , IFNULL((SELECT CHECK_IMG1 FROM wit_insp300t S
+		    	WHERE S.INSP_ID = #{parentsInspId}
+		    	AND S.INSP_DETL_CD = A.INSP_ID), NULL) AS checkImg1  
+		    , IFNULL((SELECT CHECK_IMG2 FROM wit_insp300t S
+		    	WHERE S.INSP_ID = #{parentsInspId}
+		    	AND S.INSP_DETL_CD = A.INSP_ID), NULL) AS checkImg2 
+		    , IFNULL((SELECT CHECK_IMG3 FROM wit_insp300t S
+		    	WHERE S.INSP_ID = #{parentsInspId}
+		    	AND S.INSP_DETL_CD = A.INSP_ID), NULL) AS checkImg3 
 		FROM 
 			  wit_insp100t A
 		WHERE A.UPP_INSP_ID = #{inspId}
@@ -122,13 +142,22 @@
 			 INSP_ID
 			, INSP_DETL_CD
 			, CHECK_YN
+			, CHECK_DATE
+			, REPR_DATE
+			, CHECK_COMT
 		) VALUES (
 			 #{inspId}
 			, #{inspDetlId}
 			, #{checkYn}
+			, #{checkDate}
+			, #{reprDate}
+			, #{checkComt}
 		)
 		ON DUPLICATE KEY UPDATE
-			CHECK_YN = VALUES(CHECK_YN)
+			  CHECK_YN = VALUES(CHECK_YN)
+			, CHECK_DATE = VALUES(CHECK_DATE)
+			, REPR_DATE = VALUES(REPR_DATE)
+			, CHECK_COMT = VALUES(CHECK_COMT)
 	</insert>
 
 </mapper>

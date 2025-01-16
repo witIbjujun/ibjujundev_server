@@ -151,13 +151,6 @@ public class PreinspactionController {
     public int savePreinspactionInfo(@RequestBody HashMap<String, Object> param) {
     	
 		logger.info("savePreinspactionInfo 호출");
-		
-		String test1 = (String) param.get("inspId");
-		String test2 = (String) param.get("inspDetlId");
-		String test3 = (String) param.get("checkYn");
-		
-		logger.info(test1 + " ::: " + test2 + " ::: " + test3);
-		
 		int result = preinspactionService.savePreinspactionInfo(param);
 		
         return result;
