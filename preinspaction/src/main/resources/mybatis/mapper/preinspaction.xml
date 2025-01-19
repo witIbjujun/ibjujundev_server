@@ -109,9 +109,6 @@
 		    , IFNULL((SELECT CHECK_IMG2 FROM wit_insp300t S
 		    	WHERE S.INSP_ID = #{parentsInspId}
 		    	AND S.INSP_DETL_CD = A.INSP_ID), NULL) AS checkImg2 
-		    , IFNULL((SELECT CHECK_IMG3 FROM wit_insp300t S
-		    	WHERE S.INSP_ID = #{parentsInspId}
-		    	AND S.INSP_DETL_CD = A.INSP_ID), NULL) AS checkImg3 
 		FROM 
 			  wit_insp100t A
 		WHERE A.UPP_INSP_ID = #{inspId}
@@ -145,6 +142,8 @@
 			, CHECK_DATE
 			, REPR_DATE
 			, CHECK_COMT
+			, CHECK_IMG1
+			, CHECK_IMG2
 		) VALUES (
 			 #{inspId}
 			, #{inspDetlId}
@@ -152,12 +151,16 @@
 			, #{checkDate}
 			, #{reprDate}
 			, #{checkComt}
+			, #{checkImg1}
+			, #{checkImg2}
 		)
 		ON DUPLICATE KEY UPDATE
 			  CHECK_YN = VALUES(CHECK_YN)
 			, CHECK_DATE = VALUES(CHECK_DATE)
 			, REPR_DATE = VALUES(REPR_DATE)
 			, CHECK_COMT = VALUES(CHECK_COMT)
+			, CHECK_IMG1 = VALUES(CHECK_IMG1)
+			, CHECK_IMG2 = VALUES(CHECK_IMG2)
 	</insert>
 
 </mapper>
