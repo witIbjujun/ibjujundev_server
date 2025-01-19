@@ -91,6 +91,7 @@
 		    , A.INSP_SEQ AS inspSeq
 		    , A.INSP_NM AS inspNm
 		    , A.INSP_COMT AS inspComt
+		    , A.INSP_IMG AS inspImg
 		    , IFNULL((SELECT CHECK_YN FROM wit_insp300t S
 		    	WHERE S.INSP_ID = #{parentsInspId}
 		    	AND S.INSP_DETL_CD = A.INSP_ID), 'D') AS checkYn  
