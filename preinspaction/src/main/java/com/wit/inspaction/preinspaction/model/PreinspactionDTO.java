@@ -3,15 +3,16 @@ package com.wit.inspaction.preinspaction.model;
 public class PreinspactionDTO {
     
 	private String inspId;					// 점검ID 
+	private String inspDetlId;				// 점검 상세 ID
     private String inspSeq;					// 점검순번
     private String inspNm;					// 점검명
     private String inspComt;				// 점검 상세
     private String uppInspId;				// 상위 점검ID
     private String inspDetlAllCnt;			// 점검 상세 전체 건수
-    private String inspDetlChoiceCnt;		// 점검 상세 건수
-    private String inspDetlNoCnt;			// 점검 안한 건수
-    private String checkYn;
-    private String checkCnt;
+    private String inspDetlChoiceCnt;	// 점검 상세 건수
+    private String inspDetlNoCnt;		// 점검 안한 건수
+    private String checkYn;					// 하자 여부
+    private String checkCnt;				// 하자 숫자
     private String inspImg;					// 점검이미지
     private String checkDate;				// 하자 일자
     private String reprDate;				// 수리 일자
@@ -31,6 +32,18 @@ public class PreinspactionDTO {
 	 */
 	public void setInspId(String inspId) {
 		this.inspId = inspId;
+	}
+	/**
+	 * @return the inspDetlId
+	 */
+	public String getInspDetlId() {
+		return inspDetlId;
+	}
+	/**
+	 * @param inspDetlId the inspDetlId to set
+	 */
+	public void setInspDetlId(String inspDetlId) {
+		this.inspDetlId = inspDetlId;
 	}
 	/**
 	 * @return the inspSeq

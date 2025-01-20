@@ -6,9 +6,7 @@ import java.util.List;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import com.wit.inspaction.preinspaction.model.PreinspactionDTO;
-import com.wit.inspaction.preinspaction.model.PreinspactionDetailDTO;
 
 @Repository
 public class PreinspactionMapper {
@@ -17,22 +15,6 @@ public class PreinspactionMapper {
 	private SqlSessionTemplate sql;
 	
 	private final String path = "com.wit.inspaction.preinspaction.mapper.PreinspactionMapper.";
-	
-	/**
-	 * 사전점검 항목 미완료 건수 조회
-	 * @return int
-	 */
-	public int selectPreinspactionNoCnt() {
-		return sql.selectOne(path + "selectPreinspactionNoCnt");
-	}
-	
-	/**
-	 * 사전점검 항목 미완료 리스트 조회
-	 * @return List<PreinspactionDetailDTO>
-	 */
-	public List<PreinspactionDetailDTO> selectPreinspactionNoList() {
-		return sql.selectList(path + "selectPreinspactionNoList");
-	}
 	
 	/**
 	 * 사전점검 항목 리스트 조회 (레벨1)
@@ -59,15 +41,6 @@ public class PreinspactionMapper {
 	public List<PreinspactionDTO> selectPreinspactionListByLv3(HashMap<String, Object> paramMap) {
 		return sql.selectList(path + "selectPreinspactionListByLv3", paramMap);
 	}
-	
-	/**
-	 * 사전점검 상세항목 리스트 조회
-	 * @param paramMap
-	 * @return List<PreinspactionDetailDTO>
-	 */
-	public List<PreinspactionDetailDTO> selectPreinspactionDetailList(HashMap<String, Object> paramMap) {
-		return sql.selectList(path + "selectPreinspactionDetailList", paramMap);
-	}
     
 	/**
 	 * 사전점검 항목 저장
@@ -76,6 +49,22 @@ public class PreinspactionMapper {
 	 */
 	public int insertPreinspactionInfo(HashMap<String, Object> paramMap) {
 		return sql.update(path + "insertPreinspactionInfo", paramMap);
+	}
+	
+	/**
+	 * 사전점검 항목 미완료 건수 조회
+	 * @return int
+	 */
+	public int selectPreinspactionNoCnt() {
+		return sql.selectOne(path + "selectPreinspactionNoCnt");
+	}
+	
+	/**
+	 * 사전점검 항목 미완료 리스트 조회
+	 * @return List<PreinspactionDTO>
+	 */
+	public List<PreinspactionDTO> selectPreinspactionNoList() {
+		return sql.selectList(path + "selectPreinspactionNoList");
 	}
 	
 }

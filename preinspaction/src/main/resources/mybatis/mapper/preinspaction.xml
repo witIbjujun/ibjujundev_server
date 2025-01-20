@@ -5,30 +5,6 @@
         
 <mapper namespace="com.wit.inspaction.preinspaction.mapper.PreinspactionMapper">
 
-	<!-- 사전점검 항목 미완료 건수 조회 -->
-	<select id="selectPreinspactionNoCnt" resultType="int">
-		SELECT 
-			COUNT(S.INSP_ID) AS noCnt
-		FROM 
-			wit_insp300t S
-		WHERE CHECK_YN = 'N'
-	</select>
-
-	<!-- 사전점검 항목 리스트 조회 -->
-	<select id="selectPreinspactionNoList" resultType="PreinspactionDetailDTO">
-		SELECT 
-		      A.INSP_ID AS inspId
-		    , B.INSP_ID AS inspDetlId
-		    , B.INSP_NM AS inspDetlNm
-		    , A.CHECK_YN AS checkYn
-		FROM
-			  wit_insp300t A
-		    , wit_insp100t B
-		WHERE CHECK_YN = 'Y'
-		AND B.INSP_ID = A.INSP_DETL_CD
-		ORDER BY A.INSP_DETL_CD
-	</select>
-
 	<!-- 사전점검 항목 리스트 조회 -->
 	<select id="selectPreinspactionListByLv1" resultType="PreinspactionDTO">
 		SELECT
@@ -118,21 +94,6 @@
 		ORDER BY A.INSP_SEQ
 	</select>
 	
-	<!-- 사전점검 상세항목 리스트 조회 -->
-	<select id="selectPreinspactionDetailList" parameterType="java.util.HashMap" resultType="PreinspactionDetailDTO">
-		SELECT
-			  A.INSP_ID AS inspId
-			, A.INSP_DETL_CD AS inspDetlId
-		    , A.INSP_DETL_NM AS inspDetlNm
-		    , IFNULL((SELECT CHECK_YN FROM wit_insp300t S
-		    	WHERE S.INSP_ID = A.INSP_ID
-		    	AND S.INSP_DETL_CD = A.INSP_DETL_CD), 'N') AS checkYn
-		FROM 
-			  wit_insp200t A
-		WHERE A.INSP_ID = #{inspId}
-		AND A.END_DATE = '99991231235959'
-	</select>
-	
 	<!-- 사전점검 항목 저장 -->
 	<insert id="insertPreinspactionInfo" parameterType="java.util.HashMap">
 		INSERT INTO wit_insp300t
@@ -163,5 +124,37 @@
 			, CHECK_IMG1 = VALUES(CHECK_IMG1)
 			, CHECK_IMG2 = VALUES(CHECK_IMG2)
 	</insert>
+	
+	<!-- 사전점검 항목 미완료 건수 조회 -->
+	<select id="selectPreinspactionNoCnt" resultType="int">
+		SELECT 
+			COUNT(S.INSP_ID) AS noCnt
+		FROM 
+			wit_insp300t S
+		WHERE CHECK_YN = 'N'
+	</select>
+
+	<!-- 사전점검 항목 미완료 리스트 조회 -->
+	<select id="selectPreinspactionNoList" resultType="PreinspactionDTO">
+		SELECT 
+		      A.INSP_ID AS inspId
+		    , B.INSP_ID AS inspDetlId
+		    , B.INSP_SEQ AS inspSeq
+		    , B.INSP_NM AS inspNm
+		    , B.INSP_COMT AS inspComt
+		    , B.INSP_IMG AS inspImg
+		    , A.CHECK_YN AS checkYn
+		    , A.CHECK_DATE AS checkDate
+		    , A.REPR_DATE AS reprDate
+		    , A.CHECK_COMT AS checkComt
+		    , A.CHECK_IMG1 AS checkImg1
+		    , A.CHECK_IMG2 AS checkImg2
+		FROM
+			  wit_insp300t A
+		    , wit_insp100t B
+		WHERE CHECK_YN = 'Y'
+		AND B.INSP_ID = A.INSP_DETL_CD
+		ORDER BY A.INSP_DETL_CD, B.INSP_SEQ
+	</select>
 
 </mapper>

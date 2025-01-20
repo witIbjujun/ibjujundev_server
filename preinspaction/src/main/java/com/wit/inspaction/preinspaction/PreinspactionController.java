@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.wit.inspaction.preinspaction.model.PreinspactionDTO;
-import com.wit.inspaction.preinspaction.model.PreinspactionDetailDTO;
 import com.wit.inspaction.preinspaction.service.PreinspactionService;
 
 @RestController
@@ -22,40 +20,6 @@ public class PreinspactionController {
 	
 	@Autowired
 	private PreinspactionService preinspactionService;
-	
-	
-	
-	/**
-	 * 사전점검 항목 미완료 건수 조회
-	 * @return int
-	 */
-	@PostMapping("/wit/getPreinspactionNoCnt")
-    public int getPreinspactionNoCnt() {
-    	
-		logger.info("PreinspactionServiceImpl 호출");
-		
-		int noCnt = preinspactionService.getPreinspactionNoCnt();
-    	
-		logger.info("사전점검 항목 미완료 건수 조회 ::: " + noCnt);
-		
-        return noCnt;
-    }
-	
-	/**
-	 * 사전점검 항목 미완료 리스트 조회
-	 * @return List<PreinspactionDetailDTO>
-	 */
-	@PostMapping("/wit/getPreinspactionNoList")
-    public List<PreinspactionDetailDTO> getPreinspactionNoList() {
-    	
-		logger.info("PreinspactionServiceImpl 호출");
-		
-		List<PreinspactionDetailDTO> preinspactionNoList = preinspactionService.getPreinspactionNoList();
-    	
-		logger.info("사전점검 항목 미완료 리스트 조회 ::: " + preinspactionNoList.size());
-		
-        return preinspactionNoList;
-    }
 	
 	/**
 	 * 사전점검 항목 리스트 조회 (레벨1)
@@ -118,31 +82,6 @@ public class PreinspactionController {
     }
 	
 	/**
-	 * 사전점검 상세항목 리스트 조회
-	 * @param param
-	 * @return List<PreinspactionDetailDTO>
-	 */
-	@PostMapping("/wit/getPreinspactionDetailList")
-    public List<PreinspactionDetailDTO> getPreinspactionDetailList(@RequestBody HashMap<String, Object> param) {
-    	
-		logger.info("getPreinspactionDetailList 호출");
-		
-		// 파라미터
-		String inspId = param.get("inspId") == null ? "" : (String) param.get("inspId");
-		
-		logger.info("inspId :: " + inspId);
-		
-		HashMap<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("inspId", inspId);
-		
-		List<PreinspactionDetailDTO> preinspactionDetailList = preinspactionService.getPreinspactionDetailList(paramMap);
-    	
-		logger.info("사전점검 상세 리스트 ::: " + preinspactionDetailList.size()); 
-		
-        return preinspactionDetailList;
-    }
-	
-	/**
 	 * 사전점검 항목 저장
 	 * @param param
 	 * @return int
@@ -154,5 +93,37 @@ public class PreinspactionController {
 		int result = preinspactionService.savePreinspactionInfo(param);
 		
         return result;
+    }
+	
+	/**
+	 * 사전점검 항목 미완료 건수 조회
+	 * @return int
+	 */
+	@PostMapping("/wit/getPreinspactionNoCnt")
+    public int getPreinspactionNoCnt() {
+    	
+		logger.info("PreinspactionServiceImpl 호출");
+		
+		int noCnt = preinspactionService.getPreinspactionNoCnt();
+    	
+		logger.info("사전점검 항목 미완료 건수 조회 ::: " + noCnt);
+		
+        return noCnt;
+    }
+	
+	/**
+	 * 사전점검 항목 미완료 리스트 조회
+	 * @return List<PreinspactionDetailDTO>
+	 */
+	@PostMapping("/wit/getPreinspactionNoList")
+    public List<PreinspactionDTO> getPreinspactionNoList() {
+    	
+		logger.info("PreinspactionServiceImpl 호출");
+		
+		List<PreinspactionDTO> preinspactionNoList = preinspactionService.getPreinspactionNoList();
+    	
+		logger.info("사전점검 항목 미완료 리스트 조회 ::: " + preinspactionNoList.size());
+		
+        return preinspactionNoList;
     }
 }
