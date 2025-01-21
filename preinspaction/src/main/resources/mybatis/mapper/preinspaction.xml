@@ -152,14 +152,9 @@
 	<!-- 사전점검 항목 미완료 리스트 조회 -->
 	<select id="selectPreinspactionNoList" parameterType="java.util.HashMap" resultType="PreinspactionDTO">
 		SELECT 
-		      A.INSP_ID AS inspIdLv1
-		    , (SELECT S.INSP_NM FROM wit_insp100t S
-			 		WHERE S.INSP_ID = A.INSP_ID) AS inspNmLv1
-			 , B.UPP_INSP_ID AS inspIdLv2
-			 , (SELECT S1.INSP_NM FROM wit_insp100t S1
-			 		WHERE S1.INSP_ID = B.UPP_INSP_ID) AS inspNmLv2
-		    , B.INSP_ID AS inspIdLv3
-		    , B.INSP_NM AS inspNmLv3
+		      A.INSP_ID AS inspId
+		    , B.INSP_ID AS inspId
+		    , B.INSP_NM AS inspNm
 		    , B.INSP_SEQ AS inspSeq
 		    , B.INSP_COMT AS inspComt
 		    , B.INSP_IMG AS inspImg
