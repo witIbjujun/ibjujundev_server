@@ -11,6 +11,7 @@ public class PreinspactionDTO {
     private String inspDetlAllCnt;			// 점검 상세 전체 건수
     private String inspDetlChoiceCnt;	// 점검 상세 건수
     private String inspDetlNoCnt;		// 점검 안한 건수
+    
     private String checkYn;					// 하자 여부
     private String checkCnt;				// 하자 숫자
     private String inspImg;					// 점검이미지
@@ -19,7 +20,13 @@ public class PreinspactionDTO {
     private String checkComt;				// 하자 설명
     private String checkImg1;				// 하자 이미지 1
     private String checkImg2;				// 하자 이미지 2
-    private String checkImg3;				// 하자 이미지 3
+    
+    private String inspIdLv1;				// 점검ID (레벨1)
+    private String inspNmLv1;				// 점검명 (레벨1)
+    private String inspIdLv2;				// 점검ID (레벨2)
+    private String inspNmLv2;				// 점검명 (레벨2)
+    private String inspIdLv3;				// 점검ID (레벨3)
+    private String inspNmLv3;				// 점검명 (레벨3)
     
 	/**
 	 * @return the inspId
@@ -226,16 +233,76 @@ public class PreinspactionDTO {
 		this.checkImg2 = checkImg2;
 	}
 	/**
-	 * @return the checkImg3
+	 * @return the inspIdLv1
 	 */
-	public String getCheckImg3() {
-		return checkImg3;
+	public String getInspIdLv1() {
+		return inspIdLv1;
 	}
 	/**
-	 * @param checkImg3 the checkImg3 to set
+	 * @param inspIdLv1 the inspIdLv1 to set
 	 */
-	public void setCheckImg3(String checkImg3) {
-		this.checkImg3 = checkImg3;
+	public void setInspIdLv1(String inspIdLv1) {
+		this.inspIdLv1 = inspIdLv1;
+	}
+	/**
+	 * @return the inspNmLv1
+	 */
+	public String getInspNmLv1() {
+		return inspNmLv1;
+	}
+	/**
+	 * @param inspNmLv1 the inspNmLv1 to set
+	 */
+	public void setInspNmLv1(String inspNmLv1) {
+		this.inspNmLv1 = inspNmLv1;
+	}
+	/**
+	 * @return the inspIdLv2
+	 */
+	public String getInspIdLv2() {
+		return inspIdLv2;
+	}
+	/**
+	 * @param inspIdLv2 the inspIdLv2 to set
+	 */
+	public void setInspIdLv2(String inspIdLv2) {
+		this.inspIdLv2 = inspIdLv2;
+	}
+	/**
+	 * @return the inspNmLv2
+	 */
+	public String getInspNmLv2() {
+		return inspNmLv2;
+	}
+	/**
+	 * @param inspNmLv2 the inspNmLv2 to set
+	 */
+	public void setInspNmLv2(String inspNmLv2) {
+		this.inspNmLv2 = inspNmLv2;
+	}
+	/**
+	 * @return the inspIdLv3
+	 */
+	public String getInspIdLv3() {
+		return inspIdLv3;
+	}
+	/**
+	 * @param inspIdLv3 the inspIdLv3 to set
+	 */
+	public void setInspIdLv3(String inspIdLv3) {
+		this.inspIdLv3 = inspIdLv3;
+	}
+	/**
+	 * @return the inspNmLv3
+	 */
+	public String getInspNmLv3() {
+		return inspNmLv3;
+	}
+	/**
+	 * @param inspNmLv3 the inspNmLv3 to set
+	 */
+	public void setInspNmLv3(String inspNmLv3) {
+		this.inspNmLv3 = inspNmLv3;
 	}
 	
 }

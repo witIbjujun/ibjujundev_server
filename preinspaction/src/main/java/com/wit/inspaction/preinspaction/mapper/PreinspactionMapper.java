@@ -20,8 +20,8 @@ public class PreinspactionMapper {
 	 * 사전점검 항목 리스트 조회 (레벨1)
 	 * @return List<PreinspactionDTO>
 	 */
-	public List<PreinspactionDTO> selectPreinspactionListByLv1() {
-		return sql.selectList(path + "selectPreinspactionListByLv1");
+	public List<PreinspactionDTO> selectPreinspactionListByLv1(HashMap<String, Object> paramMap) {
+		return sql.selectList(path + "selectPreinspactionListByLv1", paramMap);
 	}
 	
 	/**
@@ -55,16 +55,16 @@ public class PreinspactionMapper {
 	 * 사전점검 항목 미완료 건수 조회
 	 * @return int
 	 */
-	public int selectPreinspactionNoCnt() {
-		return sql.selectOne(path + "selectPreinspactionNoCnt");
+	public int selectPreinspactionNoCnt(HashMap<String, Object> paramMap) {
+		return sql.selectOne(path + "selectPreinspactionNoCnt", paramMap);
 	}
 	
 	/**
 	 * 사전점검 항목 미완료 리스트 조회
 	 * @return List<PreinspactionDTO>
 	 */
-	public List<PreinspactionDTO> selectPreinspactionNoList() {
-		return sql.selectList(path + "selectPreinspactionNoList");
+	public List<PreinspactionDTO> selectPreinspactionNoList(HashMap<String, Object> paramMap) {
+		return sql.selectList(path + "selectPreinspactionNoList", paramMap);
 	}
 	
 }

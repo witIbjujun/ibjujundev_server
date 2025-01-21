@@ -26,15 +26,8 @@ public class PreinspactionController {
 	 * @return List<PreinspactionDTO>
 	 */
 	@PostMapping("/wit/getPreinspactionListByLv1")
-    public List<PreinspactionDTO> getPreinspactionList() {
-    	
-		logger.info("PreinspactionServiceImpl 호출");
-		
-		List<PreinspactionDTO> preinspactionList = preinspactionService.getPreinspactionListByLv1();
-    	
-		logger.info("사전점검 리스트 Lv1 ::: " + preinspactionList.size());
-		
-        return preinspactionList;
+    public List<PreinspactionDTO> getPreinspactionList(@RequestBody HashMap<String, Object> param) {
+        return preinspactionService.getPreinspactionListByLv1(param);
     }
 	
 	/**
@@ -43,19 +36,7 @@ public class PreinspactionController {
 	 */
 	@PostMapping("/wit/getPreinspactionListByLv2")
     public List<PreinspactionDTO> getPreinspactionListByLv2(@RequestBody HashMap<String, Object> param) {
-    	
-		logger.info("PreinspactionServiceImpl 호출");
-		
-		// 파라미터
-		String inspId = param.get("inspId") == null ? "" : (String) param.get("inspId");
-				
-		logger.info("inspId2 :: " + inspId);
-		
-		List<PreinspactionDTO> preinspactionList = preinspactionService.getPreinspactionListByLv2(param);
-    	
-		logger.info("사전점검 리스트 Lv2 ::: " + preinspactionList.size());
-		
-        return preinspactionList;
+        return preinspactionService.getPreinspactionListByLv2(param);
     }
 	
 	/**
@@ -64,21 +45,7 @@ public class PreinspactionController {
 	 */
 	@PostMapping("/wit/getPreinspactionListByLv3")
     public List<PreinspactionDTO> getPreinspactionListByLv3(@RequestBody HashMap<String, Object> param) {
-    	
-		logger.info("PreinspactionServiceImpl 호출");
-		
-		// 파라미터
-		String inspId = param.get("inspId") == null ? "" : (String) param.get("inspId");
-		String parentsInspId = param.get("parentsInspId") == null ? "" : (String) param.get("parentsInspId");
-		
-		logger.info("parentsInspId :: " + parentsInspId);
-		logger.info("inspId :: " + inspId);
-		
-		List<PreinspactionDTO> preinspactionList = preinspactionService.getPreinspactionListByLv3(param);
-    	
-		logger.info("사전점검 리스트 Lv3 ::: " + preinspactionList.size());
-		
-        return preinspactionList;
+        return preinspactionService.getPreinspactionListByLv3(param);
     }
 	
 	/**
@@ -88,11 +55,7 @@ public class PreinspactionController {
 	 */
 	@PostMapping("/wit/savePreinspactionInfo")
     public int savePreinspactionInfo(@RequestBody HashMap<String, Object> param) {
-    	
-		logger.info("savePreinspactionInfo 호출");
-		int result = preinspactionService.savePreinspactionInfo(param);
-		
-        return result;
+        return preinspactionService.savePreinspactionInfo(param);
     }
 	
 	/**
@@ -100,15 +63,8 @@ public class PreinspactionController {
 	 * @return int
 	 */
 	@PostMapping("/wit/getPreinspactionNoCnt")
-    public int getPreinspactionNoCnt() {
-    	
-		logger.info("PreinspactionServiceImpl 호출");
-		
-		int noCnt = preinspactionService.getPreinspactionNoCnt();
-    	
-		logger.info("사전점검 항목 미완료 건수 조회 ::: " + noCnt);
-		
-        return noCnt;
+    public int getPreinspactionNoCnt(@RequestBody HashMap<String, Object> param) {
+        return preinspactionService.getPreinspactionNoCnt(param);
     }
 	
 	/**
@@ -116,14 +72,7 @@ public class PreinspactionController {
 	 * @return List<PreinspactionDetailDTO>
 	 */
 	@PostMapping("/wit/getPreinspactionNoList")
-    public List<PreinspactionDTO> getPreinspactionNoList() {
-    	
-		logger.info("PreinspactionServiceImpl 호출");
-		
-		List<PreinspactionDTO> preinspactionNoList = preinspactionService.getPreinspactionNoList();
-    	
-		logger.info("사전점검 항목 미완료 리스트 조회 ::: " + preinspactionNoList.size());
-		
-        return preinspactionNoList;
+    public List<PreinspactionDTO> getPreinspactionNoList(@RequestBody HashMap<String, Object> param) {
+        return preinspactionService.getPreinspactionNoList(param);
     }
 }

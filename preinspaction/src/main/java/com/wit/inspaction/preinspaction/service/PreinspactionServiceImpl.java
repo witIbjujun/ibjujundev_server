@@ -22,13 +22,8 @@ public class PreinspactionServiceImpl implements PreinspactionService{
 	 * 사전점검 리스트 조회
 	 */
 	@Override
-	public List<PreinspactionDTO> getPreinspactionListByLv1() {
-		
-		System.out.println("PreinspactionServiceImpl getPreinspactionList 호출");
-		
-		List<PreinspactionDTO> list = preinspactionMapper.selectPreinspactionListByLv1();
-		
-		return list;
+	public List<PreinspactionDTO> getPreinspactionListByLv1(HashMap<String, Object> paramMap) {
+		return preinspactionMapper.selectPreinspactionListByLv1(paramMap);
 	}
 	
 	/**
@@ -36,12 +31,7 @@ public class PreinspactionServiceImpl implements PreinspactionService{
 	 */
 	@Override
 	public List<PreinspactionDTO> getPreinspactionListByLv2(HashMap<String, Object> paramMap) {
-		
-		System.out.println("PreinspactionServiceImpl getPreinspactionListByLv2 호출");
-		
-		List<PreinspactionDTO> list = preinspactionMapper.selectPreinspactionListByLv2(paramMap);
-		
-		return list;
+		return preinspactionMapper.selectPreinspactionListByLv2(paramMap);
 	}
 	
 	/**
@@ -49,12 +39,7 @@ public class PreinspactionServiceImpl implements PreinspactionService{
 	 */
 	@Override
 	public List<PreinspactionDTO> getPreinspactionListByLv3(HashMap<String, Object> paramMap) {
-		
-		System.out.println("PreinspactionServiceImpl getPreinspactionListByLv3 호출");
-		
-		List<PreinspactionDTO> list = preinspactionMapper.selectPreinspactionListByLv3(paramMap);
-		
-		return list;
+		return preinspactionMapper.selectPreinspactionListByLv3(paramMap);
 	}
 
 	/**
@@ -69,25 +54,15 @@ public class PreinspactionServiceImpl implements PreinspactionService{
 	 * 사전점검 항목 미완료 건수 조회
 	 */
 	@Override
-	public int getPreinspactionNoCnt() {
-		
-		System.out.println("PreinspactionServiceImpl getPreinspactionNoCnt 호출");
-		
-		int noCnt = preinspactionMapper.selectPreinspactionNoCnt();
-		
-		return noCnt;
+	public int getPreinspactionNoCnt(HashMap<String, Object> paramMap) {
+		return preinspactionMapper.selectPreinspactionNoCnt(paramMap);
 	}
 	
 	/**
 	 * 사전점검 항목 미완료 리스트 조회
 	 */
 	@Override
-	public List<PreinspactionDTO> getPreinspactionNoList() {
-		
-		System.out.println("PreinspactionServiceImpl getPreinspactionNoList 호출");
-		
-		List<PreinspactionDTO> list = preinspactionMapper.selectPreinspactionNoList();
-		
-		return list;
+	public List<PreinspactionDTO> getPreinspactionNoList(HashMap<String, Object> paramMap) {
+		return preinspactionMapper.selectPreinspactionNoList(paramMap);
 	}
 }

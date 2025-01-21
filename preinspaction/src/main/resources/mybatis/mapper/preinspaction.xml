@@ -6,15 +6,16 @@
 <mapper namespace="com.wit.inspaction.preinspaction.mapper.PreinspactionMapper">
 
 	<!-- 사전점검 항목 리스트 조회 -->
-	<select id="selectPreinspactionListByLv1" resultType="PreinspactionDTO">
+	<select id="selectPreinspactionListByLv1" parameterType="java.util.HashMap" resultType="PreinspactionDTO">
 		SELECT
 			  A.INSP_ID AS inspId
 		    , A.INSP_SEQ AS inspSeq
 		    , A.INSP_NM AS inspNm
-		    , (SELECT COUNT(S1.INSP_ID) 
+		    , (SELECT
+					COUNT(S1.INSP_ID) 
 				FROM 
-					wit_insp100t S
-                    , wit_insp100t S1
+					  wit_insp100t S
+					, wit_insp100t S1
 				WHERE S.UPP_INSP_ID = A.INSP_ID
                 AND S.INSP_LEVEL = '2'
 		        AND S.END_DATE = '99991231235959'
@@ -23,10 +24,12 @@
 		        AND S1.END_DATE = '99991231235959') AS inspDetlAllCnt
 		    , (SELECT COUNT(S.INSP_ID) FROM wit_insp300t S
 		    	WHERE S.INSP_ID = A.INSP_ID
-		    	AND CHECK_YN = 'Y') AS inspDetlChoiceCnt
+		    	AND S.CHECK_YN = 'Y'
+		    	AND S.CRE_USER = #{loginClerkNo}) AS inspDetlChoiceCnt
 		    , (SELECT COUNT(S.INSP_ID) FROM wit_insp300t S
 		    	WHERE S.INSP_ID = A.INSP_ID
-		    	AND CHECK_YN = 'N') AS inspDetlNoCnt
+		    	AND S.CHECK_YN = 'N'
+		    	AND S.CRE_USER = #{loginClerkNo}) AS inspDetlNoCnt
 		    , A.INSP_IMG AS inspImg
 		FROM 
 			  wit_insp100t A
@@ -36,7 +39,7 @@
 	</select>
 	
 	<!-- 사전점검 항목 조회 (레벨2) -->
-	<select id="selectPreinspactionListByLv2" resultType="PreinspactionDTO">
+	<select id="selectPreinspactionListByLv2" parameterType="java.util.HashMap" resultType="PreinspactionDTO">
 		SELECT
 			  A.INSP_ID AS inspId
 		    , A.INSP_SEQ AS inspSeq
@@ -45,13 +48,14 @@
 		    , (SELECT 
 					COUNT(S.INSP_ID)
 				FROM 
-					wit_insp100t S
+					  wit_insp100t S
                     , wit_insp300t S2
 				WHERE S.END_DATE = '99991231235959'
 				AND S.INSP_LEVEL = '3'
                 AND S.UPP_INSP_ID = A.INSP_ID
                 AND S2.INSP_DETL_CD = S.INSP_ID
-                AND S2.CHECK_YN = 'Y') AS checkCnt
+                AND S2.CHECK_YN = 'Y'
+                AND S2.CRE_USER = #{loginClerkNo}) AS checkCnt
 		FROM 
 			  wit_insp100t A
 		WHERE A.END_DATE = '99991231235959'
@@ -61,7 +65,7 @@
 	</select>
 	
 	<!-- 사전점검 항목 조회 (레벨3) -->
-	<select id="selectPreinspactionListByLv3" resultType="PreinspactionDTO">
+	<select id="selectPreinspactionListByLv3" parameterType="java.util.HashMap" resultType="PreinspactionDTO">
 		SELECT
 			  A.INSP_ID AS inspId
 		    , A.INSP_SEQ AS inspSeq
@@ -70,22 +74,28 @@
 		    , A.INSP_IMG AS inspImg
 		    , IFNULL((SELECT CHECK_YN FROM wit_insp300t S
 		    	WHERE S.INSP_ID = #{parentsInspId}
-		    	AND S.INSP_DETL_CD = A.INSP_ID), 'D') AS checkYn  
+		    	AND S.INSP_DETL_CD = A.INSP_ID
+		    	AND S.CRE_USER = #{loginClerkNo}), 'D') AS checkYn  
 		    , IFNULL((SELECT CHECK_DATE FROM wit_insp300t S
 		    	WHERE S.INSP_ID = #{parentsInspId}
-		    	AND S.INSP_DETL_CD = A.INSP_ID), NULL) AS checkDate 
+		    	AND S.INSP_DETL_CD = A.INSP_ID
+		    	AND S.CRE_USER = #{loginClerkNo}), NULL) AS checkDate 
 		    , IFNULL((SELECT REPR_DATE FROM wit_insp300t S
 		    	WHERE S.INSP_ID = #{parentsInspId}
-		    	AND S.INSP_DETL_CD = A.INSP_ID), NULL) AS reprDate  
+		    	AND S.INSP_DETL_CD = A.INSP_ID
+		    	AND S.CRE_USER = #{loginClerkNo}), NULL) AS reprDate  
 		    , IFNULL((SELECT CHECK_COMT FROM wit_insp300t S
 		    	WHERE S.INSP_ID = #{parentsInspId}
-		    	AND S.INSP_DETL_CD = A.INSP_ID), '') AS checkComt  
+		    	AND S.INSP_DETL_CD = A.INSP_ID
+		    	AND S.CRE_USER = #{loginClerkNo}), '') AS checkComt  
 		    , IFNULL((SELECT CHECK_IMG1 FROM wit_insp300t S
 		    	WHERE S.INSP_ID = #{parentsInspId}
-		    	AND S.INSP_DETL_CD = A.INSP_ID), NULL) AS checkImg1  
+		    	AND S.INSP_DETL_CD = A.INSP_ID
+		    	AND S.CRE_USER = #{loginClerkNo}), NULL) AS checkImg1  
 		    , IFNULL((SELECT CHECK_IMG2 FROM wit_insp300t S
 		    	WHERE S.INSP_ID = #{parentsInspId}
-		    	AND S.INSP_DETL_CD = A.INSP_ID), NULL) AS checkImg2 
+		    	AND S.INSP_DETL_CD = A.INSP_ID
+		    	AND S.CRE_USER = #{loginClerkNo}), NULL) AS checkImg2 
 		FROM 
 			  wit_insp100t A
 		WHERE A.UPP_INSP_ID = #{inspId}
@@ -106,6 +116,8 @@
 			, CHECK_COMT
 			, CHECK_IMG1
 			, CHECK_IMG2
+			, CRE_USER
+			, CRE_DATE
 		) VALUES (
 			 #{inspId}
 			, #{inspDetlId}
@@ -115,6 +127,8 @@
 			, #{checkComt}
 			, #{checkImg1}
 			, #{checkImg2}
+			, #{loginClerkNo}
+			, NOW()
 		)
 		ON DUPLICATE KEY UPDATE
 			  CHECK_YN = VALUES(CHECK_YN)
@@ -126,21 +140,27 @@
 	</insert>
 	
 	<!-- 사전점검 항목 미완료 건수 조회 -->
-	<select id="selectPreinspactionNoCnt" resultType="int">
+	<select id="selectPreinspactionNoCnt" parameterType="java.util.HashMap" resultType="int">
 		SELECT 
-			COUNT(S.INSP_ID) AS noCnt
+			COUNT(A.INSP_ID) AS noCnt
 		FROM 
-			wit_insp300t S
-		WHERE CHECK_YN = 'N'
+			wit_insp300t A
+		WHERE A.CHECK_YN = 'N'
+		AND A.CRE_USER = #{loginClerkNo}
 	</select>
 
 	<!-- 사전점검 항목 미완료 리스트 조회 -->
-	<select id="selectPreinspactionNoList" resultType="PreinspactionDTO">
+	<select id="selectPreinspactionNoList" parameterType="java.util.HashMap" resultType="PreinspactionDTO">
 		SELECT 
-		      A.INSP_ID AS inspId
-		    , B.INSP_ID AS inspDetlId
+		      A.INSP_ID AS inspIdLv1
+		    , (SELECT S.INSP_NM FROM wit_insp100t S
+			 		WHERE S.INSP_ID = A.INSP_ID) AS inspNmLv1
+			 , B.UPP_INSP_ID AS inspIdLv2
+			 , (SELECT S1.INSP_NM FROM wit_insp100t S1
+			 		WHERE S1.INSP_ID = B.UPP_INSP_ID) AS inspNmLv2
+		    , B.INSP_ID AS inspIdLv3
+		    , B.INSP_NM AS inspNmLv3
 		    , B.INSP_SEQ AS inspSeq
-		    , B.INSP_NM AS inspNm
 		    , B.INSP_COMT AS inspComt
 		    , B.INSP_IMG AS inspImg
 		    , A.CHECK_YN AS checkYn
@@ -152,7 +172,8 @@
 		FROM
 			  wit_insp300t A
 		    , wit_insp100t B
-		WHERE CHECK_YN = 'Y'
+		WHERE A.CHECK_YN = 'Y'
+		AND A.CRE_USER = #{loginClerkNo}
 		AND B.INSP_ID = A.INSP_DETL_CD
 		ORDER BY A.INSP_DETL_CD, B.INSP_SEQ
 	</select>

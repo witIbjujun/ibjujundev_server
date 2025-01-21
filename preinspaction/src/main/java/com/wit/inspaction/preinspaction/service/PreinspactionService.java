@@ -14,7 +14,7 @@ public interface PreinspactionService {
 	 * 사전점검 항목 리스트 조회 (레벨1)
 	 * @return List<PreinspactionDTO>
 	 */
-	public List<PreinspactionDTO> getPreinspactionListByLv1();
+	public List<PreinspactionDTO> getPreinspactionListByLv1(HashMap<String, Object> paramMap);
 	
 	/**
 	 * 사전점검 항목 리스트 조회 (레벨2)
@@ -41,12 +41,12 @@ public interface PreinspactionService {
 	 * 사전점검 항목 미완료 건수 조회
 	 * @return int
 	 */
-	public int getPreinspactionNoCnt();
+	public int getPreinspactionNoCnt(HashMap<String, Object> paramMap);
 	
 	/**
 	 * 사전점검 항목 미완료 리스트 조회
 	 * @return List<PreinspactionDTO>
 	 */
-	public List<PreinspactionDTO> getPreinspactionNoList();
+	public List<PreinspactionDTO> getPreinspactionNoList(HashMap<String, Object> paramMap);
 	
 }
