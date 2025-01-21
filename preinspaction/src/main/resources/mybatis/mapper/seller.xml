@@ -344,12 +344,11 @@
 			, CRE_USER
 		) VALUES (
   			  #{sllrNo}
-			, #{cashNo}
+			, (select cash_no from wit_cash000t where sllr_no = #{sllrNo})
 			, (SELECT T.cash_seq
 			   FROM   (SELECT IFNULL(MAX(CAST(CASH_SEQ AS UNSIGNED)), 0) + 1 AS cash_seq
 					   FROM   wit_cash100t
-					   WHERE  SLLR_NO = #{sllrNo}
-					   AND    CASH_NO = #{cashNo}) AS T)
+					   WHERE  SLLR_NO = #{sllrNo}) AS T)
 			, #{cashGbn}
 			, #{cash}
 			, #{estNo}
@@ -367,13 +366,11 @@
 							            END  AS CASH
 							 FROM   wit_cash000t A, wit_cash100t B
 							 WHERE  A.SLLR_NO = #{sllrNo}
-							 AND    A.CASH_NO = #{cashNo}
 							 AND    A.CASH_NO = B.CASH_NO
 							 ORDER BY CAST(B.CASH_SEQ AS UNSIGNED) DESC LIMIT 1) AS T)
 		     ,UPD_DT = SYSDATE()
 		     ,UPD_USER = #{updUser}
 		WHERE SLLR_NO = #{sllrNo}
-		AND   CASH_NO = #{cashNo}
 	</update>
 	
 	<!-- 보너스 캐시정보 수정 -->
@@ -388,7 +385,6 @@
 									    FROM wit_cash100t B
 									    WHERE 
 									        A.SLLR_NO = #{sllrNo}
-									        AND A.CASH_NO = #{cashNo}
 									        AND A.CASH_NO = B.CASH_NO 
 									        AND B.CASH_GBN IN ('03', '04')
 									    ORDER BY CAST(B.CASH_SEQ AS UNSIGNED) DESC 
@@ -396,8 +392,6 @@
 			, UPD_DT = SYSDATE()
 			, UPD_USER = #{updUser}
 		WHERE SLLR_NO = #{sllrNo}
-		AND CASH_NO = #{cashNo}
-		
 	</update>
 
 	<!-- 업체 정보 수정 -->
