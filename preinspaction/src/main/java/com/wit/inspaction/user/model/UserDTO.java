@@ -15,6 +15,7 @@ public class UserDTO {
     private String rate;					// 점검명
     private String companyNm;				// 점검명
     private String reqNo;				// 점검명
+    private String formatReqNo;				// 점검명
     private String reqState;				// 점검명
     private String reqStateNm;				// 점검명
     private String reqDateInfo;				// 점검명
@@ -35,11 +36,31 @@ public class UserDTO {
     private String mainAptPyoung;               // 메인아파트 이름
     private String updownGubun;               // 메인아파트 이름
     private String type;               // 메인아파트 이름
+    private String token;               // 메인아파트 이름
     private String price;               // 메인아파트 이름
+    private String imageFilePath;               // 업체 이미지 파일path
     private List<String> aptNo;               // 아파트 번호 리스트
     private List<String> aptName;             // 아파트 이름 리스트
 
     
+	public String getFormatReqNo() {
+		return formatReqNo;
+	}
+	public void setFormatReqNo(String formatReqNo) {
+		this.formatReqNo = formatReqNo;
+	}
+	public String getImageFilePath() {
+		return imageFilePath;
+	}
+	public void setImageFilePath(String imageFilePath) {
+		this.imageFilePath = imageFilePath;
+	}
+	public String getToken() {
+		return token;
+	}
+	public void setToken(String token) {
+		this.token = token;
+	}
 	public String getUpdownGubun() {
 		return updownGubun;
 	}

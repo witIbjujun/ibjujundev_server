@@ -52,6 +52,13 @@ public interface UserService {
 	public List<UserDTO> getAptPyoungList(HashMap<String, Object> paramMap);
 	
 	/**
+	 * 토큰조회
+	 * @param paramMap
+	 * @return List<UserDTO>
+	 */
+	public List<UserDTO> getTokenList(HashMap<String, Object> paramMap);
+	
+	/**
 	 * 내정보 
 	 * @param paramMap
 	 * @return
@@ -121,6 +128,13 @@ public interface UserService {
 	 * @return
 	 */
 	public int updateUserInfo(HashMap<String, Object> paramMap);
+	
+	/**
+	 * 토큰 수
+	 * @param paramMap
+	 * @return
+	 */
+	public int updateTokenOnServer(HashMap<String, Object> paramMap);
 
 	
 }

@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.wit.inspaction.common.FcmService;
 import com.wit.inspaction.preinspaction.PreinspactionController;
-import com.wit.inspaction.preinspaction.model.PreinspactionDetailDTO;
 import com.wit.inspaction.user.model.UserDTO;
 import com.wit.inspaction.user.service.UserService;
 
@@ -30,6 +30,9 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private FcmService fcmService;
+	
 	/**
 	 * 서비스 카테고리 
 	 * @return List<UserDTO>
@@ -40,9 +43,14 @@ public class UserController {
 		logger.info("CompanyServiceImpl 호출");
 		
 		String categoryId = param.get("categoryId") == null ? "" : (String) param.get("categoryId");
+		String type = param.get("type") == null || "".equals(param.get("type")) 
+                ? "A" 
+                : (String) param.get("type");
 		
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("categoryId", categoryId);
+		paramMap.put("type", type);
+		logger.info("카테고리 type ::: " + type);
 		
 		List<UserDTO> categoryList = userService.getCategoryList(paramMap);
     	
@@ -198,10 +206,13 @@ public class UserController {
 		
 		// 파라미터
 		String kakaoId = param.get("kakaoId") == null ? "" : (String) param.get("kakaoId");
+		String clerkNo = param.get("clerkNo") == null ? "" : (String) param.get("clerkNo");
 		logger.info("kakaoId :: " + kakaoId);
+		logger.info("clerkNo :: " + clerkNo);
 		
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("kakaoId", kakaoId);
+		paramMap.put("clerkNo", clerkNo);
 		
 		int cnt = userService.userCheckCount(paramMap);
 		
@@ -230,6 +241,7 @@ public class UserController {
 		String role = param.get("role") == null ? "user" : (String) param.get("role");
 		String aptNo = param.get("aptNo") == null ? "" : (String) param.get("aptNo");
 		String pyoung = param.get("pyoung") == null ? "" : (String) param.get("pyoung");
+		String token = param.get("token") == null ? "" : (String) param.get("token");
 		
 		logger.info("kakaoId :: " + kakaoId);
 		logger.info("nickName :: " + nickName);
@@ -239,6 +251,116 @@ public class UserController {
 		logger.info("role :: " + role);
 		logger.info("aptNo :: " + aptNo);
 		logger.info("pyoung :: " + pyoung);
+		logger.info("token :: " + token);
+		
+		HashMap<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("kakaoId", kakaoId);
+		paramMap.put("nickName", nickName);
+		paramMap.put("profileImageUrl", profileImageUrl);
+		paramMap.put("email", email);
+		paramMap.put("clerkNo", clerkNo);
+		logger.info("paramMap에 저장된 clerkNo :: " + paramMap.get("clerkNo"));
+		paramMap.put("role", role);
+		paramMap.put("aptNo", aptNo);
+		paramMap.put("pyoung", pyoung);
+		paramMap.put("token", token);
+		UserDTO userInfo = null;
+		int cnt  = 0;
+		
+		 cnt = userService.userCheckCount(paramMap);
+		 logger.info("요기 들어갔나?? "+cnt);
+		
+		if(cnt == 0 ) {
+			
+			logger.info("1111111111111 들어갔나?? "+cnt);
+			//계정생성
+	       int prsnInCnt = userService.insertUserInfo(paramMap);
+	       
+	       String clerkNewNo = (String) paramMap.get("clerkNo");
+	       
+	       paramMap.put("clerkNo", clerkNewNo);
+	       logger.info("prsnInCnt :: " + prsnInCnt);
+		}else {
+			logger.info("222222222222222222 들어갔나?? "+cnt);
+			logger.info("clerkNo=== :: " + (String)paramMap.get("clerkNo"));
+			
+			HashMap<String, Object> searchMap = new HashMap<String, Object>();
+			
+			if (paramMap.get("clerkNo") != null && !((String)paramMap.get("clerkNo")).isEmpty()) {
+				
+				logger.info("333333 들어갔나?? "+(String)paramMap.get("clerkNo"));
+				searchMap.put("clerkNo", (String)paramMap.get("clerkNo"));
+			}else {
+				logger.info("444444444444444 들어갔나?? "+clerkNo);
+				searchMap.put("clerkNo", clerkNo);
+			}
+			
+			
+			logger.info("들어가기전 clerkNo=== :: " + (String)paramMap.get("clerkNo"));
+			
+			userInfo = userService.getUserInfo(searchMap);
+			logger.info("가져왔냐?????clerkNo :: " + userInfo.getClerkNo());
+			
+			int tokenUpcnt = userService.updateTokenOnServer(paramMap);
+//			int updateUser = userService.updateUserInfo(paramMap);
+//			logger.info("updateUser :: " + updateUser);
+			
+			HashMap<String, Object> apmMap = new HashMap<String, Object>();
+			logger.info("clerkNo :: " + userInfo.getClerkNo());
+			apmMap.put("clerkNo", userInfo.getClerkNo());
+			apmMap.put("gubun", "A");
+			List<Map<String, String>> aptList = userService.getMyAptList(apmMap);
+			logger.info("아파트 이름 ::: " + aptList.size());
+			
+			List<String> aptNoList = new ArrayList<>();
+			List<String> aptNameList = new ArrayList<>();
+			for (Map<String, String> apt : aptList) {
+				aptNoList.add(apt.get("aptNo"));
+				aptNameList.add(apt.get("aptName"));
+				
+				logger.info("아파트 이름 ::: " + apt.get("aptName"));
+				
+			}
+			
+			userInfo.setAptNo(aptNoList);
+			userInfo.setAptName(aptNameList);
+			
+			
+			logger.info("닉네임 ::: " + userInfo.getNickName());
+		}
+		  
+		
+		return userInfo;
+	}
+	/**
+	 * 내정보 조회 
+	 * @param param
+	 * @return List<UserDTO>
+	 */
+	@RequestMapping("/wit/getCreateUser")
+	public UserDTO getCreateUser(@RequestBody HashMap<String, Object> param) {
+		logger.info("getCreateUser 호출");
+		
+		// 파라미터
+		String kakaoId = param.get("kakaoId") == null ? "" : (String) param.get("kakaoId");
+		String nickName = param.get("nickName") == null ? "" : (String) param.get("nickName");
+		String profileImageUrl = param.get("profileImageUrl") == null ? "" : (String) param.get("profileImageUrl");
+		String email = param.get("email") == null ? "" : (String) param.get("email");
+		String clerkNo = param.get("clerkNo") == null ? "" : (String) param.get("clerkNo");
+		String role = param.get("role") == null ? "user" : (String) param.get("role");
+		String aptNo = param.get("aptNo") == null ? "" : (String) param.get("aptNo");
+		String pyoung = param.get("pyoung") == null ? "" : (String) param.get("pyoung");
+		String token = param.get("token") == null ? "" : (String) param.get("token");
+		
+		logger.info("kakaoId :: " + kakaoId);
+		logger.info("nickName :: " + nickName);
+		logger.info("profileImageUrl :: " + profileImageUrl);
+		logger.info("email :: " + email);
+		logger.info("clerkNo :: " + clerkNo);
+		logger.info("role :: " + role);
+		logger.info("aptNo :: " + aptNo);
+		logger.info("pyoung :: " + pyoung);
+		logger.info("token :: " + token);
 		
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("kakaoId", kakaoId);
@@ -249,42 +371,45 @@ public class UserController {
 		paramMap.put("role", role);
 		paramMap.put("aptNo", aptNo);
 		paramMap.put("pyoung", pyoung);
+		paramMap.put("token", token);
 		
-		int cnt = userService.userCheckCount(paramMap);
-		
-		if(cnt == 0 ) {
 			//계정생성
+		int prsnInCnt = userService.insertUserInfo(paramMap);
+		logger.info("prsnInCnt :: " + prsnInCnt);
 			
-	      int userCnt = userService.insertUserInfo(paramMap);
-		}
-		  
-		UserDTO userInfo = userService.getUserInfo(paramMap);
+		String clerkNewNo = (String) paramMap.get("clerkNo");
+			
+		logger.info("clerkNewNo :: " + clerkNewNo);
+		  paramMap.put("clerkNo", clerkNewNo);
+		  UserDTO userInfo = userService.getUserInfo(paramMap);
+		logger.info("가져왔냐?????clerkNo :: " + userInfo.getClerkNo());
+		
 		
 		HashMap<String, Object> apmMap = new HashMap<String, Object>();
 		logger.info("clerkNo :: " + userInfo.getClerkNo());
 		apmMap.put("clerkNo", userInfo.getClerkNo());
 		apmMap.put("gubun", "A");
 		List<Map<String, String>> aptList = userService.getMyAptList(apmMap);
-		 logger.info("아파트 이름 ::: " + aptList.size());
+		logger.info("아파트 이름 ::: " + aptList.size());
+		
 		List<String> aptNoList = new ArrayList<>();
-        List<String> aptNameList = new ArrayList<>();
-        for (Map<String, String> apt : aptList) {
-            aptNoList.add(apt.get("aptNo"));
-            aptNameList.add(apt.get("aptName"));
-            
-            
-            logger.info("아파트 이름 ::: " + apt.get("aptName"));
-            
-        }
-
-        userInfo.setAptNo(aptNoList);
-        userInfo.setAptName(aptNameList);
-        
+		List<String> aptNameList = new ArrayList<>();
+		for (Map<String, String> apt : aptList) {
+			aptNoList.add(apt.get("aptNo"));
+			aptNameList.add(apt.get("aptName"));
+			
+			logger.info("아파트 이름 ::: " + apt.get("aptName"));
+			
+		}
+		
+		userInfo.setAptNo(aptNoList);
+		userInfo.setAptName(aptNameList);
 		
 		logger.info("닉네임 ::: " + userInfo.getNickName());
 		
 		return userInfo;
 	}
+	  
 	
 	/**
 	 * 회사 목록
@@ -312,6 +437,10 @@ public class UserController {
 		List<UserDTO> reqList = userService.getRequesDetailtList(paramMap);
 		
 		logger.info("신청리스트 ::: " + reqList.size());
+		 for (UserDTO user : reqList) {
+		        logger.info("imageFilePath :: " + user.getImageFilePath());
+		    }
+		
 		
 		return reqList;
 	}
@@ -369,15 +498,24 @@ public class UserController {
 	    HashMap<String, Object> paramMap = new HashMap<>();
 	    paramMap.put("categoryId", categoryId);
 	    paramMap.put("companyIds", companyIds);  // 선택된 회사 ID 배열 추가
+	    paramMap.put("userIds", companyIds);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("reqGubun", reqGubun);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("reqUser", reqUser);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("reqState", reqState);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("reqContents", reqContents);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("aptNo", aptNo);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("reqContents", reqContents);  // 선택된 회사 ID 배열 추가
+	    paramMap.put("gubun", "S");  // 선택된 회사 ID 배열 추가
+	    paramMap.put("title", "입주전");  // 선택된 회사 ID 배열 추가
+	    paramMap.put("body", "견적요청이 왔습니다!!!");  // 선택된 회사 ID 배열 추가
 		
 	    int result = userService.saveRequestInfo(paramMap);
-		
+	   
+	    int token  = fcmService.sendAppMessage(paramMap);
+	    
+	    logger.info("메세지 갔나??? :: " + token);
+	    
+	    
         return result;
     }
 	
@@ -413,9 +551,14 @@ public class UserController {
 	    paramMap.put("reqState", reqState);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("reqContents", reqContents);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("aptNo", aptNo);  // 선택된 회사 ID 배열 추가
-		
+	    paramMap.put("gubun", "S");  // 선택된 회사 ID 배열 추가
+	    paramMap.put("title", "입주전");  // 선택된 회사 ID 배열 추가
+	    paramMap.put("body", "견적요청이 왔습니다!!!");  // 선택된 회사 ID 배열 추가
+	    
 	    int result = userService.saveTotalRequestInfo(paramMap);
-		
+//	    int token  = fcmService.sendAppMessage(paramMap);
+	    
+//	    logger.info("메세지 갔나??? :: " + token);
         return result;
     }
 	

@@ -55,6 +55,15 @@ public class UserMapper {
 	}
 	
 	/**
+	 * 토큰 리스트
+	 * @param paramMap
+	 * @return List<UserDTO>
+	 */
+	public List<UserDTO> selectTokenList(HashMap<String, Object> paramMap) {
+		return sql.selectList(path + "selectTokenList", paramMap);
+	}
+	
+	/**
 	 * 회사 상세 리스트
 	 * @param paramMap
 	 * @return List<String>
@@ -134,6 +143,15 @@ public class UserMapper {
 	 */
 	public int updateUserInfo(HashMap<String, Object> paramMap) {
 		return sql.update(path + "updateUserInfo", paramMap);
+	}
+	
+	/**
+	 * 사전점검 항목 저장
+	 * @param paramMap
+	 * @return int
+	 */
+	public int updateTokenOnServer(HashMap<String, Object> paramMap) {
+		return sql.update(path + "updateTokenOnServer", paramMap);
 	}
 	
 	/**

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.wit.inspaction.preinspaction.mapper.PreinspactionMapper;
 import com.wit.inspaction.preinspaction.model.PreinspactionDTO;
-import com.wit.inspaction.preinspaction.model.PreinspactionDetailDTO;
 import com.wit.inspaction.user.UserController;
 import com.wit.inspaction.user.mapper.UserMapper;
 import com.wit.inspaction.user.model.UserDTO;
@@ -65,6 +64,16 @@ public class UserServiceImpl implements UserService{
 		logger.info("UserServiceImpl getAptPyoungList 호출");
 		
 		List<UserDTO> list = userMapper.selectAptPyoungList(paramMap);
+		
+		return list;
+	}
+	
+	@Override
+	public List<UserDTO> getTokenList(HashMap<String, Object> paramMap) {
+		
+		logger.info("UserServiceImpl getTokenList 호출");
+		
+		List<UserDTO> list = userMapper.selectTokenList(paramMap);
 		
 		return list;
 	}
@@ -127,17 +136,31 @@ public class UserServiceImpl implements UserService{
 
 	    int insertCount = 0;
 	    int loopCount = 0;  // 루프 카운터 변수
+	    
+	    String reqNo = userMapper.generateReqNo(paramMap);  // 생성된 req_no 값을 얻기 위한 함수 호출
 
 	    for (String companyId : companyIds) {
 	    	logger.info("companyId==="+companyId);
-	        paramMap.put("companyId", companyId);
-	        paramMap.put("seq",  loopCount++);
-	        insertCount += userMapper.insertRequestInfo(paramMap);
-	        paramMap.put("reqNo",  paramMap.get("reqNo"));
+	    	 HashMap<String, Object> insertMap = new HashMap<>();
+	    	 insertMap.put("categoryId", paramMap.get("categoryId"));
+	    	 insertMap.put("reqNo", reqNo);
+	    	 insertMap.put("seq",  loopCount++);
+			 insertMap.put("companyId", companyId);
+			 insertMap.put("reqGubun", paramMap.get("reqGubun"));
+			 insertMap.put("reqUser",  paramMap.get("reqUser"));
+			 insertMap.put("reqState", paramMap.get("reqState"));
+			 insertMap.put("reqContents", paramMap.get("reqContents"));
+			 insertMap.put("aptNo",    paramMap.get("aptNo"));
+			 insertMap.put("reqUser",  paramMap.get("reqUser"));
+			 insertMap.put("reqState", paramMap.get("reqState"));
+			 
+	         insertCount += userMapper.insertTotalRequestInfo(insertMap);
 	    	logger.info("===================================");
-	    	logger.info("reqNo==="+paramMap.get("reqNo"));
+	    	logger.info("reqNo===insertTotalRequestInfo "+insertMap.get("reqNo"));
 	    	logger.info("===================================");
-	        insertCount += userMapper.insertHistoryRequest(paramMap);
+	    	  insertMap.put("reqNo",  insertMap.get("reqNo"));
+
+	        insertCount += userMapper.insertHistoryRequest(insertMap);
 	    }
 	    // 총 삽입된 건수 반환
 	    return insertCount;
@@ -175,6 +198,12 @@ public class UserServiceImpl implements UserService{
 	public int updateUserInfo(HashMap<String, Object> paramMap) {
 		
 		return userMapper.updateUserInfo(paramMap);
+	}
+	
+	@Override
+	public int updateTokenOnServer(HashMap<String, Object> paramMap) {
+		
+		return userMapper.updateTokenOnServer(paramMap);
 	}
 	
 	@Override
