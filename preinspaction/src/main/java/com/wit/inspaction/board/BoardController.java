@@ -30,19 +30,7 @@ public class BoardController {
 	 */
 	@PostMapping("/wit/getBoardList")
     public List<BoardDTO> getBoardList(@RequestBody HashMap<String, Object> paramMap) {
-    	
-		System.out.println("boardService getBoardList 호출"); 
-		System.out.println("bordNo ::: " + paramMap.get("bordNo"));
-		System.out.println("bordType ::: " + paramMap.get("bordType"));
-		System.out.println("searchText ::: " + paramMap.get("searchText"));
-		System.out.println("currentPage ::: " + paramMap.get("currentPage"));
-		System.out.println("pageSize ::: " + paramMap.get("pageSize"));
-		
-		List<BoardDTO> boardList = boardService.getBoardList(paramMap);
-		
-		System.out.println("게시판 리스트 ::: " + boardList.size());
-		
-        return boardList;
+        return boardService.getBoardList(paramMap);
     }
 	
 	/**
@@ -51,12 +39,7 @@ public class BoardController {
 	 */
 	@PostMapping("/wit/getBoardDetailInfo")
     public BoardDTO getBoardDetailInfo(@RequestBody HashMap<String, Object> paramMap) {
-    	
-		System.out.println("boardService getBoardDetailInfo 호출");
-		
-		BoardDTO boardInfo = boardService.getBoardDetailInfo(paramMap);
-		
-        return boardInfo;
+        return boardService.getBoardDetailInfo(paramMap);
     }
 	
 	/**
@@ -65,12 +48,7 @@ public class BoardController {
 	 */
 	@PostMapping("/wit/getBoardDetailImageList")
     public List<BoardDTO> getBoardDetailImageList(@RequestBody HashMap<String, Object> paramMap) {
-    	
-		System.out.println("boardService getBoardDetailImageList 호출");
-		
-		List<BoardDTO> boardImageInfo = boardService.getBoardDetailImageList(paramMap);
-		
-        return boardImageInfo;
+        return boardService.getBoardDetailImageList(paramMap);
     }	
 	
 	/**
@@ -79,12 +57,7 @@ public class BoardController {
 	 */
 	@PostMapping("/wit/boardRdCntUp")
     public int boardRdCntUp(@RequestBody HashMap<String, Object> paramMap) {
-    	
-		System.out.println("boardService boardRdCntUp 호출");
-		
-		int result = boardService.boardRdCntUp(paramMap);
-		
-        return result;
+        return boardService.boardRdCntUp(paramMap);
     }
 	
 	/**
@@ -95,30 +68,15 @@ public class BoardController {
 	@PostMapping("/wit/saveBoardInfo")
     public int saveBoardInfo(@RequestBody HashMap<String, Object> paramMap) throws Exception {
 		
-		System.out.println("boardService saveBoardInfo 호출");
-		
-		System.out.println("게시판 번호 ::: " + paramMap.get("bordNo"));
-		System.out.println("게시판 bordType ::: " + paramMap.get("bordType"));
-		System.out.println("게시판 bordTitle ::: " + paramMap.get("bordTitle"));
-		System.out.println("게시판 bordSubTitle ::: " + paramMap.get("bordSubTitle"));
-		System.out.println("게시판 bordContent ::: " + paramMap.get("bordContent"));
-		System.out.println("게시판 creUser ::: " + paramMap.get("creUser"));
-		
 		// 게시판 저장
 		int result = boardService.saveBoardInfo(paramMap);
-		
-		System.out.println("resultresultresultresult ::: " + result);
-		
 		
 		if (result > 0) {
 			
 			// 파일 Json
 			String fileJson = (String) paramMap.get("fileInfo") == null ? "" : (String) paramMap.get("fileInfo");
-
-			System.out.println("게시판 fileInfo ::: " + paramMap.get("fileInfo"));
 			
 			// JSON 문자열을 List<HashMap<String, Object>>로 변환
-			
 			if(!fileJson.isEmpty()) {
 				ObjectMapper objectMapper = new ObjectMapper();
 				List<HashMap<String, Object>> fileList = objectMapper.readValue(fileJson, new TypeReference<List<HashMap<String, Object>>>(){});
@@ -127,10 +85,11 @@ public class BoardController {
 				for (int i = 0; i < fileList.size(); i++) {
 					
 					HashMap<String, Object> fileInfo = fileList.get(i);
-					fileInfo.put("bizCd", "B001");
+					fileInfo.put("bizCd", paramMap.get("bizCd"));
 					fileInfo.put("bizKey", paramMap.get("bordNo"));
-					fileInfo.put("fileType", "01");
-					fileInfo.put("creUser", "테스트");
+					fileInfo.put("fileType", paramMap.get("bordType"));
+					fileInfo.put("creUser", paramMap.get("creUser"));
+					fileInfo.put("updUser", paramMap.get("updUser"));
 					
 					int fileResult = boardService.saveFileInfo(fileInfo);
 					
