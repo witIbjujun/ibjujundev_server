@@ -120,6 +120,7 @@
 			, BORD_TITLE
 			, BORD_SUB_TITLE
 			, BORD_CONTENT
+			, BORD_RD_CNT
 			, CRE_USER
 			, CRE_DATE
 		) 
@@ -133,6 +134,7 @@
 			, #{bordTitle}
 			, #{bordSubTitle}
 			, #{bordContent}
+			, 0
 			, #{creUser}
 			,  NOW()
 		) 
