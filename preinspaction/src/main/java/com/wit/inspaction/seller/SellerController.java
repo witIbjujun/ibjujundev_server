@@ -152,26 +152,36 @@ public class SellerController {
 		logger.info("견적 발송 상태 update 호출 reqState : " + reqState);
 		logger.info(":::::::::::::::::::::::::::::::::::::::");
 		
-		CashDTO cashDTO = sellerService.getCashInfo(param);
+		// CashDTO cashDTO = sellerService.getCashInfo(param);
 
-		String cashNo = cashDTO.getCashNo();
+		// String cashNo = cashDTO.getCashNo();
 
-		param.put("cashNo", cashNo);
+		// param.put("cashNo", cashNo);
 
 		// stat 02 : 진행대기일 경우 (견적을 발송) 정의된 cash 만큼 캐시 차감해야함
 		if("02".equals(reqState)) {
-			result = sellerService.insertCashHistoryInfo(param);
+			// result = sellerService.insertCashHistoryInfo(param);
 
 			// 캐시 정보 수정
-			result = sellerService.updateCashInfo(param);
+			// result = sellerService.updateCashInfo(param);
 			
 			if (result > 0) {
 				
 				// 파일 Json
-				String fileJson = (String) param.get("fileInfo") == null ? "" : (String) param.get("fileInfo");
-
-				System.out.println("게시판 fileInfo ::: " + param.get("fileInfo"));
+				// String fileJson = (String) param.get("fileInfo") == null ? "" : (String) param.get("fileInfo");
 				
+				Object fileInfoObj = param.get("fileInfo");
+			    String fileJson;
+
+			    if (fileInfoObj instanceof String) {
+			        fileJson = (String) fileInfoObj;
+			    } else if (fileInfoObj instanceof List) {
+			        ObjectMapper objectMapper = new ObjectMapper();
+			        fileJson = objectMapper.writeValueAsString(fileInfoObj); // List를 JSON 문자열로 변환
+			    } else {
+			        fileJson = ""; // 다른 타입일 경우 빈 문자열
+			    }
+
 				// JSON 문자열을 List<HashMap<String, Object>>로 변환
 				
 				if(!fileJson.isEmpty()) {
