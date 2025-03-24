@@ -35,6 +35,9 @@
 		<if test="stat !=null and !stat.equals('')">
 			AND A.REQ_STATE = 01
 		</if>
+		<if test="basDate !=null and !basDate.equals('')">
+			AND DATE_FORMAT(A.REQ_DATE, '%Y%m') = #{basDate}
+		</if>
         AND 	A.APT_NO = C.APT_NO
         AND 	A.CATEGORY_ID = D.CATEGORY_ID
         AND 	A.REQ_USER = E.CLERK_NO
