@@ -562,7 +562,7 @@
 		       , EX_END_TIME = #{exEndTime}
 		       , UPD_USER = #{updUser}
 		       , UPD_DATE = SYSDATE()
-		WHERE  ESDR_NO = #{esdrNo}
+		WHERE  SLLR_NO = #{sllrNo}
 		AND    END_DATE = '99991231'
 	</update>
 
