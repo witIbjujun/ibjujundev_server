@@ -518,7 +518,7 @@
 		       , A.UPD_USER AS updUser
 		       , A.UPD_DATE AS updDate
 		FROM   estm100t A
-		WHERE  A.ESDR_NO = #{esdrNo}
+		WHERE  A.SLLR_NO = #{sllrNo}
 		AND    A.END_DATE = '99991231'
 	</select>
 
