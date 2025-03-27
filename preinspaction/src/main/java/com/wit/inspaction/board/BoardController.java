@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wit.inspaction.board.model.BoardDTO;
 import com.wit.inspaction.board.model.CommentDTO;
 import com.wit.inspaction.board.service.BoardService;
@@ -68,28 +66,25 @@ public class BoardController {
 	@PostMapping("/wit/saveBoardInfo")
     public int saveBoardInfo(@RequestBody HashMap<String, Object> paramMap) throws Exception {
 		
+		int bordNo = boardService.getNewBordNo(paramMap);
+		paramMap.put("bordNo", bordNo);
+		
 		// 게시판 저장
 		int result = boardService.saveBoardInfo(paramMap);
 		
 		if (result > 0) {
 			
-			// 파일 Json
-			String fileJson = (String) paramMap.get("fileInfo") == null ? "" : (String) paramMap.get("fileInfo");
+			// 파일 리스트
+			List<HashMap<String, Object>> fileList = (List<HashMap<String, Object>>) paramMap.get("fileInfo");
 			
-			// JSON 문자열을 List<HashMap<String, Object>>로 변환
-			if(!fileJson.isEmpty()) {
-				ObjectMapper objectMapper = new ObjectMapper();
-				List<HashMap<String, Object>> fileList = objectMapper.readValue(fileJson, new TypeReference<List<HashMap<String, Object>>>(){});
+			if (fileList != null && !fileList.isEmpty()) {
 				
 				// 파일 저장
-				for (int i = 0; i < fileList.size(); i++) {
-					
-					HashMap<String, Object> fileInfo = fileList.get(i);
-					fileInfo.put("bizCd", paramMap.get("bizCd"));
-					fileInfo.put("bizKey", paramMap.get("bordNo"));
-					fileInfo.put("fileType", paramMap.get("bordType"));
-					fileInfo.put("creUser", paramMap.get("creUser"));
-					fileInfo.put("updUser", paramMap.get("updUser"));
+				for (HashMap<String, Object> fileInfo : fileList) {
+	                fileInfo.put("bizKey", bordNo);
+	                fileInfo.put("fileType", paramMap.get("bordType"));
+	                fileInfo.put("creUser", paramMap.get("creUser"));
+	                fileInfo.put("updUser", paramMap.get("updUser"));
 					
 					int fileResult = boardService.saveFileInfo(fileInfo);
 					

@@ -8,20 +8,20 @@
 	<!-- 게시판 리스트 조회 -->
 	<select id="selectBoardList" resultType="BoardDTO">
 		SELECT 
-			  A.BORD_NO AS bordNo
-			,(SELECT APT_NAME FROM apt000t WHERE APT_NO  = A.BORD_NO ) bordName
-			, A.BORD_SEQ AS bordSeq
+			  A.BORD_TYPE AS bordType
+			, A.BORD_NO AS bordNo
 			, A.DEL_YN AS delYn
-			, A.BORD_TYPE AS bordType
+			, (SELECT APT_NAME FROM apt000t WHERE APT_NO  = A.BORD_NO ) bordName
 			, A.BORD_TITLE AS bordTitle
 			, A.BORD_SUB_TITLE AS bordSubTitle
 			, A.BORD_CONTENT AS bordContent
 			, A.BORD_RD_CNT AS bordRdCnt
 			, A.BORD_GD_CNT AS bordGdCnt
 			, (SELECT COUNT(S.CMMT_NO) FROM wit_bord110t S
-				WHERE S.BORD_NO = A.BORD_NO
-				AND S.BORD_SEQ = A.BORD_SEQ) AS commentCnt
-			, A.CRE_USER AS creUser
+				WHERE S.BORD_TYPE = A.BORD_TYPE
+				AND S.BORD_NO = A.BORD_NO) AS commentCnt
+			, (SELECT S.NICK_NAME FROM prsn000t S
+				WHERE S.CLERK_NO = A.CRE_USER) AS creUser
 			, A.CRE_DATE AS creDate
 			, CASE 
 			        WHEN TIMESTAMPDIFF(MINUTE, A.CRE_DATE, NOW()) <![CDATA[<]]> 5 THEN '방금 전'
@@ -38,33 +38,32 @@
 				LIMIT 1) AS imagePath
 		FROM 
 			wit_bord100t A
-		WHERE DEL_YN = 'N'
-		AND BORD_NO = #{bordNo}
-		AND BORD_TYPE = #{bordType}
+		WHERE A.DEL_YN = 'N'
+		AND A.BORD_TYPE = #{bordType}
 	<if test="searchText != null and searchText != ''">
-		AND BORD_TITLE LIKE CONCAT('%', #{searchText}, '%')
+		AND A.BORD_TITLE LIKE CONCAT('%', #{searchText}, '%')
 	</if>
-		ORDER BY BORD_SEQ DESC
+		ORDER BY A.CRE_DATE DESC
 		LIMIT #{pageSize} OFFSET #{currentPage}
 	</select>
 	
 	<!-- 게시판 상세 조회 -->
 	<select id="selectBoardDetailList" resultType="BoardDTO">
 		SELECT 
-			  A.BORD_NO AS bordNo
-			, A.BORD_SEQ AS bordSeq
+			  A.BORD_TYPE AS bordType
+			, A.BORD_NO AS bordNo
 			, A.DEL_YN AS delYn
-			, A.BORD_TYPE AS bordType
 			, A.BORD_TITLE AS bordTitle
 			, A.BORD_SUB_TITLE AS bordSubTitle
 			, A.BORD_CONTENT AS bordContent
 			, A.BORD_RD_CNT AS bordRdCnt
 			, A.BORD_GD_CNT AS bordGdCnt
 			, (SELECT COUNT(S.CMMT_NO) FROM wit_bord110t S
-				WHERE S.BORD_NO = A.BORD_NO
-				AND S.BORD_SEQ = A.BORD_SEQ) AS commentCnt
+				WHERE S.BORD_TYPE = A.BORD_TYPE
+				AND S.BORD_NO = A.BORD_NO) AS commentCnt
 			, DATE_FORMAT(A.CRE_DATE, '%y.%m.%d %H:%i') AS creDateTxt
-			, A.CRE_USER AS creUser
+			, (SELECT S.NICK_NAME FROM prsn000t S
+				WHERE S.CLERK_NO = A.CRE_USER) AS creUser
 			, A.CRE_DATE AS creDate
 			, A.UPD_USER AS updUser
 			, A.UPD_DATE AS updDate
@@ -77,8 +76,7 @@
 		WHERE DEL_YN = 'N'
 		AND A.BORD_TYPE = #{bordType}
 		AND A.BORD_NO = #{bordNo}
-		AND A.BORD_SEQ = #{bordSeq}
-		ORDER BY A.BORD_SEQ DESC
+		ORDER BY A.BORD_NO DESC
 	</select>
 	
 	<!-- 게시판 이미지 조회 -->
@@ -97,7 +95,6 @@
 		WHERE DEL_YN = 'N'
 		AND BORD_TYPE = #{bordType}
 		AND BORD_NO = #{bordNo}
-		AND BORD_SEQ = #{bordSeq}
 	</update>
 	
 	<!-- 게시판 Key 조회 -->
@@ -110,34 +107,31 @@
 	</select>
 	
 	<!-- 게시판 저장 -->
-	<insert id="saveBoardInfo" parameterType="java.util.HashMap">
-		INSERT INTO wit_bord100t
-		(
-			  BORD_NO
-			, BORD_SEQ
-			, DEL_YN
-			, BORD_TYPE
-			, BORD_TITLE
-			, BORD_SUB_TITLE
-			, BORD_CONTENT
-			, BORD_RD_CNT
-			, CRE_USER
-			, CRE_DATE
-		) 
-		VALUES
-		(
-			  #{bordNo}
-			, (SELECT IFNULL(MAX(CAST(S.BORD_SEQ AS UNSIGNED)), 0) + 1 FROM wit_bord100t S
-				WHERE S.BORD_TYPE = #{bordType})
-			, 'N'
-			, #{bordType}
-			, #{bordTitle}
-			, #{bordSubTitle}
-			, #{bordContent}
-			, 0
-			, #{creUser}
-			,  NOW()
-		) 
+	<insert id="saveBoardInfo" parameterType="java.util.HashMap" useGeneratedKeys="true" keyProperty="bordNo">
+	    INSERT INTO wit_bord100t
+	    (
+	          BORD_TYPE,
+	          BORD_NO,
+	          DEL_YN,
+	          BORD_TITLE,
+	          BORD_SUB_TITLE,
+	          BORD_CONTENT,
+	          BORD_RD_CNT,
+	          CRE_USER,
+	          CRE_DATE
+	    ) 
+	    VALUES
+	    (
+	          #{bordType},
+	          #{bordNo},
+	          'N',
+	          #{bordTitle},
+	          #{bordSubTitle},
+	          #{bordContent},
+	          0,
+	          #{creUser},
+	          NOW()
+	    )
 	</insert>
 	
 	<!-- 게시판 수정 -->
@@ -147,8 +141,8 @@
 			, BORD_CONTENT = #{bordContent}
 			, UPD_USER = #{updUser}
 			, UPD_DATE = NOW()
-		WHERE BORD_NO = #{bordNo}
-		AND BORD_SEQ = #{bordSeq}
+		WHERE BORD_TYPE = #{bordType}
+		AND BORD_NO = #{bordNo}
 	</update>
 	
 	<!-- 게시판 종료 -->
@@ -160,7 +154,6 @@
 		WHERE DEL_YN = 'N'
 		AND BORD_TYPE = #{bordType}
 		AND BORD_NO = #{bordNo}
-		AND BORD_SEQ = #{bordSeq}
 	</update>
 	
 	<!-- 댓글 조회 -->
@@ -168,8 +161,8 @@
 		SELECT 
 			  A.CMMT_NO AS cmmtNo
 			, A.CMMT_SEQ AS cmmtSeq
+			, A.BORD_TYPE AS bordType
 			, A.BORD_NO AS bordNo
-			, A.BORD_SEQ AS bordSeq
 			, A.DEL_YN AS delYn
 			, A.CMMT_CONTENT AS cmmtContent
 			, A.CRE_USER AS creUser
@@ -177,8 +170,8 @@
 			, DATE_FORMAT(A.CRE_DATE, '%y.%m.%d %H:%i') AS creDateTxt
 		FROM 
 			wit_bord110t A
-		WHERE A.BORD_NO = #{bordNo}
-		AND A.BORD_SEQ = #{bordSeq}
+		WHERE A.BORD_TYPE = #{bordType}
+		AND A.BORD_NO = #{bordNo}
 		ORDER BY A.CMMT_SEQ 
 	</select>
 	
@@ -188,8 +181,8 @@
 		(
 			  CMMT_NO
 			, CMMT_SEQ
+			, BORD_TYPE
 			, BORD_NO
-			, BORD_SEQ
 			, DEL_YN
 			, CMMT_CONTENT
 			, CRE_USER
@@ -198,13 +191,13 @@
 		VALUES
 		(
 			(SELECT IFNULL(MAX(CAST(S.CMMT_NO AS UNSIGNED)), 0) + 1 FROM wit_bord110t S
-				WHERE S.BORD_NO = #{bordNo}
-				AND S.BORD_SEQ = #{bordSeq})
+				WHERE S.BORD_TYPE = #{bordType}
+				AND S.BORD_NO = #{bordNo})
 			, (SELECT IFNULL(MAX(CAST(S.CMMT_SEQ AS UNSIGNED)), 0) + 1 FROM wit_bord110t S
-				WHERE S.BORD_NO = #{bordNo}
-				AND S.BORD_SEQ = #{bordSeq})
+				WHERE S.BORD_TYPE = #{bordType}
+				AND S.BORD_NO = #{bordNo})
+			, #{bordType}
 			, #{bordNo}
-			, #{bordSeq}
 			, 'N'
 			, #{cmmtContent}
 			, #{creUser}
@@ -219,8 +212,8 @@
 			, UPD_USER = #{creUser}
 			, UPD_DATE = NOW()
 		WHERE DEL_YN = 'N'
+		AND BORD_TYPE = #{bordType}
 		AND BORD_NO = #{bordNo}
-		AND BORD_SEQ = #{bordSeq}
 	</update>
 	
 	<!-- 파일 저장 -->
@@ -240,10 +233,11 @@
 		) 
 		VALUES
 		(
-			  #{bizCd}
+			  'B001'
 			, #{bizKey}
 			, (SELECT IFNULL(MAX(CAST(S.FILE_SEQ AS UNSIGNED)), 0) + 1 FROM wit_file000t S
-				WHERE S.BIZ_CD = #{bizCd}
+				WHERE S.BIZ_CD = 'B001'
+				AND S.FILE_TYPE = #{fileType}
 				AND S.BIZ_KEY = #{bizKey})
 			, #{fileType}
 			, #{fileId}

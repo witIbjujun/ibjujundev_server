@@ -69,7 +69,7 @@ public class BoardMapper {
 	 * @return int
 	 */
 	public int saveBoardInfo(HashMap<String, Object> paramMap) {
-		return sql.update(path + "saveBoardInfo", paramMap);
+	    return sql.insert(path + "saveBoardInfo", paramMap);
 	}
 	
 	/**
