@@ -400,22 +400,73 @@
 	<!-- 업체 정보 수정 -->
 	<update id="updateSellerInfo" parameterType="java.util.HashMap">
 		UPDATE wit_sllr000t
-		SET    store_name = #{storeName}
+		SET
+		       UPD_DT = SYSDATE()
+			   , UPD_USER = #{updUser}
+			   
+				<if test="storeName !=null and !storeName.equals('')">
+				, store_name = #{storeName}
+				</if>
+				
+				<if test="serviceArea !=null and !serviceArea.equals('')">
 		       ,service_area = #{serviceArea}
+		       </if>
+		       
+		       <if test="serviceItem !=null and !serviceItem.equals('')">
 		       ,service_item = #{serviceItem}
+		       </if>
+		       
+		       <if test="itemPrice1 !=null and !itemPrice1.equals('')">
 		       ,item_price1 = #{itemPrice1}
+		       </if>
+		       
+		       <if test="sllrContent !=null and !sllrContent.equals('')">
 		       ,sllr_content = #{sllrContent}
+		       </if>
+		       
+		       <if test="name !=null and !name.equals('')">
 		       ,name = #{name}
+		       </if>
+		       
+		       <if test="ceoName !=null and !ceoName.equals('')">
 		       ,ceo_name = #{ceoName}
+		       </if>
+		       
+		       <if test="email !=null and !email.equals('')">
 		       ,email = #{email}
+		       </if>
+		       
+		       <if test="storeCode !=null and !storeCode.equals('')">
 		       ,store_code = #{storeCode}
+		       </if>
+		       
+		       <if test="hp !=null and !hp.equals('')">
 		       ,hp = #{hp}
+		       </if>
+		       
+		       <if test="zipCode !=null and !zipCode.equals('')">
 		       ,zip_code = #{zipCode}
+		       </if>
+		       
+		       <if test="address1 !=null and !address1.equals('')">
 		       ,address1 = #{address1}
+		       </if>
+		       
+		       <if test="address2 !=null and !address2.equals('')">
 		       ,address2 = #{address2}
+		       </if>
+		       
+		       <if test="openDate !=null and !openDate.equals('')">
 		       ,OPEN_DATE  = #{openDate}
+		       </if>
+		       
+		       <if test="asGbn !=null and !asGbn.equals('')">
                ,AS_GBN  = #{asGbn}
+               </if>
+               
+               <if test="categoryContent !=null and !categoryContent.equals('')">
                ,category_content  = #{categoryContent}
+               </if>
 		WHERE  SLLR_NO = #{sllrNo}
 	</update>
 	
@@ -526,9 +577,9 @@
 	<insert id="insertDirectEstimateSetInfo" parameterType="java.util.HashMap">
 		INSERT INTO estm100t
 		(
-			ESDR_NO
+			SLLR_NO
 		    , END_DATE
-		    , SLLR_NO
+		    , ESDR_NO
 		    , CATEGORY_ID
 		    , ESDR_SEND_CNT_CD
 	        , AREA
@@ -538,9 +589,12 @@
 		    , CRE_USER
 		    , CRE_DATE
 		) VALUES (
-  			  #{esdrNo}
+			#{sllrNo}
 			, '99991231'
-			, #{sllrNo}
+			, (SELECT T.esdr_no
+			   FROM   (SELECT IFNULL(MAX(CAST(ESDR_NO AS UNSIGNED)), 0) + 1 AS ESDR_NO
+					   FROM   estm100t
+					   WHERE  SLLR_NO = #{sllrNo}) AS T)
 			, #{categoryId}
 			, #{esdrSendCntCd}
 			, #{area}

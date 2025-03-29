@@ -451,7 +451,7 @@ public class SellerController {
 	 * @return int
 	 */
 	@PostMapping("/wit/insertDirectEstimateSetInfo")
-	public int insertDirectEstimateInfo(HashMap<String, Object> param) {
+	public int insertDirectEstimateInfo(@RequestBody HashMap<String, Object> param) {
 		System.out.println("insertDirectEstimateSetInfo 호출");
 
 		int result = sellerService.insertDirectEstimateSetInfo(param);
