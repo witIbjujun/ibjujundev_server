@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.wit.inspaction.schedule.mapper.ScheduleMapper">
+
+	<!-- 스케쥴 조회 -->
+	<select id="selectScheduleList" parameterType="java.util.HashMap" resultType="ScheduleInfoDTO">
+		SELECT
+			  SLLR_NO AS sllrNo
+			, REQ_NO AS reqNo
+			, REQ_GBN AS reqGbn
+			, CLDR_TITLE AS cldrTitle
+			, START_DATE AS startDate
+			, START_YM AS startYm
+			, END_DATE AS endDate
+			, END_YM AS endYm
+			, CLDR_TXT AS cldrTxt
+			, REG_USER AS regUser
+			, REG_DATE AS regDate
+			, UDT_USER AS udtUser
+			, UDT_DATE AS udtDate
+		FROM
+			IBJ_CLDR100T
+		WHERE SLLR_NO = #{sllrNo}
+		AND REQ_GBN = #{reqGbn}
+		AND START_DATE LIKE CONCAT(#{searchDate}, '%')
+	</select>
+	
+	<!-- 스케쥴 저장 -->
+	<insert id="insertScheduleInfo" parameterType="java.util.HashMap">
+		INSERT INTO IBJ_CLDR100T 
+		(
+			  SLLR_NO
+			, REQ_NO
+			, REQ_GBN
+			, CLDR_TITLE
+			, START_DATE
+			, START_YM
+			, END_DATE
+			, END_YM
+			, CLDR_TXT
+			, REG_USER
+			, REG_DATE
+		) 
+		VALUSE 
+		(
+			  #{sllrNo}
+			, (SELECT IFNULL(MAX(CAST(REQ_NO AS UNSIGNED)), 0) + 1 FROM IBJ_CLDR100T
+				WHERE SLLR_NO = #{sllrNo}
+				AND REQ_GBN = #{reqGbn})
+			, #{reqGbn}
+			, #{cldrTitle}
+			, #{startDate}
+			, #{startYm}
+			, #{endDate}
+			, #{endYm}
+			, #{cldrTxt}
+			, #{regUser}
+			, NOW()
+		)
+	</insert>
+	
+	<!-- 스케쥴 수정 -->
+	<update id="updateScheduleInfo" parameterType="java.util.HashMap">
+		UPDATE IBJ_CLDR100T SET
+			  CLDR_TITLE = #{title}
+			, START_DATE = #{startDate}
+			, START_YM = #{startYm}
+			, END_DATE = #{endDate}
+			, END_YM = #{endYm}
+			, CLDR_TXT = #{cldrTxt}
+			, UDT_USER = #{udtUser}
+			, UDT_DATE = NOW()
+		WHERE SLLR_NO = #{sllrNo}
+		AND REQ_NO = #{reqNo}
+		AND REQ_GBN = #{reqGbn}
+	</update>
+	
+	<!-- 스케쥴 삭제 -->
+	<delete id="deleteScheduleInfo" parameterType="java.util.HashMap">
+		DELETE FROM IBJ_CLDR100T
+		WHERE SLLR_NO = #{sllrNo}
+		AND REQ_NO = #{reqNo}
+		AND REQ_GBN = #{reqGbn}
+	</delete>
+		
+</mapper>

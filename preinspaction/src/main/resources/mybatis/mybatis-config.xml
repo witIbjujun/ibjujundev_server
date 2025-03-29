@@ -35,6 +35,9 @@
     	<typeAlias alias="DirectEstimateSetDTO" type="com.wit.inspaction.seller.model.DirectEstimateSetDTO"/>
     	<typeAlias alias="EstimateCntDTO" type="com.wit.inspaction.seller.model.EstimateCntDTO"/>
 		
+		<!-- 스케쥴 -->
+    	<typeAlias alias="ScheduleInfoDTO" type="com.wit.inspaction.schedule.model.ScheduleInfoDTO"/>
+		
 		<!-- 공통코드 -->
     	<typeAlias alias="CodeDTO" type="com.wit.inspaction.seller.model.CodeDTO"/>
 
