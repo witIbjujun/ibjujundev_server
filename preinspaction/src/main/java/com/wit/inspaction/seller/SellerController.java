@@ -278,22 +278,14 @@ public class SellerController {
 		if (result > 0) {
 			
 			// 파일 Json
-			String fileJson = (String) param.get("fileInfo") == null ? "" : (String) param.get("fileInfo");
+			List<HashMap<String, Object>> fileList = (List<HashMap<String, Object>>) param.get("fileInfo");
 
-			System.out.println("게시판 fileInfo ::: " + param.get("fileInfo"));
-			
-			// JSON 문자열을 List<HashMap<String, Object>>로 변환
-			
-			if(!fileJson.isEmpty()) {
-				ObjectMapper objectMapper = new ObjectMapper();
-				List<HashMap<String, Object>> fileList = objectMapper.readValue(fileJson, new TypeReference<List<HashMap<String, Object>>>(){});
+				if (fileList != null && !fileList.isEmpty()) {
 				
 				// 파일 저장
-				for (int i = 0; i < fileList.size(); i++) {
-					
-					HashMap<String, Object> fileInfo = fileList.get(i);
+				for (HashMap<String, Object> fileInfo : fileList) {
 					fileInfo.put("bizCd", "SR01");
-					fileInfo.put("bizKey", param.get("sllrNo"));
+	                fileInfo.put("bizKey", param.get("sllrNo"));
 					fileInfo.put("fileType", "01");
 					fileInfo.put("creUser", "테스트");
 					
@@ -560,24 +552,18 @@ public class SellerController {
 			int fileResult = 0;
 			
 			// 파일 Json
-			String fileJson = (String) param.get("fileInfo") == null ? "" : (String) param.get("fileInfo");
+			List<HashMap<String, Object>> fileList = (List<HashMap<String, Object>>) param.get("fileInfo");
 
 			System.out.println("게시판 fileInfo ::: " + param.get("fileInfo"));
 			
-			// JSON 문자열을 List<HashMap<String, Object>>로 변환
-			
-			if(!fileJson.isEmpty()) {
-				ObjectMapper objectMapper = new ObjectMapper();
-				List<HashMap<String, Object>> fileList = objectMapper.readValue(fileJson, new TypeReference<List<HashMap<String, Object>>>(){});
+			if (fileList != null && !fileList.isEmpty()) {
 				
 				// 파일 저장
-				for (int i = 0; i < fileList.size(); i++) {
-					
-					HashMap<String, Object> fileInfo = fileList.get(i);
+				for (HashMap<String, Object> fileInfo : fileList) {
 					fileInfo.put("bizCd", "SR02");
-					fileInfo.put("bizKey", param.get("sllrNo"));
+	                fileInfo.put("bizKey", param.get("sllrNo"));
 					fileInfo.put("fileType", "01");
-					fileInfo.put("creUser", "테스트");
+					fileInfo.put("creUser", "테스트");;
 					
 					fileResult = boardServiceImpl.saveFileInfo(fileInfo);
 					
