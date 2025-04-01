@@ -26,6 +26,7 @@
 		WHERE SLLR_NO = #{sllrNo}
 		AND REQ_GBN = #{reqGbn}
 		AND START_DATE LIKE CONCAT(#{searchDate}, '%')
+		ORDER BY START_DATE, START_YM
 	</select>
 	
 	<!-- 스케쥴 저장 -->
@@ -44,12 +45,10 @@
 			, REG_USER
 			, REG_DATE
 		) 
-		VALUSE 
+		VALUES 
 		(
 			  #{sllrNo}
-			, (SELECT IFNULL(MAX(CAST(REQ_NO AS UNSIGNED)), 0) + 1 FROM IBJ_CLDR100T
-				WHERE SLLR_NO = #{sllrNo}
-				AND REQ_GBN = #{reqGbn})
+			, (SELECT IFNULL(MAX(CAST(REQ_NO AS UNSIGNED)), 0) + 1 FROM (SELECT REQ_NO FROM IBJ_CLDR100T WHERE SLLR_NO = #{sllrNo} AND REQ_GBN = #{reqGbn}) AS subquery)
 			, #{reqGbn}
 			, #{cldrTitle}
 			, #{startDate}
@@ -60,12 +59,13 @@
 			, #{regUser}
 			, NOW()
 		)
+
 	</insert>
 	
 	<!-- 스케쥴 수정 -->
 	<update id="updateScheduleInfo" parameterType="java.util.HashMap">
 		UPDATE IBJ_CLDR100T SET
-			  CLDR_TITLE = #{title}
+			  CLDR_TITLE = #{cldrTitle}
 			, START_DATE = #{startDate}
 			, START_YM = #{startYm}
 			, END_DATE = #{endDate}
