@@ -47,6 +47,7 @@
 	<!-- 바로 견적리스트 조회 -->
 	<select id="selectAutoEstimateList" parameterType="java.util.HashMap" resultType="EstimateRequestDTO">
 		SELECT 	A.REQ_NO estNo
+		        ,A.SEQ seq
 		        , C.APT_NAME AS aptName
 		        , D.imagePath AS  itemImage
                 ,  CASE
