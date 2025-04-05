@@ -265,8 +265,8 @@
 		       , zip_code AS zipCode
 		       , address1 AS address1
 		       , address2 AS address2
-		       , (select count(req_no) from request100t where req_state = '01' and company_id = '17') AS reqCnt /* 견적요청내역 건수 */
-               , (select count(req_no) from request100t where req_state in ('02', '03', '04') and company_id = '17') AS ingCnt /* 거래내역 건수 */
+		       , (select count(req_no) from request100t where req_state = '01' and company_id = sllrNo) AS reqCnt /* 견적요청내역 건수 */
+               , (select count(req_no) from request100t where req_state in ('02', '03', '04') and company_id = sllrNo) AS ingCnt /* 거래내역 건수 */
                , rate AS rate
                , clerk_no AS clerkNo
                , bord_no AS bordNo
