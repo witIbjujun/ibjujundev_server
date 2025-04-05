@@ -233,10 +233,10 @@
 		) 
 		VALUES
 		(
-			  'B001'
+			  #{bizCd}
 			, #{bizKey}
 			, (SELECT IFNULL(MAX(CAST(S.FILE_SEQ AS UNSIGNED)), 0) + 1 FROM wit_file000t S
-				WHERE S.BIZ_CD = 'B001'
+				WHERE S.BIZ_CD = #{bizCd}
 				AND S.FILE_TYPE = #{fileType}
 				AND S.BIZ_KEY = #{bizKey})
 			, #{fileType}
