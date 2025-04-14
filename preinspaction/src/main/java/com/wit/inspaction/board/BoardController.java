@@ -196,6 +196,22 @@ public class BoardController {
     }
 	
 	/**
+	 * 댓글 종료
+	 * @return int
+	 */
+	@PostMapping("/wit/endCommentInfo")
+    public int endCommentInfo(@RequestBody HashMap<String, Object> paramMap) {
+		
+		System.out.println("boardService endCommentInfo 호출");
+		
+		int result = boardService.endCommentInfo(paramMap);
+		
+		System.out.println("댓글 삭제 ::: " + result);
+		
+        return result;
+    }
+	
+	/**
 	 * 파일 저장
 	 * @return int
 	 * @throws Exception

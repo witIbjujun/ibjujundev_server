@@ -15,6 +15,7 @@ public class BoardDTO {
 	private int commentCnt;			// 댓글 수
 	private String imagePath;			// 이미지 경로
 	private String creUser;				// 작성자
+	private String creUserNm;			// 작성자명
 	private String creDate;				// 작성일자
 	private String creDateTxt;			// 작성일 문구
 	private String updUser;			// 수정자
@@ -170,6 +171,18 @@ public class BoardDTO {
 	 */
 	public void setCreUser(String creUser) {
 		this.creUser = creUser;
+	}
+	/**
+	 * @return the creUserNm
+	 */
+	public String getCreUserNm() {
+		return creUserNm;
+	}
+	/**
+	 * @param creUserNm the creUserNm to set
+	 */
+	public void setCreUserNm(String creUserNm) {
+		this.creUserNm = creUserNm;
 	}
 	/**
 	 * @return the creDate

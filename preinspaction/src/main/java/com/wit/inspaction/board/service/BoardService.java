@@ -86,6 +86,13 @@ public interface BoardService {
 	 * @param paramMap
 	 * @return int
 	 */
+	public int endCommentInfo(HashMap<String, Object> paramMap);
+	
+	/**
+	 * 댓글 전체 종료
+	 * @param paramMap
+	 * @return int
+	 */
 	public int endCommentList(HashMap<String, Object> paramMap);
 	
 	/**

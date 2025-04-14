@@ -113,6 +113,15 @@ public class BoardMapper {
 	 * @param paramMap
 	 * @return int
 	 */
+	public int endCommentInfo(HashMap<String, Object> paramMap) {
+		return sql.update(path + "endCommentInfo", paramMap);
+	}
+	
+	/**
+	 * 댓글 전체 종료
+	 * @param paramMap
+	 * @return int
+	 */
 	public int endCommentList(HashMap<String, Object> paramMap) {
 		return sql.update(path + "endCommentList", paramMap);
 	}

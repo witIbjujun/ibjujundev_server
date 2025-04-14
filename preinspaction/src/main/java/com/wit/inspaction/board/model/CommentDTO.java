@@ -9,6 +9,7 @@ public class CommentDTO {
 	private String delYn;
 	private String cmmtContent;
 	private String creUser;
+	private String creUserNm;
 	private String creDate;
 	private String updUser;
 	private String updDate;
@@ -97,6 +98,18 @@ public class CommentDTO {
 	 */
 	public void setCreUser(String creUser) {
 		this.creUser = creUser;
+	}
+	/**
+	 * @return the creUserNm
+	 */
+	public String getCreUserNm() {
+		return creUserNm;
+	}
+	/**
+	 * @param creUserNm the creUserNm to set
+	 */
+	public void setCreUserNm(String creUserNm) {
+		this.creUserNm = creUserNm;
 	}
 	/**
 	 * @return the creDate

@@ -20,8 +20,9 @@
 			, (SELECT COUNT(S.CMMT_NO) FROM wit_bord110t S
 				WHERE S.BORD_TYPE = A.BORD_TYPE
 				AND S.BORD_NO = A.BORD_NO) AS commentCnt
+			, A.CRE_USER AS creUser
 			, (SELECT S.NICK_NAME FROM prsn000t S
-				WHERE S.CLERK_NO = A.CRE_USER) AS creUser
+				WHERE S.CLERK_NO = A.CRE_USER) AS creUserNm
 			, A.CRE_DATE AS creDate
 			, CASE 
 			        WHEN TIMESTAMPDIFF(MINUTE, A.CRE_DATE, NOW()) <![CDATA[<]]> 5 THEN '방금 전'
@@ -62,8 +63,9 @@
 				WHERE S.BORD_TYPE = A.BORD_TYPE
 				AND S.BORD_NO = A.BORD_NO) AS commentCnt
 			, DATE_FORMAT(A.CRE_DATE, '%y.%m.%d %H:%i') AS creDateTxt
+			, A.CRE_USER AS creUser
 			, (SELECT S.NICK_NAME FROM prsn000t S
-				WHERE S.CLERK_NO = A.CRE_USER) AS creUser
+				WHERE S.CLERK_NO = A.CRE_USER) AS creUserNm
 			, A.CRE_DATE AS creDate
 			, A.UPD_USER AS updUser
 			, A.UPD_DATE AS updDate
@@ -166,8 +168,11 @@
 			, A.DEL_YN AS delYn
 			, A.CMMT_CONTENT AS cmmtContent
 			, A.CRE_USER AS creUser
+			, (SELECT S.NICK_NAME FROM prsn000t S
+				WHERE S.CLERK_NO = A.CRE_USER) AS creUserNm
 			, A.CRE_DATE AS creDate
 			, DATE_FORMAT(A.CRE_DATE, '%y.%m.%d %H:%i') AS creDateTxt
+			
 		FROM 
 			wit_bord110t A
 		WHERE A.BORD_TYPE = #{bordType}
@@ -205,11 +210,23 @@
 		) 
 	</insert>
 	
-	<!-- 게시판 종료 -->
+	<!-- 댓글 종료 -->
+	<update id="endCommentInfo" parameterType="java.util.HashMap">
+		UPDATE wit_bord110t SET
+			  DEL_YN = 'Y'
+			, UPD_USER = #{updUser}
+			, UPD_DATE = NOW()
+		WHERE DEL_YN = 'N'
+		AND BORD_TYPE = #{bordType}
+		AND BORD_NO = #{bordNo}
+		AND BORD_SEQ = #{bordSeq}
+	</update>
+	
+	<!-- 댓글 전체 종료 -->
 	<update id="endCommentList" parameterType="java.util.HashMap">
 		UPDATE wit_bord110t SET
 			  DEL_YN = 'Y'
-			, UPD_USER = #{creUser}
+			, UPD_USER = #{updUser}
 			, UPD_DATE = NOW()
 		WHERE DEL_YN = 'N'
 		AND BORD_TYPE = #{bordType}
@@ -233,10 +250,10 @@
 		) 
 		VALUES
 		(
-			  #{bizCd}
+			  'B001'
 			, #{bizKey}
 			, (SELECT IFNULL(MAX(CAST(S.FILE_SEQ AS UNSIGNED)), 0) + 1 FROM wit_file000t S
-				WHERE S.BIZ_CD = #{bizCd}
+				WHERE S.BIZ_CD = 'B001'
 				AND S.FILE_TYPE = #{fileType}
 				AND S.BIZ_KEY = #{bizKey})
 			, #{fileType}

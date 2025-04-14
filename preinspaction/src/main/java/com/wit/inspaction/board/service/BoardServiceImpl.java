@@ -130,6 +130,14 @@ public class BoardServiceImpl implements BoardService{
 	 * 댓글 종료
 	 */
 	@Override
+	public int endCommentInfo(HashMap<String, Object> paramMap) {
+		return boardMapper.endCommentInfo(paramMap);
+	}
+	
+	/**
+	 * 댓글 전체 종료
+	 */
+	@Override
 	public int endCommentList(HashMap<String, Object> paramMap) {
 		return boardMapper.endCommentList(paramMap);
 	}
