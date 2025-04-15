@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.wit.inspaction.board.model.BoardDTO;
 import com.wit.inspaction.seller.mapper.SellerMapper;
+import com.wit.inspaction.seller.model.AptDTO;
 import com.wit.inspaction.seller.model.CashDTO;
 import com.wit.inspaction.seller.model.CashHistoryDTO;
 import com.wit.inspaction.seller.model.CashRechargeSetDTO;
@@ -236,6 +237,12 @@ public class SellerServiceImpl implements SellerService{
 	public List<EstimateCntDTO> getEstimateCntList(HashMap<String, Object> param) {
 		System.out.println("SellerServiceImpl getEstimateCntList 호출");
 		return sellerMapper.selectEstimateCntList(param);
+	}
+
+	@Override
+	public List<AptDTO> getSubscribeAptList(HashMap<String, Object> param) {
+		System.out.println("SellerServiceImpl getSubscribeAptList 호출");
+		return sellerMapper.selectSubscribeAptList(param);
 	}
 
 }

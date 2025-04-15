@@ -712,6 +712,22 @@
 		ORDER BY SLLR_NO
 	</select>
 	
+	<!-- 아파트 조회 -->
+	<select id="selectSubscribeAptList" parameterType="java.util.HashMap" resultType="aptDTO">	
+		SELECT A.APT_NO AS aptNo
+		       ,A.APT_NAME AS aptName
+		       ,A.SLLR_NO AS sllrNo
+		       ,A.END_DATE AS endDate
+		       ,A.SSCR_ST_DATE as sscrStDate
+		       ,A.SPL_SIZE as splSize
+		FROM   apt000t A
+		WHERE  SSCR_ST_DATE IS NOT NULL
+		<if test="sllrNo !=null and !sllrNo.equals('')">
+			AND  A.SLLR_NO = #{sllrNo}
+		</if>
+		ORDER BY A.SSCR_ST_DATE, A.APT_NO ASC
+	</select>
+	
 <!--	SELECT * 
 FROM wit_bord100t a, request100t b
 where a.bord_type = 'C1'

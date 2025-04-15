@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wit.inspaction.board.model.BoardDTO;
 import com.wit.inspaction.board.service.BoardServiceImpl;
 import com.wit.inspaction.preinspaction.PreinspactionController;
+import com.wit.inspaction.seller.model.AptDTO;
 import com.wit.inspaction.seller.model.CashDTO;
 import com.wit.inspaction.seller.model.CashHistoryDTO;
 import com.wit.inspaction.seller.model.CashRechargeSetDTO;
@@ -588,6 +589,18 @@ public class SellerController {
         return getEstimateCntList;
     }
 	
-	
-	
+	/**
+	 * 업체별 구독 아파트 조회
+	 * @return List<AptDTO>
+	 */
+	@PostMapping("/wit/getSubscribeAptList")
+    public List<AptDTO> getSubscribeAptList(@RequestBody HashMap<String, Object> param) {
+
+		System.out.println("getSubscribeAptList 호출");
+
+		List<AptDTO> getSubscribeAptList = sellerService.getSubscribeAptList(param);
+
+        return getSubscribeAptList;
+    }
+
 }
