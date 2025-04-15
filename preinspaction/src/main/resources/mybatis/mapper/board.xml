@@ -19,7 +19,8 @@
 			, A.BORD_GD_CNT AS bordGdCnt
 			, (SELECT COUNT(S.CMMT_NO) FROM wit_bord110t S
 				WHERE S.BORD_TYPE = A.BORD_TYPE
-				AND S.BORD_NO = A.BORD_NO) AS commentCnt
+				AND S.BORD_NO = A.BORD_NO
+				AND S.DEL_YN = 'N') AS commentCnt
 			, A.CRE_USER AS creUser
 			, (SELECT S.NICK_NAME FROM prsn000t S
 				WHERE S.CLERK_NO = A.CRE_USER) AS creUserNm
@@ -61,7 +62,8 @@
 			, A.BORD_GD_CNT AS bordGdCnt
 			, (SELECT COUNT(S.CMMT_NO) FROM wit_bord110t S
 				WHERE S.BORD_TYPE = A.BORD_TYPE
-				AND S.BORD_NO = A.BORD_NO) AS commentCnt
+				AND S.BORD_NO = A.BORD_NO
+				AND S.DEL_YN = 'N') AS commentCnt
 			, DATE_FORMAT(A.CRE_DATE, '%y.%m.%d %H:%i') AS creDateTxt
 			, A.CRE_USER AS creUser
 			, (SELECT S.NICK_NAME FROM prsn000t S
@@ -177,6 +179,7 @@
 			wit_bord110t A
 		WHERE A.BORD_TYPE = #{bordType}
 		AND A.BORD_NO = #{bordNo}
+		AND A.DEL_YN = 'N'
 		ORDER BY A.CMMT_SEQ 
 	</select>
 	
@@ -217,9 +220,10 @@
 			, UPD_USER = #{updUser}
 			, UPD_DATE = NOW()
 		WHERE DEL_YN = 'N'
-		AND BORD_TYPE = #{bordType}
 		AND BORD_NO = #{bordNo}
-		AND BORD_SEQ = #{bordSeq}
+		AND BORD_TYPE = #{bordType}
+		AND CMMT_NO = #{cmmtNo}
+		AND CMMT_SEQ = #{cmmtSeq}
 	</update>
 	
 	<!-- 댓글 전체 종료 -->
