@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.wit.inspaction.board.model.BoardDTO;
+import com.wit.inspaction.seller.model.AptDTO;
 import com.wit.inspaction.seller.model.CashDTO;
 import com.wit.inspaction.seller.model.CashHistoryDTO;
 import com.wit.inspaction.seller.model.CashRechargeSetDTO;
@@ -207,5 +208,12 @@ public interface SellerService {
 	 * @return List<EstimateCntDTO>
 	 */
 	public List<EstimateCntDTO> getEstimateCntList(HashMap<String, Object> param);
+	
+	/**
+	 * 업체별 구독 아파트 조회
+	 * @param param
+	 * @return List<AptDTO>
+	 */
+	public List<AptDTO> getSubscribeAptList(HashMap<String, Object> param);
 	
 }

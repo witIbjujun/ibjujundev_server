@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.wit.inspaction.board.model.BoardDTO;
+import com.wit.inspaction.seller.model.AptDTO;
 import com.wit.inspaction.seller.model.CashDTO;
 import com.wit.inspaction.seller.model.CashHistoryDTO;
 import com.wit.inspaction.seller.model.CashRechargeSetDTO;
@@ -299,8 +300,15 @@ public class SellerMapper {
 		return sql.selectList(path + "selectEstimateCntList", param);
 	}
 	
-	
-	
+	/**
+	 * 업체별 견적 카운트 조회
+	 * @param param
+	 * @return List<AptDTO>
+	 */
+	public List<AptDTO> selectSubscribeAptList(HashMap<String, Object> param) {
+		System.out.println("############# selectSubscribeAptList : " + param);
+		return sql.selectList(path + "selectSubscribeAptList", param);
+	}
 
 
 }

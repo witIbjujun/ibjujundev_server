@@ -34,6 +34,7 @@
     	<typeAlias alias="CashRechargeSetDTO" type="com.wit.inspaction.seller.model.CashRechargeSetDTO"/>
     	<typeAlias alias="DirectEstimateSetDTO" type="com.wit.inspaction.seller.model.DirectEstimateSetDTO"/>
     	<typeAlias alias="EstimateCntDTO" type="com.wit.inspaction.seller.model.EstimateCntDTO"/>
+    	<typeAlias alias="AptDTO" type="com.wit.inspaction.seller.model.AptDTO"/>
 		
 		<!-- 스케쥴 -->
     	<typeAlias alias="ScheduleInfoDTO" type="com.wit.inspaction.schedule.model.ScheduleInfoDTO"/>
