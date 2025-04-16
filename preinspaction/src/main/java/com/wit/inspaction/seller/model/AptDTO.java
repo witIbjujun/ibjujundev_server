@@ -7,6 +7,8 @@ public class AptDTO {
 	private String endDate;           // 종료일자
 	private String sscrStDate;        // 구독개시일
 	private String splSize;	          // 분양규모
+	private String moveinScjDate;     // 입주일   
+	private String stat;              // 상태 
 	
 	/**
 	 * @return the aptNo
@@ -80,6 +82,31 @@ public class AptDTO {
 	public void setSplSize(String splSize) {
 		this.splSize = splSize;
 	}
+	/**
+	 * @return the moveinScjDate
+	 */
+	public String getMoveinScjDate() {
+		return moveinScjDate;
+	}
+	/**
+	 * @param moveinScjDate the moveinScjDate to set
+	 */
+	public void setMoveinScjDate(String moveinScjDate) {
+		this.moveinScjDate = moveinScjDate;
+	}
+	/**
+	 * @return the stat
+	 */
+	public String getStat() {
+		return stat;
+	}
+	/**
+	 * @param stat the stat to set
+	 */
+	public void setStat(String stat) {
+		this.stat = stat;
+	}
 
+	
 }
 

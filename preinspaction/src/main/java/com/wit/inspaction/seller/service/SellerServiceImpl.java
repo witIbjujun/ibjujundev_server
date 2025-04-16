@@ -245,4 +245,14 @@ public class SellerServiceImpl implements SellerService{
 		return sellerMapper.selectSubscribeAptList(param);
 	}
 
+	@Override
+	public int insertSubscribeApt(HashMap<String, Object> param) {
+		return sellerMapper.insertSubscribeApt(param);
+	}
+
+	@Override
+	public int updateSubscribeApt(HashMap<String, Object> param) {
+		return sellerMapper.updateSubscribeApt(param);
+	}
+
 }

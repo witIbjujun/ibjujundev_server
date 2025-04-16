@@ -720,20 +720,48 @@
 		       ,A.END_DATE AS endDate
 		       ,A.SSCR_ST_DATE as sscrStDate
 		       ,A.SPL_SIZE as splSize
-		FROM   apt000t A
+		       ,CASE WHEN A.movein_scj_date IS NOT NULL THEN DATE_FORMAT(STR_TO_DATE(A.movein_scj_date, '%Y%m%d'), '%y년 %m월')
+         		ELSE NULL
+   				END AS moveinScjDate
+			   ,CASE WHEN (B.SLLR_NO IS NOT NULL AND B.USE_YN = 'Y') THEN '구독중' ELSE '구독하기' END AS STAT
+		FROM apt000t A			   
+		LEFT OUTER JOIN sllr100t B ON A.APT_NO = B.APT_NO
 		WHERE  SSCR_ST_DATE IS NOT NULL
-		<if test="sllrNo !=null and !sllrNo.equals('')">
-			AND  A.SLLR_NO = #{sllrNo}
+        <if test="searchType !=null and !searchType.equals('')">
+			AND  B.SLLR_NO = #{sllrNo}
+			AND  B.USE_YN = 'Y'
 		</if>
 		ORDER BY A.SSCR_ST_DATE, A.APT_NO ASC
 	</select>
 	
-<!--	SELECT * 
-FROM wit_bord100t a, request100t b
-where a.bord_type = 'C1'
-and   a.del_yn = 'N'
-and   a.BORD_NO = b.req_no
-and   a.BORD_SEQ = b.seq;-->
+	<!-- 아파트 구독 등록 -->
+	<insert id="insertSubscribeApt" parameterType="java.util.HashMap">
+		INSERT INTO sllr100t
+		(
+			SLLR_NO
+		    , APT_NO
+		    , USE_YN
+		    , CRE_USER
+		    , CRE_DATE
+		) VALUES (
+			#{sllrNo}
+			, #{aptNo}
+			,'Y'
+			, #{creUser}
+			, SYSDATE()
+		)
+	</insert>
+	
+	<!-- 아파트 구독 수정 -->
+	<update id="updateSubscribeApt" parameterType="java.util.HashMap">
+		UPDATE sllr100t
+		SET    USE_YN = #{useYn}
+		       , UPD_USER = #{updUser}
+		       , UPD_DATE = SYSDATE()
+		WHERE  SLLR_NO = #{sllrNo}
+		AND    APT_NO  = #{aptNo}
+	</update>
+
 	
 
 </mapper>

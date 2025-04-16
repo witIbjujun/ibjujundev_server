@@ -216,4 +216,18 @@ public interface SellerService {
 	 */
 	public List<AptDTO> getSubscribeAptList(HashMap<String, Object> param);
 	
+	/**
+	 * 업체별 구독 아파트 등록
+	 * @param param
+	 * @return int
+	 */
+	public int insertSubscribeApt(HashMap<String, Object> param);
+	
+	/**
+	 * 업체별 구독 아파트 수정
+	 * @param param
+	 * @return int
+	 */
+	public int updateSubscribeApt(HashMap<String, Object> param);
+	
 }

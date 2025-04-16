@@ -602,5 +602,33 @@ public class SellerController {
 
         return getSubscribeAptList;
     }
+	
+	/**
+	 * 업체별 구독 아파트 등록
+	 * @param paramMap
+	 * @return int
+	 */
+	@PostMapping("/wit/insertSubscribeApt")
+	public int insertSubscribeApt(@RequestBody HashMap<String, Object> param) {
+		System.out.println("insertSubscribeApt 호출");
+
+		int result = sellerService.insertSubscribeApt(param);
+
+        return result;
+	}
+	
+	/**
+	 * 업체별 구독 아파트 수정
+	 * @param paramMap
+	 * @return int
+	 */
+	@PostMapping("/wit/updateSubscribeApt")
+	public int updateSubscribeApt(@RequestBody HashMap<String, Object> param) {
+		System.out.println("updateSubscribeApt 호출");
+
+		int result = sellerService.updateSubscribeApt(param);
+
+        return result;
+	}
 
 }

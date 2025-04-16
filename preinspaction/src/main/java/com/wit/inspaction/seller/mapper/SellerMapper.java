@@ -301,13 +301,33 @@ public class SellerMapper {
 	}
 	
 	/**
-	 * 업체별 견적 카운트 조회
+	 * 업체별 구독 아파트 조회
 	 * @param param
 	 * @return List<AptDTO>
 	 */
 	public List<AptDTO> selectSubscribeAptList(HashMap<String, Object> param) {
 		System.out.println("############# selectSubscribeAptList : " + param);
 		return sql.selectList(path + "selectSubscribeAptList", param);
+	}
+	
+	/**
+	 * 업체별 구독 아파트 등록
+	 * @param param
+	 * @return int
+	 */
+	public int insertSubscribeApt(HashMap<String, Object> param) {
+		System.out.println("############# insertSubscribeApt : " + param);
+		return sql.insert(path + "insertSubscribeApt", param);
+	}
+
+	/**
+	 * 업체별 구독 아파트 수정
+	 * @param param
+	 * @return int
+	 */
+	public int updateSubscribeApt(HashMap<String, Object> param) {
+		System.out.println("############# updateSubscribeApt : " + param);
+		return sql.update(path + "updateSubscribeApt", param);
 	}
 
 
