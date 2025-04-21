@@ -102,4 +102,11 @@ public interface BoardService {
 	 */
 	public int saveFileInfo(HashMap<String, Object> paramMap);
 	
+	/**
+	 * 파일 삭제
+	 * @param paramMap
+	 * @return int
+	 */
+	public int deleteFileInfo(HashMap<String, Object> paramMap);
+	
 }

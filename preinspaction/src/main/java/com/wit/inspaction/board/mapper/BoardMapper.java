@@ -135,4 +135,13 @@ public class BoardMapper {
 		return sql.update(path + "saveFileInfo", paramMap);
 	}
 	
+	/**
+	 * 파일 삭제
+	 * @param paramMap
+	 * @return int
+	 */
+	public int deleteFileInfo(HashMap<String, Object> paramMap) {
+		return sql.update(path + "deleteFileInfo", paramMap);
+	}
+	
 }

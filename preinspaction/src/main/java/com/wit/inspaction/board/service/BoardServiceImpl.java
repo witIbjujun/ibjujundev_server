@@ -147,10 +147,15 @@ public class BoardServiceImpl implements BoardService{
 	 */
 	@Override
 	public int saveFileInfo(HashMap<String, Object> paramMap) {
-		
-		System.out.println("BoardServiceImpl saveFileInfo 호출");
-		
 		return boardMapper.saveFileInfo(paramMap);
+	}
+	
+	/**
+	 * 파일 삭제
+	 */
+	@Override
+	public int deleteFileInfo(HashMap<String, Object> paramMap) {
+		return boardMapper.deleteFileInfo(paramMap);
 	}
 	
 }

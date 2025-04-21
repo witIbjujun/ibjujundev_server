@@ -270,4 +270,10 @@
 		) 
 	</insert>
 	
+	<!-- 댓글 전체 종료 -->
+	<delete id="deleteFileInfo" parameterType="java.util.HashMap">
+		DELETE FROM wit_file000t
+		WHERE FILE_ID = #{fileId}
+	</delete>
+	
 </mapper>

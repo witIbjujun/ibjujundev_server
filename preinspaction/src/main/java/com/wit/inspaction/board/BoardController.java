@@ -91,7 +91,6 @@ public class BoardController {
 					System.out.println("파일 등록 ::: " + fileResult);
 				}
 			}
-			
 		}
 		
         return result;
@@ -110,30 +109,45 @@ public class BoardController {
 		// 게시판 수정
 		int result = boardService.updateBoardInfo(paramMap);
 		
-		/*if (result > 0) {
+		if (result > 0) {
 			
-			// 파일 Json
-			String fileJson = (String) paramMap.get("fileInfo") == null ? "" : (String) paramMap.get("fileInfo");
-
-			// JSON 문자열을 List<HashMap<String, Object>>로 변환
-			ObjectMapper objectMapper = new ObjectMapper();
-	        List<HashMap<String, Object>> fileList = objectMapper.readValue(fileJson, new TypeReference<List<HashMap<String, Object>>>(){});
+			// 파일 저장 리스트
+			List<HashMap<String, Object>> fileList = (List<HashMap<String, Object>>) paramMap.get("fileInfo");
 			
-			// 파일 저장
-			for (int i = 0; i < fileList.size(); i++) {
-				
-				HashMap<String, Object> fileInfo = fileList.get(i);
-				fileInfo.put("bizCd", "B001");
-				fileInfo.put("bizKey", bordNo);
-				fileInfo.put("fileType", "01");
-				fileInfo.put("creUser", "테스트");
-				
-				int fileResult = boardService.saveFileInfo(fileInfo);
-				
-				System.out.println("파일 등록 ::: " + fileResult);
+			if (fileList != null && !fileList.isEmpty()) {
+			
+				// 파일 저장
+				for (int i = 0; i < fileList.size(); i++) {
+					
+					HashMap<String, Object> fileInfo = fileList.get(i);
+					fileInfo.put("bizKey", paramMap.get("bordNo"));
+					fileInfo.put("fileType", paramMap.get("bordType"));
+					fileInfo.put("creUser", paramMap.get("creUser"));
+					fileInfo.put("updUser", paramMap.get("updUser"));
+					
+					int fileResult = boardService.saveFileInfo(fileInfo);
+					
+					System.out.println("파일 등록 ::: " + fileResult);
+				}
 			}
 			
-		}*/
+			// 파일 삭제 리스트
+			List<String> fileDelList = (List<String>) paramMap.get("fileDelInfo");
+			
+			if (fileDelList != null && !fileDelList.isEmpty()) {
+				
+				// 파일 삭제
+				for (String fileDelInfo : fileDelList) {
+					HashMap<String, Object> delParam = new HashMap<String, Object>();
+					delParam.put("fileId", fileDelInfo.split("/")[2]);
+
+					int fileDelResult = boardService.deleteFileInfo(delParam);
+					
+					System.out.println("파일 삭제 ::: " + fileDelResult);
+				}
+			}
+			
+		}
 		
         return result;
     }
