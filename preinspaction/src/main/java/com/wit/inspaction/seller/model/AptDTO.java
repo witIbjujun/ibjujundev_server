@@ -9,6 +9,9 @@ public class AptDTO {
 	private String splSize;	          // 분양규모
 	private String moveinScjDate;     // 입주일   
 	private String stat;              // 상태 
+	private String sscAmt;              // 구독금액
+	private String saleRate;              // 할인율
+	private String saleAmt;           // 할인된 금액
 	
 	/**
 	 * @return the aptNo
@@ -106,7 +109,44 @@ public class AptDTO {
 	public void setStat(String stat) {
 		this.stat = stat;
 	}
-
+	/**
+	 * @return the sscAmt
+	 */
+	public String getSscAmt() {
+		return sscAmt;
+	}
+	/**
+	 * @param sscAmt the sscAmt to set
+	 */
+	public void setSscAmt(String sscAmt) {
+		this.sscAmt = sscAmt;
+	}
+	/**
+	 * @return the saleRate
+	 */
+	public String getSaleRate() {
+		return saleRate;
+	}
+	/**
+	 * @param saleRate the saleRate to set
+	 */
+	public void setSaleRate(String saleRate) {
+		this.saleRate = saleRate;
+	}
+	/**
+	 * @return the saleAmt
+	 */
+	public String getSaleAmt() {
+		return saleAmt;
+	}
+	/**
+	 * @param saleAmt the saleAmt to set
+	 */
+	public void setSaleAmt(String saleAmt) {
+		this.saleAmt = saleAmt;
+	}
+	
+	
 	
 }
 
