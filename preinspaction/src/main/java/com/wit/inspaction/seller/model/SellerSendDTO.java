@@ -20,6 +20,8 @@ public class SellerSendDTO {
     private String categoryNm;
     private String itemPrice1;
     private String sllrClerkNo;
+    private String estimateDate;			// 최초 작업희망일
+    private String estimateProcDate;		// 최종 작업확정일
     
 	/**
 	 * @return the sllrNo
@@ -237,5 +239,31 @@ public class SellerSendDTO {
 	public void setSllrClerkNo(String sllrClerkNo) {
 		this.sllrClerkNo = sllrClerkNo;
 	}
+	/**
+	 * @return the estimateDate
+	 */
+	public String getEstimateDate() {
+		return estimateDate;
+	}
+	/**
+	 * @param estimateDate the estimateDate to set
+	 */
+	public void setEstimateDate(String estimateDate) {
+		this.estimateDate = estimateDate;
+	}
+	/**
+	 * @return the estimateProcDate
+	 */
+	public String getEstimateProcDate() {
+		return estimateProcDate;
+	}
+	/**
+	 * @param estimateProcDate the estimateProcDate to set
+	 */
+	public void setEstimateProcDate(String estimateProcDate) {
+		this.estimateProcDate = estimateProcDate;
+	}
+	
+	
 
 }

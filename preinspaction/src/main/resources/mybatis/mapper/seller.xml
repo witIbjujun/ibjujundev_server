@@ -24,6 +24,8 @@
 		        , E.NICK_NAME AS prsnName
 				, (SELECT category_nm FROM category WHERE category_id = A.category_id) AS categoryNm 
 				, B.estimate_amount itemPrice1
+				,DATE_FORMAT(B.ESTIMATE_DATE, '%Y%m%d') AS estimateDate
+                ,DATE_FORMAT(B.ESTIMATE_PROC_DATE, '%Y%m%d') AS estimateProcDate		
 		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E
 		WHERE   A.REQ_NO = B.REQ_NO
 		AND     A.SEQ = B.SEQ 
@@ -68,6 +70,8 @@
 		        , E.NICK_NAME AS prsnName
 				, (SELECT category_nm FROM category WHERE category_id = A.category_id) AS categoryNm 
 				, B.estimate_amount itemPrice1
+				,DATE_FORMAT(B.ESTIMATE_DATE, '%Y%m%d') AS estimateDate
+                ,DATE_FORMAT(B.ESTIMATE_PROC_DATE, '%Y%m%d') AS estimateProcDate
 		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E
 		WHERE   A.REQ_NO = B.REQ_NO
 		AND     A.SEQ = B.SEQ 
@@ -99,6 +103,8 @@
 				, (SELECT category_nm FROM category WHERE category_id = A.category_id) AS categoryNm 
 				, B.estimate_amount itemPrice1
                 , F.clerk_no AS sllrClerkNo
+                ,DATE_FORMAT(B.ESTIMATE_DATE, '%Y%m%d') AS estimateDate
+                ,DATE_FORMAT(B.ESTIMATE_PROC_DATE, '%Y%m%d') AS estimateProcDate
 		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E, wit_sllr000t F
 		WHERE   A.REQ_NO = B.REQ_NO
 		AND     A.SEQ = B.SEQ 

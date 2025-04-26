@@ -19,6 +19,8 @@ public class EstimateRequestDTO {
     private String prsnName;				// 요청자명
     private String categoryNm;				// 품목명
     private String itmePrice1;				// 견적금액
+    private String estimateDate;			// 최초 작업희망일
+    private String estimateProcDate;		// 최종 작업확정일
     
 	/**
 	 * @return the estNo
@@ -224,5 +226,31 @@ public class EstimateRequestDTO {
 	public void setItmePrice1(String itmePrice1) {
 		this.itmePrice1 = itmePrice1;
 	}
+	/**
+	 * @return the estimateDate
+	 */
+	public String getEstimateDate() {
+		return estimateDate;
+	}
+	/**
+	 * @param estimateDate the estimateDate to set
+	 */
+	public void setEstimateDate(String estimateDate) {
+		this.estimateDate = estimateDate;
+	}
+	/**
+	 * @return the estimateProcDate
+	 */
+	public String getEstimateProcDate() {
+		return estimateProcDate;
+	}
+	/**
+	 * @param estimateProcDate the estimateProcDate to set
+	 */
+	public void setEstimateProcDate(String estimateProcDate) {
+		this.estimateProcDate = estimateProcDate;
+	}
+	
+	
 
 }
