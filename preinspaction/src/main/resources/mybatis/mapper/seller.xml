@@ -11,38 +11,38 @@
 		        , B.SEQ AS seq
 		        , C.APT_NAME AS aptName
 		        , D.imagePath AS  itemImage
-			    , A.REQ_DATE estDt
-			    , A.REQ_CONTENTS reqContents
-			    , A.COMPANY_ID companyId
-			    , A.CATEGORY_ID categoryId
+			    , B.REQ_DATE estDt
+			    , B.REQ_CONTENTS reqContents
+			    , B.COMPANY_ID companyId
+			    , B.CATEGORY_ID categoryId
 		        , D.category_nm AS itemName
-			    , A.REQ_STATE   reqState
-		        , (select cd_nm from wit_code000t where cd_cls = 'EST01' and appl_en_date = '99991231235959' and cd = A.REQ_STATE) AS stat
+			    , B.REQ_STATE   reqState
+		        , (select cd_nm from wit_code000t where cd_cls = 'EST01' and appl_en_date = '99991231235959' and cd = B.REQ_STATE) AS stat
 		        , B.estimate_contents content
-			    , A.REQ_USER reqUser
+			    , B.REQ_USER reqUser
 		        , IF(B.auto_yn = 'Y', '바로 견적서비스 발송', '일반 견적서비스 발송') AS autoYn
 		        , E.NICK_NAME AS prsnName
-				, (SELECT category_nm FROM category WHERE category_id = A.category_id) AS categoryNm 
+				, (SELECT category_nm FROM category WHERE category_id = B.category_id) AS categoryNm 
 				, B.estimate_amount itemPrice1
-				,DATE_FORMAT(B.ESTIMATE_DATE, '%Y%m%d') AS estimateDate
-                ,DATE_FORMAT(B.ESTIMATE_PROC_DATE, '%Y%m%d') AS estimateProcDate		
+				, DATE_FORMAT(B.ESTIMATE_DATE, '%Y%m%d') AS estimateDate
+                , DATE_FORMAT(B.ESTIMATE_PROC_DATE, '%Y%m%d') AS estimateProcDate		
 		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E
 		WHERE   A.REQ_NO = B.REQ_NO
 		AND 	B.END_DATE = '99991231'
-	    AND 	A.company_id  = #{sllrNo}
+	    AND 	B.company_id  = #{sllrNo}
 	    <if test="stat == null or stat.equals('')">
-			AND A.REQ_STATE != 01
+			AND B.REQ_STATE != 01
 		</if>
 		<if test="stat !=null and !stat.equals('')">
-			AND A.REQ_STATE = 01
+			AND B.REQ_STATE = 01
 		</if>
 		<if test="basDate !=null and !basDate.equals('')">
-			AND DATE_FORMAT(A.REQ_DATE, '%Y%m') = #{basDate}
+			AND DATE_FORMAT(B.REQ_DATE, '%Y%m') = #{basDate}
 		</if>
         AND 	A.APT_NO = C.APT_NO
-        AND 	A.CATEGORY_ID = D.CATEGORY_ID
-        AND 	A.REQ_USER = E.CLERK_NO
-		ORDER BY A.REQ_DATE DESC	
+        AND 	B.CATEGORY_ID = D.CATEGORY_ID
+        AND 	B.REQ_USER = E.CLERK_NO
+		ORDER BY B.REQ_DATE DESC	
 	</select>
 
 	<!-- 바로 견적리스트 조회 -->
@@ -52,34 +52,34 @@
 		        , C.APT_NAME AS aptName
 		        , D.imagePath AS  itemImage
                 ,  CASE
-		            WHEN TIMESTAMPDIFF(SECOND, A.REQ_DATE, NOW()) <![CDATA[<=]]> 10 THEN '방금 전'
-		            WHEN TIMESTAMPDIFF(SECOND, A.REQ_DATE, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(SECOND, A.REQ_DATE, NOW()), '초 전')
-		            WHEN TIMESTAMPDIFF(MINUTE, A.REQ_DATE, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(MINUTE, A.REQ_DATE, NOW()), '분 전')
-		            WHEN TIMESTAMPDIFF(HOUR, A.REQ_DATE, NOW()) <![CDATA[<]]> 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, A.REQ_DATE, NOW()), '시간 전')
-		            ELSE CONCAT(TIMESTAMPDIFF(DAY, A.REQ_DATE, NOW()), '일 전') END  AS estDt
-			    , A.REQ_CONTENTS reqContents
-			    , A.COMPANY_ID companyId
-			    , A.CATEGORY_ID categoryId
+		            WHEN TIMESTAMPDIFF(SECOND, B.REQ_DATE, NOW()) <![CDATA[<=]]> 10 THEN '방금 전'
+		            WHEN TIMESTAMPDIFF(SECOND, B.REQ_DATE, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(SECOND, B.REQ_DATE, NOW()), '초 전')
+		            WHEN TIMESTAMPDIFF(MINUTE, B.REQ_DATE, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(MINUTE, B.REQ_DATE, NOW()), '분 전')
+		            WHEN TIMESTAMPDIFF(HOUR, B.REQ_DATE, NOW()) <![CDATA[<]]> 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, B.REQ_DATE, NOW()), '시간 전')
+		            ELSE CONCAT(TIMESTAMPDIFF(DAY, B.REQ_DATE, NOW()), '일 전') END  AS estDt
+			    , B.REQ_CONTENTS reqContents
+			    , B.COMPANY_ID companyId
+			    , B.CATEGORY_ID categoryId
 		        , D.category_nm AS itemName
-			    , A.REQ_STATE   reqState
-		        , (select cd_nm from wit_code000t where cd_cls = 'EST01' and appl_en_date = '99991231235959' and cd = A.REQ_STATE) AS stat
+			    , B.REQ_STATE   reqState
+		        , (select cd_nm from wit_code000t where cd_cls = 'EST01' and appl_en_date = '99991231235959' and cd = B.REQ_STATE) AS stat
 		        , B.estimate_contents content
-			    , A.REQ_USER AS reqUser
+			    , B.REQ_USER AS reqUser
 		        , IF(B.auto_yn = 'Y', '바로 견적서비스 발송', '일반 견적서비스 발송') AS autoYn
 		        , E.NICK_NAME AS prsnName
-				, (SELECT category_nm FROM category WHERE category_id = A.category_id) AS categoryNm 
+				, (SELECT category_nm FROM category WHERE category_id = B.category_id) AS categoryNm 
 				, B.estimate_amount itemPrice1
-				,DATE_FORMAT(B.ESTIMATE_DATE, '%Y%m%d') AS estimateDate
-                ,DATE_FORMAT(B.ESTIMATE_PROC_DATE, '%Y%m%d') AS estimateProcDate
+				, DATE_FORMAT(B.ESTIMATE_DATE, '%Y%m%d') AS estimateDate
+                , DATE_FORMAT(B.ESTIMATE_PROC_DATE, '%Y%m%d') AS estimateProcDate
 		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E
 		WHERE   A.REQ_NO = B.REQ_NO
 		AND 	B.END_DATE = '99991231'
-	    AND 	A.company_id = #{sllrNo}
-		AND     A.REQ_STATE != 01
+	    AND 	B.company_id = #{sllrNo}
+		AND     B.REQ_STATE != 01
         AND 	A.APT_NO = C.APT_NO
-        AND 	A.CATEGORY_ID = D.CATEGORY_ID
-        AND 	A.REQ_USER = E.CLERK_NO
-        AND     A.REQ_DATE BETWEEN DATE_ADD(NOW(), INTERVAL -1 WEEK) AND NOW()
+        AND 	B.CATEGORY_ID = D.CATEGORY_ID
+        AND 	B.REQ_USER = E.CLERK_NO
+        AND     B.REQ_DATE BETWEEN DATE_ADD(NOW(), INTERVAL -1 WEEK) AND NOW()
 	</select>
 
 	<!-- 견적발송 용 데이터 조회 -->
@@ -88,29 +88,29 @@
 		        , B.SEQ AS seq
 		        , C.APT_NAME AS aptName
 		        , D.imagePath AS  itemImage
-			    , A.REQ_DATE estDt
-			    , A.REQ_CONTENTS reqContents
-			    , A.COMPANY_ID companyId
-			    , A.CATEGORY_ID categoryId
+			    , B.REQ_DATE estDt
+			    , B.REQ_CONTENTS reqContents
+			    , B.COMPANY_ID companyId
+			    , B.CATEGORY_ID categoryId
 		        , D.category_nm AS itemName
-			    , A.REQ_STATE   reqState
-		        , (select cd_nm from wit_code000t where cd_cls = 'EST01' and appl_en_date = '99991231235959' and cd = A.REQ_STATE) AS stat
+			    , B.REQ_STATE   reqState
+		        , (select cd_nm from wit_code000t where cd_cls = 'EST01' and appl_en_date = '99991231235959' and cd = B.REQ_STATE) AS stat
 		        , B.estimate_contents estimateContent
-			    , A.REQ_USER AS reqUser
+			    , B.REQ_USER AS reqUser
 		        , E.NICK_NAME AS prsnName
-				, (SELECT category_nm FROM category WHERE category_id = A.category_id) AS categoryNm 
+				, (SELECT category_nm FROM category WHERE category_id = B.category_id) AS categoryNm 
 				, B.estimate_amount itemPrice1
                 , F.clerk_no AS sllrClerkNo
-                ,DATE_FORMAT(B.ESTIMATE_DATE, '%Y%m%d') AS estimateDate
-                ,DATE_FORMAT(B.ESTIMATE_PROC_DATE, '%Y%m%d') AS estimateProcDate
+                , DATE_FORMAT(B.ESTIMATE_DATE, '%Y%m%d') AS estimateDate
+                , DATE_FORMAT(B.ESTIMATE_PROC_DATE, '%Y%m%d') AS estimateProcDate
 		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E, wit_sllr000t F
 		WHERE   A.REQ_NO = B.REQ_NO
 		AND 	B.END_DATE = '99991231'
         AND 	A.APT_NO = C.APT_NO
-        AND 	A.CATEGORY_ID = D.CATEGORY_ID
-        AND 	A.REQ_USER = E.CLERK_NO
-        AND     A.COMPANY_ID = F.SLLR_NO
-        AND     A.REQ_NO = #{estNo}
+        AND 	B.CATEGORY_ID = D.CATEGORY_ID
+        AND 	B.REQ_USER = E.CLERK_NO
+        AND     B.COMPANY_ID = F.SLLR_NO
+        AND     B.REQ_NO = #{estNo}
         AND     B.SEQ = #{seq}
 	</select>
 
@@ -230,8 +230,8 @@
 		       , zip_code AS zipCode
 		       , address1 AS address1
 		       , address2 AS address2
-		       , (select count(req_no) from request100t where req_state = '01' and company_id = #{sllrNo}) AS reqCnt /* 견적요청내역 건수 */
-               , (select count(req_no) from request100t where req_state in ('02', '03', '04') and company_id = #{sllrNo}) AS ingCnt /* 거래내역 건수 */
+		       , (select count(req_no) from request110t where req_state = '01' and company_id = #{sllrNo}) AS reqCnt /* 견적요청내역 건수 */
+               , (select count(req_no) from request110t where req_state in ('02', '03', '04') and company_id = #{sllrNo}) AS ingCnt /* 거래내역 건수 */
                , rate AS rate
                , clerk_no AS clerkNo
                , bord_no AS bordNo
@@ -700,10 +700,10 @@
 		SELECT
 			  A.SLLR_NO AS sllrNo
 			, A.STORE_NAME AS storeName
-			, (SELECT COUNT(S.REQ_NO) FROM request100t S
+			, (SELECT COUNT(S.REQ_NO) FROM request110t S
 				WHERE S.COMPANY_ID = A.SLLR_NO
 				AND S.REQ_STATE = '01') AS waitCnt
-			, (SELECT COUNT(S.REQ_NO) FROM request100t S
+			, (SELECT COUNT(S.REQ_NO) FROM request110t S
 				WHERE S.COMPANY_ID = A.SLLR_NO
 				AND S.REQ_STATE != '01') AS goingCnt
 		FROM
