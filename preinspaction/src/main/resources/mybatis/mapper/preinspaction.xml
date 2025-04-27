@@ -137,6 +137,7 @@
 			, CHECK_COMT = VALUES(CHECK_COMT)
 			, CHECK_IMG1 = VALUES(CHECK_IMG1)
 			, CHECK_IMG2 = VALUES(CHECK_IMG2)
+			, CRE_USER = VALUES(CRE_USER)
 	</insert>
 	
 	<!-- 사전점검 항목 미완료 건수 조회 -->
