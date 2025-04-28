@@ -230,4 +230,11 @@ public interface SellerService {
 	 */
 	public int updateSubscribeApt(HashMap<String, Object> param);
 	
+	/**
+	 * 사업자 본인인증 수정
+	 * @param param
+	 * @return int
+	 */
+	public int updateCertificationYn(HashMap<String, Object> param);
+	
 }

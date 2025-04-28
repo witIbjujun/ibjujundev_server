@@ -329,6 +329,16 @@ public class SellerMapper {
 		System.out.println("############# updateSubscribeApt : " + param);
 		return sql.update(path + "updateSubscribeApt", param);
 	}
+	
+	/**
+	 * 사업자 본인인증 수정
+	 * @param param
+	 * @return int
+	 */
+	public int updateCertificationYn(HashMap<String, Object> param) {
+		System.out.println("############# updateCertificationYn : " + param);
+		return sql.update(path + "updateCertificationYn", param);
+	}
 
 
 }

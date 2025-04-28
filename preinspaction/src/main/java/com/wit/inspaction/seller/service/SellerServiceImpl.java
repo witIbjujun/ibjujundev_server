@@ -255,4 +255,9 @@ public class SellerServiceImpl implements SellerService{
 		return sellerMapper.updateSubscribeApt(param);
 	}
 
+	@Override
+	public int updateCertificationYn(HashMap<String, Object> param) {
+		return sellerMapper.updateCertificationYn(param);
+	}
+
 }

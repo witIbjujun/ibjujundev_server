@@ -38,6 +38,7 @@ public class SellerDTO {
     private String categoryContent; // 품목설명
     private String categoryImage; // 품목이미지
     private String rateFlag; // 품목이미지
+    private String certificationYn; // 본인인증여부
     
 	/**
 	 * @return the sllrNo
@@ -471,5 +472,19 @@ public class SellerDTO {
 	public void setRateFlag(String rateFlag) {
 		this.rateFlag = rateFlag;
 	}
+	/**
+	 * @return the certificationYn
+	 */
+	public String getCertificationYn() {
+		return certificationYn;
+	}
+	/**
+	 * @param certificationYn the certificationYn to set
+	 */
+	public void setCertificationYn(String certificationYn) {
+		this.certificationYn = certificationYn;
+	}
+	
+	
 	
 }

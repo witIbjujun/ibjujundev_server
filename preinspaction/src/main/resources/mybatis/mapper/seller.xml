@@ -243,6 +243,7 @@
                , (SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'BIZ01' AND APPL_EN_DATE = '99991231235959' AND CD = BIZ_CERTIFICATION) bizCertificationNm
                , category_content AS categoryContent
                , CASE WHEN rate >= 4.5 THEN 'Y' ELSE 'N' END AS rateFlag
+               , CERTIFICATION_YN AS certificationYn
 		FROM   wit_sllr000t
 		WHERE  SLLR_NO = #{sllrNo}
 	</select>
@@ -766,6 +767,15 @@
 		       , UPD_DATE = SYSDATE()
 		WHERE  SLLR_NO = #{sllrNo}
 		AND    APT_NO  = #{aptNo}
+	</update>
+	
+	<!-- 사업자 본인인증 수정 -->
+	<update id="updateCertificationYn" parameterType="java.util.HashMap">
+		UPDATE wit_sllr000t
+		SET    CERTIFICATION_YN = 'Y'
+		       , UPD_USER = #{updUser}
+		       , UPD_DT = SYSDATE()
+		WHERE  SLLR_NO = #{sllrNo}
 	</update>
 
 	

@@ -630,5 +630,18 @@ public class SellerController {
 
         return result;
 	}
+	
+	/**
+	 * 사업자 본인인증 수정
+	 * @param paramMap
+	 * @return int
+	 */
+	@PostMapping("/wit/updateCertificationYn")
+	public int updateCertificationYn(@RequestBody HashMap<String, Object> param) {
+		System.out.println("updateCertificationYn 호출");
 
+		int result = sellerService.updateCertificationYn(param);
+
+        return result;
+	}
 }
