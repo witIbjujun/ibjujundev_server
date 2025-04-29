@@ -276,4 +276,42 @@
 		WHERE FILE_ID = #{fileId}
 	</delete>
 	
+	<!-- 게시글 기신고건 체크 -->
+	<select id="checkSendReport" parameterType="java.util.HashMap" resultType="int">
+		SELECT 
+			COUNT(BORD_NO) AS CNT
+		FROM wit_bord120t
+		WHERE BORD_TYPE = #{bordType}
+		AND BORD_NO = #{bordNo}
+		AND CRE_USER = #{creUser}
+	</select>
+	
+	<!-- 게시글 신고하기 -->
+	<insert id="boardSendReport" parameterType="java.util.HashMap">
+		INSERT INTO wit_bord120t
+		(
+			  BORD_TYPE
+			, BORD_NO
+			, REPORT_SEQ
+			, REPORT_GBN
+			, REPORT_REASON
+			, REPORT_CONT
+			, CRE_USER
+			, CRE_DATE
+		) 
+		VALUES
+		(
+			  #{bordType}
+			, #{bordNo}
+			, (SELECT IFNULL(MAX(CAST(S.REPORT_SEQ AS UNSIGNED)), 0) + 1 FROM wit_bord120t S
+				WHERE S.BORD_TYPE = #{bordType}
+				AND S.BORD_NO = #{bordNo})
+			, NULL
+			, #{reportReason}
+			, #{reportCont}
+			, #{creUser}
+			, NOW()
+		) 
+	</insert>
+	
 </mapper>

@@ -143,5 +143,23 @@ public class BoardMapper {
 	public int deleteFileInfo(HashMap<String, Object> paramMap) {
 		return sql.update(path + "deleteFileInfo", paramMap);
 	}
+
+	/**
+	 * 게시글 기신고건 체크
+	 */
+	public int checkSendReport(HashMap<String, Object> paramMap) {
+		return sql.selectOne(path + "checkSendReport", paramMap);
+	}
+	
+	/**
+	 * 게시글 신고하기
+	 * @param paramMap
+	 * @return int
+	 */
+	public int boardSendReport(HashMap<String, Object> paramMap) {
+		return sql.insert(path + "boardSendReport", paramMap);
+	}
+
+	
 	
 }

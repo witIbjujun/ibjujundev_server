@@ -157,5 +157,23 @@ public class BoardServiceImpl implements BoardService{
 	public int deleteFileInfo(HashMap<String, Object> paramMap) {
 		return boardMapper.deleteFileInfo(paramMap);
 	}
+
+	/**
+	 * 게시글 기신고건 체크
+	 */
+	@Override
+	public int checkSendReport(HashMap<String, Object> paramMap) {
+		return boardMapper.checkSendReport(paramMap);
+	}
+	
+	/**
+	 * 게시글 신고하기
+	 */
+	@Override
+	public int boardSendReport(HashMap<String, Object> paramMap) {
+		return boardMapper.boardSendReport(paramMap);
+	}
+
+	
 	
 }

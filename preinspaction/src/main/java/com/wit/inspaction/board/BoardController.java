@@ -267,4 +267,26 @@ public class BoardController {
         return fileParamList;
     }
 	
+	/**
+	 * 신고하기
+	 * @return int
+	 */
+	@PostMapping("/wit/boardSendReport")
+    public int boardSendReport(@RequestBody HashMap<String, Object> paramMap) {
+		
+		System.out.println("boardService boardSendReport 호출");
+		
+		// 기신고건 있는지 체크
+		int checkResult = boardService.checkSendReport(paramMap);
+		if (checkResult > 0) {
+			return -2;
+		}
+		// 신규 신고 등록
+		int result = boardService.boardSendReport(paramMap);
+		
+		System.out.println("게시글 신고 ::: " + result);
+		
+        return result;
+    }
+	
 }

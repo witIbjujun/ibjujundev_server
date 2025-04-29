@@ -108,5 +108,19 @@ public interface BoardService {
 	 * @return int
 	 */
 	public int deleteFileInfo(HashMap<String, Object> paramMap);
+
+	/**
+	 * 게시글 기신고건 체크
+	 * @param paramMap
+	 * @return int
+	 */
+	public int checkSendReport(HashMap<String, Object> paramMap);
+	
+	/**
+	 * 게시글 신고하기
+	 * @param paramMap
+	 * @return int
+	 */
+	public int boardSendReport(HashMap<String, Object> paramMap);
 	
 }
