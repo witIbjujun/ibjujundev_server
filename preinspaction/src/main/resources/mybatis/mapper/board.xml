@@ -65,9 +65,18 @@
 				AND S.BORD_NO = A.BORD_NO
 				AND S.DEL_YN = 'N') AS commentCnt
 			, DATE_FORMAT(A.CRE_DATE, '%y.%m.%d %H:%i') AS creDateTxt
-			, A.CRE_USER AS creUser
+			, (SELECT 
+					CASE
+						WHEN COUNT(S.BORD_NO) > 0 THEN 'Y'
+						ELSE 'N'
+					END
+			    FROM wit_bord120t S
+				WHERE S.BORD_TYPE = A.BORD_TYPE
+				AND S.BORD_NO = A.BORD_NO
+				AND S.CRE_USER = #{creUser}) AS reportYn
 			, (SELECT S.NICK_NAME FROM prsn000t S
 				WHERE S.CLERK_NO = A.CRE_USER) AS creUserNm
+			, A.CRE_USER AS creUser
 			, A.CRE_DATE AS creDate
 			, A.UPD_USER AS updUser
 			, A.UPD_DATE AS updDate

@@ -14,6 +14,7 @@ public class BoardDTO {
 	private int bordGdCnt;				// 게시판 좋아요수
 	private int commentCnt;			// 댓글 수
 	private String imagePath;			// 이미지 경로
+	private String reportYn;			// 신고여부
 	private String creUser;				// 작성자
 	private String creUserNm;			// 작성자명
 	private String creDate;				// 작성일자
@@ -159,6 +160,18 @@ public class BoardDTO {
 	 */
 	public void setImagePath(String imagePath) {
 		this.imagePath = imagePath;
+	}
+	/**
+	 * @return the reportYn
+	 */
+	public String getReportYn() {
+		return reportYn;
+	}
+	/**
+	 * @param reportYn the reportYn to set
+	 */
+	public void setReportYn(String reportYn) {
+		this.reportYn = reportYn;
 	}
 	/**
 	 * @return the creUser
