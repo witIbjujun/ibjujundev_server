@@ -2,10 +2,8 @@ package com.wit.inspaction.board.model;
 
 public class CommentDTO {
 
-	private int cmmtNo;
-	private int cmmtSeq;
-	private int bordNo;
-	private int bordSeq;
+	private String bordNo;
+	private String cmmtNo;
 	private String delYn;
 	private String cmmtContent;
 	private String creUser;
@@ -16,52 +14,28 @@ public class CommentDTO {
 	private String creDateTxt;
 	
 	/**
-	 * @return the cmmtNo
-	 */
-	public int getCmmtNo() {
-		return cmmtNo;
-	}
-	/**
-	 * @param cmmtNo the cmmtNo to set
-	 */
-	public void setCmmtNo(int cmmtNo) {
-		this.cmmtNo = cmmtNo;
-	}
-	/**
-	 * @return the cmmtSeq
-	 */
-	public int getCmmtSeq() {
-		return cmmtSeq;
-	}
-	/**
-	 * @param cmmtSeq the cmmtSeq to set
-	 */
-	public void setCmmtSeq(int cmmtSeq) {
-		this.cmmtSeq = cmmtSeq;
-	}
-	/**
 	 * @return the bordNo
 	 */
-	public int getBordNo() {
+	public String getBordNo() {
 		return bordNo;
 	}
 	/**
 	 * @param bordNo the bordNo to set
 	 */
-	public void setBordNo(int bordNo) {
+	public void setBordNo(String bordNo) {
 		this.bordNo = bordNo;
 	}
 	/**
-	 * @return the bordSeq
+	 * @return the cmmtNo
 	 */
-	public int getBordSeq() {
-		return bordSeq;
+	public String getCmmtNo() {
+		return cmmtNo;
 	}
 	/**
-	 * @param bordSeq the bordSeq to set
+	 * @param cmmtNo the cmmtNo to set
 	 */
-	public void setBordSeq(int bordSeq) {
-		this.bordSeq = bordSeq;
+	public void setCmmtNo(String cmmtNo) {
+		this.cmmtNo = cmmtNo;
 	}
 	/**
 	 * @return the delYn

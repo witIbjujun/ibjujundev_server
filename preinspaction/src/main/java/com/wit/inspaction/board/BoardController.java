@@ -1,6 +1,8 @@
 package com.wit.inspaction.board;
 
 import java.io.File;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.wit.inspaction.board.model.BoardDTO;
+import com.wit.inspaction.board.model.BoardReportDTO;
 import com.wit.inspaction.board.model.CommentDTO;
 import com.wit.inspaction.board.service.BoardService;
 
@@ -66,7 +69,7 @@ public class BoardController {
 	@PostMapping("/wit/saveBoardInfo")
     public int saveBoardInfo(@RequestBody HashMap<String, Object> paramMap) throws Exception {
 		
-		int bordNo = boardService.getNewBordNo(paramMap);
+		String bordNo = boardService.getNewBordNo(paramMap);
 		paramMap.put("bordNo", bordNo);
 		
 		// 게시판 저장
@@ -81,8 +84,8 @@ public class BoardController {
 				
 				// 파일 저장
 				for (HashMap<String, Object> fileInfo : fileList) {
+					fileInfo.put("bizCd", paramMap.get("bordType"));
 	                fileInfo.put("bizKey", bordNo);
-	                fileInfo.put("fileType", paramMap.get("bordType"));
 	                fileInfo.put("creUser", paramMap.get("creUser"));
 	                fileInfo.put("updUser", paramMap.get("updUser"));
 					
@@ -120,8 +123,8 @@ public class BoardController {
 				for (int i = 0; i < fileList.size(); i++) {
 					
 					HashMap<String, Object> fileInfo = fileList.get(i);
+					fileInfo.put("bizCd", paramMap.get("bordType"));
 					fileInfo.put("bizKey", paramMap.get("bordNo"));
-					fileInfo.put("fileType", paramMap.get("bordType"));
 					fileInfo.put("creUser", paramMap.get("creUser"));
 					fileInfo.put("updUser", paramMap.get("updUser"));
 					
@@ -139,14 +142,20 @@ public class BoardController {
 				// 파일 삭제
 				for (String fileDelInfo : fileDelList) {
 					HashMap<String, Object> delParam = new HashMap<String, Object>();
-					delParam.put("fileId", fileDelInfo.split("/")[2]);
-
+					delParam.put("fileId", fileDelInfo.split("/")[3]);
 					int fileDelResult = boardService.deleteFileInfo(delParam);
 					
 					System.out.println("파일 삭제 ::: " + fileDelResult);
+					
+					if (fileDelResult > 0) {
+						File delFile = new File("/ibjujundev/tomcat/webapps/FILE/ibjujun/Board/" + fileDelInfo.split("/")[3]);
+						Boolean delFlag =  delFile.delete();
+						
+						System.out.println("파일 삭제 ::: " + delFlag);
+						
+					}
 				}
 			}
-			
 		}
 		
         return result;
@@ -160,8 +169,8 @@ public class BoardController {
 	@PostMapping("/wit/endBoardInfo")
     public int endBoardInfo(@RequestBody HashMap<String, Object> paramMap) throws Exception {
 		
-		int bordNo = (int)paramMap.get("bordNo");
-		int bordSeq = (int) paramMap.get("bordSeq");
+		String bordNo = (String) paramMap.get("bordNo");
+		String bordSeq =  (String) paramMap.get("bordSeq");
 		
 		System.out.println("boardService endBoardInfo 호출");
 		System.out.println("bordNo : " + bordNo);
@@ -244,22 +253,19 @@ public class BoardController {
 			System.out.println("file.getSize() :::" + file.getSize());
 			
 			// 저장할 경로 설정
-			String filePath = "/ibjujundev/tomcat/webapps/FILE/ibjujun/" + file.getOriginalFilename();
+			String filePath = "/ibjujundev/tomcat/webapps/FILE/ibjujun/Board/";
 			
-			System.out.println(filePath);
+			File directory = new File(filePath);
+	        if (!directory.exists()) {
+	            directory.mkdirs();
+	        }
 			
-			File file22 = new File(filePath);
-			
-			System.out.println("file221 ::: " + file22.getAbsolutePath());
-			System.out.println("file222 ::: " + file22.getCanonicalPath());
-			System.out.println("file223 ::: " + file22.getPath());
-			
-            file.transferTo(new File(filePath));
+            file.transferTo(new File(filePath + file.getOriginalFilename()));
             
             HashMap<String, Object> fileParam = new HashMap<String, Object>();
             fileParam.put("fileId", file.getOriginalFilename());
             fileParam.put("fileNm", file.getName());
-            fileParam.put("fileLoc", "/WIT/");
+            fileParam.put("fileLoc", "/WIT/Board/");
             fileParam.put("fileSize", file.getSize());
             fileParamList.add(fileParam);
 		}
@@ -287,6 +293,18 @@ public class BoardController {
 		System.out.println("게시글 신고 ::: " + result);
 		
         return result;
+    }
+	
+	//------------------------------------------------------------------------------------------------------------------------------------------------
+	
+	/**
+	 * 게시판 신고 리스트 조회
+	 * @param paramMap
+	 * @return List<BoardReportDTO>
+	 */
+	@PostMapping("/wit/getBoardReportList")
+    public List<BoardReportDTO> getBoardReportList(@RequestBody HashMap<String, Object> paramMap) {
+        return boardService.getBoardReportList(paramMap);
     }
 	
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.wit.inspaction.board.mapper.BoardMapper;
 import com.wit.inspaction.board.model.BoardDTO;
+import com.wit.inspaction.board.model.BoardReportDTO;
 import com.wit.inspaction.board.model.CommentDTO;
 
 /**
@@ -67,7 +68,7 @@ public class BoardServiceImpl implements BoardService{
 	 * 게시판 번호 조회
 	 */
 	@Override
-	public int getNewBordNo(HashMap<String, Object> paramMap) {
+	public String getNewBordNo(HashMap<String, Object> paramMap) {
 		
 		System.out.println("BoardServiceImpl getNewBordNo 호출");
 		
@@ -172,6 +173,16 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public int boardSendReport(HashMap<String, Object> paramMap) {
 		return boardMapper.boardSendReport(paramMap);
+	}
+
+	//------------------------------------------------------------------------------------------------------------------------------------------------
+	
+	/**
+	 * 게시판 신고 리스트 조회
+	 */
+	@Override
+	public List<BoardReportDTO> getBoardReportList(HashMap<String, Object> paramMap) {
+		return boardMapper.selectBoardReportList(paramMap);
 	}
 
 	

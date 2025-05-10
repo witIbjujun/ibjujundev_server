@@ -7,19 +7,19 @@
 
 	<!-- 게시판 리스트 조회 -->
 	<select id="selectBoardList" resultType="BoardDTO">
-		SELECT 
-			  A.BORD_TYPE AS bordType
-			, A.BORD_NO AS bordNo
+		SELECT
+			  A.BORD_NO AS bordNo
 			, A.DEL_YN AS delYn
+			, A.BORD_TYPE AS bordType
+			, A.BORD_KEY AS bordKey
 			, (SELECT APT_NAME FROM apt000t WHERE APT_NO  = A.BORD_NO ) bordName
 			, A.BORD_TITLE AS bordTitle
 			, A.BORD_SUB_TITLE AS bordSubTitle
 			, A.BORD_CONTENT AS bordContent
 			, A.BORD_RD_CNT AS bordRdCnt
 			, A.BORD_GD_CNT AS bordGdCnt
-			, (SELECT COUNT(S.CMMT_NO) FROM wit_bord110t S
-				WHERE S.BORD_TYPE = A.BORD_TYPE
-				AND S.BORD_NO = A.BORD_NO
+			, (SELECT COUNT(S.CMMT_NO) FROM IBJ_BORD110T S
+				WHERE S.BORD_NO = A.BORD_NO
 				AND S.DEL_YN = 'N') AS commentCnt
 			, A.CRE_USER AS creUser
 			, (SELECT S.NICK_NAME FROM prsn000t S
@@ -35,13 +35,16 @@
 			, A.UPD_USER AS updUser
 			, A.UPD_DATE AS updDate
 			, (SELECT CONCAT(S.FILE_LOC, S.FILE_ID) FROM wit_file000t S
-				WHERE S.BIZ_CD = 'B001'
+				WHERE S.BIZ_CD = #{bordType}
 				AND S.BIZ_KEY = A.BORD_NO
 				LIMIT 1) AS imagePath
 		FROM 
-			wit_bord100t A
+			IBJ_BORD100T A
 		WHERE A.DEL_YN = 'N'
 		AND A.BORD_TYPE = #{bordType}
+	<if test="bordKey != null and bordKey != ''">
+		AND A.BORD_KEY = #{bordKey}
+	</if>
 	<if test="searchText != null and searchText != ''">
 		AND A.BORD_TITLE LIKE CONCAT('%', #{searchText}, '%')
 	</if>
@@ -60,9 +63,8 @@
 			, A.BORD_CONTENT AS bordContent
 			, A.BORD_RD_CNT AS bordRdCnt
 			, A.BORD_GD_CNT AS bordGdCnt
-			, (SELECT COUNT(S.CMMT_NO) FROM wit_bord110t S
-				WHERE S.BORD_TYPE = A.BORD_TYPE
-				AND S.BORD_NO = A.BORD_NO
+			, (SELECT COUNT(S.CMMT_NO) FROM IBJ_BORD110T S
+				WHERE S.BORD_NO = A.BORD_NO
 				AND S.DEL_YN = 'N') AS commentCnt
 			, DATE_FORMAT(A.CRE_DATE, '%y.%m.%d %H:%i') AS creDateTxt
 			, (SELECT 
@@ -70,9 +72,9 @@
 						WHEN COUNT(S.BORD_NO) > 0 THEN 'Y'
 						ELSE 'N'
 					END
-			    FROM wit_bord120t S
-				WHERE S.BORD_TYPE = A.BORD_TYPE
-				AND S.BORD_NO = A.BORD_NO
+			    FROM IBJ_BORD120T S
+				WHERE S.BORD_NO = A.BORD_NO
+				AND S.REPORT_STAT = '10'
 				AND S.CRE_USER = #{creUser}) AS reportYn
 			, (SELECT S.NICK_NAME FROM prsn000t S
 				WHERE S.CLERK_NO = A.CRE_USER) AS creUserNm
@@ -81,14 +83,13 @@
 			, A.UPD_USER AS updUser
 			, A.UPD_DATE AS updDate
 			, (SELECT CONCAT(S.FILE_LOC, S.FILE_ID) FROM wit_file000t S
-				WHERE S.BIZ_CD = 'B001'
+				WHERE S.BIZ_CD = #{bizCd}
 				AND S.BIZ_KEY = A.BORD_NO
 				LIMIT 1) AS imagePath
 		FROM 
-			wit_bord100t A
-		WHERE DEL_YN = 'N'
-		AND A.BORD_TYPE = #{bordType}
-		AND A.BORD_NO = #{bordNo}
+			IBJ_BORD100T A
+		WHERE A.BORD_NO = #{bordNo}
+		AND A.DEL_YN = 'N'
 		ORDER BY A.BORD_NO DESC
 	</select>
 	
@@ -97,50 +98,53 @@
 		SELECT 
 			CONCAT(S.FILE_LOC, S.FILE_ID) AS imagePath
 		FROM wit_file000t S
-		WHERE S.BIZ_CD = 'B001'
+		WHERE S.BIZ_CD = #{bordType}
 		AND S.BIZ_KEY = #{bordNo}
 	</select>
 	
 	<!-- 게시판 조회수 증가 -->
 	<update id="updateBoardRdCntUp" parameterType="java.util.HashMap">
-		UPDATE wit_bord100t SET
+		UPDATE IBJ_BORD100T SET
 			BORD_RD_CNT = BORD_RD_CNT + 1
 		WHERE DEL_YN = 'N'
-		AND BORD_TYPE = #{bordType}
 		AND BORD_NO = #{bordNo}
 	</update>
 	
-	<!-- 게시판 Key 조회 -->
-	<select id="selectNewBordNo" parameterType="java.util.HashMap" resultType="int">
+	<!-- 게시판 번호 조회 -->
+	<select id="selectNewBordNo" parameterType="java.util.HashMap" resultType="String">
 		SELECT 
-			IFNULL(MAX(CAST(BORD_NO AS UNSIGNED)), 0) + 1 
-		FROM 
-			wit_bord100t
-		WHERE BORD_TYPE = #{bordType}
+			CONCAT('BD', LPAD(COALESCE(MAX(CAST(SUBSTRING(T.BORD_NO, 3) AS UNSIGNED)), 0) + 1, 10, '0'))
+		FROM
+			IBJ_BORD100T AS T
+		WHERE 1 = 1
 	</select>
 	
 	<!-- 게시판 저장 -->
 	<insert id="saveBoardInfo" parameterType="java.util.HashMap" useGeneratedKeys="true" keyProperty="bordNo">
-	    INSERT INTO wit_bord100t
+	    INSERT INTO IBJ_BORD100T
 	    (
-	          BORD_TYPE,
 	          BORD_NO,
 	          DEL_YN,
+	          BORD_TYPE,
 	          BORD_TITLE,
 	          BORD_SUB_TITLE,
 	          BORD_CONTENT,
 	          BORD_RD_CNT,
+	          BORD_GD_CNT,
+	          BORD_ER_CNT,
 	          CRE_USER,
 	          CRE_DATE
 	    ) 
 	    VALUES
 	    (
-	          #{bordType},
 	          #{bordNo},
 	          'N',
+	          #{bordType},
 	          #{bordTitle},
 	          #{bordSubTitle},
 	          #{bordContent},
+	          0,
+	          0,
 	          0,
 	          #{creUser},
 	          NOW()
@@ -149,33 +153,29 @@
 	
 	<!-- 게시판 수정 -->
 	<update id="updateBoardInfo" parameterType="java.util.HashMap">
-		UPDATE wit_bord100t SET
+		UPDATE IBJ_BORD100T SET
 			  BORD_TITLE = #{bordTitle}
 			, BORD_CONTENT = #{bordContent}
 			, UPD_USER = #{updUser}
 			, UPD_DATE = NOW()
-		WHERE BORD_TYPE = #{bordType}
-		AND BORD_NO = #{bordNo}
+		WHERE BORD_NO = #{bordNo}
 	</update>
 	
 	<!-- 게시판 종료 -->
 	<update id="endBoardInfo" parameterType="java.util.HashMap">
-		UPDATE wit_bord100t SET
+		UPDATE IBJ_BORD100T SET
 			  DEL_YN = 'Y'
 			, UPD_USER = #{updUser}
 			, UPD_DATE = NOW()
 		WHERE DEL_YN = 'N'
-		AND BORD_TYPE = #{bordType}
 		AND BORD_NO = #{bordNo}
 	</update>
 	
 	<!-- 댓글 조회 -->
 	<select id="selectCommentList" parameterType="java.util.HashMap" resultType="CommentDTO">
 		SELECT 
-			  A.CMMT_NO AS cmmtNo
-			, A.CMMT_SEQ AS cmmtSeq
-			, A.BORD_TYPE AS bordType
-			, A.BORD_NO AS bordNo
+			  A.BORD_NO AS bordNo
+			, A.CMMT_NO AS cmmtNo			
 			, A.DEL_YN AS delYn
 			, A.CMMT_CONTENT AS cmmtContent
 			, A.CRE_USER AS creUser
@@ -185,38 +185,39 @@
 			, DATE_FORMAT(A.CRE_DATE, '%y.%m.%d %H:%i') AS creDateTxt
 			
 		FROM 
-			wit_bord110t A
-		WHERE A.BORD_TYPE = #{bordType}
-		AND A.BORD_NO = #{bordNo}
+			IBJ_BORD110T A
+		WHERE A.BORD_NO = #{bordNo}
 		AND A.DEL_YN = 'N'
-		ORDER BY A.CMMT_SEQ 
+		ORDER BY A.CMMT_NO 
 	</select>
 	
 	<!-- 댓글 저장 -->
 	<insert id="saveCommentInfo" parameterType="java.util.HashMap">
-		INSERT INTO wit_bord110t
+		INSERT INTO IBJ_BORD110T
 		(
-			  CMMT_NO
-			, CMMT_SEQ
-			, BORD_TYPE
-			, BORD_NO
+			  BORD_NO
+			, CMMT_NO
 			, DEL_YN
 			, CMMT_CONTENT
+			, CMMT_GD_CNT
+			, CMMT_ER_CNT
 			, CRE_USER
 			, CRE_DATE
 		) 
 		VALUES
 		(
-			(SELECT IFNULL(MAX(CAST(S.CMMT_NO AS UNSIGNED)), 0) + 1 FROM wit_bord110t S
-				WHERE S.BORD_TYPE = #{bordType}
-				AND S.BORD_NO = #{bordNo})
-			, (SELECT IFNULL(MAX(CAST(S.CMMT_SEQ AS UNSIGNED)), 0) + 1 FROM wit_bord110t S
-				WHERE S.BORD_TYPE = #{bordType}
-				AND S.BORD_NO = #{bordNo})
-			, #{bordType}
-			, #{bordNo}
+			  #{bordNo}
+			, (
+				SELECT 
+				  CONCAT('CM', LPAD(COALESCE(MAX(CAST(SUBSTRING(T.CMMT_NO, 3) AS UNSIGNED)), 0) + 1, 10, '0')) 
+				FROM 
+					IBJ_BORD110T AS T
+				WHERE BORD_NO = #{bordNo}
+			  )
 			, 'N'
 			, #{cmmtContent}
+			, 0
+			, 0
 			, #{creUser}
 			, NOW()
 		) 
@@ -224,25 +225,22 @@
 	
 	<!-- 댓글 종료 -->
 	<update id="endCommentInfo" parameterType="java.util.HashMap">
-		UPDATE wit_bord110t SET
+		UPDATE IBJ_BORD110T SET
 			  DEL_YN = 'Y'
 			, UPD_USER = #{updUser}
 			, UPD_DATE = NOW()
 		WHERE DEL_YN = 'N'
 		AND BORD_NO = #{bordNo}
-		AND BORD_TYPE = #{bordType}
 		AND CMMT_NO = #{cmmtNo}
-		AND CMMT_SEQ = #{cmmtSeq}
 	</update>
 	
 	<!-- 댓글 전체 종료 -->
 	<update id="endCommentList" parameterType="java.util.HashMap">
-		UPDATE wit_bord110t SET
+		UPDATE IBJ_BORD110T SET
 			  DEL_YN = 'Y'
 			, UPD_USER = #{updUser}
 			, UPD_DATE = NOW()
 		WHERE DEL_YN = 'N'
-		AND BORD_TYPE = #{bordType}
 		AND BORD_NO = #{bordNo}
 	</update>
 	
@@ -253,7 +251,6 @@
 			  BIZ_CD
 			, BIZ_KEY
 			, FILE_SEQ
-			, FILE_TYPE
 			, FILE_ID
 			, FILE_NM
 			, FILE_LOC
@@ -263,13 +260,11 @@
 		) 
 		VALUES
 		(
-			  'B001'
+			  #{bizCd}
 			, #{bizKey}
 			, (SELECT IFNULL(MAX(CAST(S.FILE_SEQ AS UNSIGNED)), 0) + 1 FROM wit_file000t S
-				WHERE S.BIZ_CD = 'B001'
-				AND S.FILE_TYPE = #{fileType}
+				WHERE S.BIZ_CD = #{bizCd}
 				AND S.BIZ_KEY = #{bizKey})
-			, #{fileType}
 			, #{fileId}
 			, #{fileNm}
 			, #{fileLoc}
@@ -289,38 +284,77 @@
 	<select id="checkSendReport" parameterType="java.util.HashMap" resultType="int">
 		SELECT 
 			COUNT(BORD_NO) AS CNT
-		FROM wit_bord120t
-		WHERE BORD_TYPE = #{bordType}
-		AND BORD_NO = #{bordNo}
+		FROM IBJ_BORD120T
+		WHERE BORD_NO = #{bordNo}
+		AND REPORT_STAT = '10'
 		AND CRE_USER = #{creUser}
 	</select>
 	
 	<!-- 게시글 신고하기 -->
 	<insert id="boardSendReport" parameterType="java.util.HashMap">
-		INSERT INTO wit_bord120t
+		INSERT INTO IBJ_BORD120T
 		(
-			  BORD_TYPE
-			, BORD_NO
+			  BORD_NO
 			, REPORT_SEQ
-			, REPORT_GBN
 			, REPORT_REASON
-			, REPORT_CONT
+			, REPORT_CONTENT
+			, REPORT_STAT
 			, CRE_USER
 			, CRE_DATE
 		) 
 		VALUES
 		(
-			  #{bordType}
-			, #{bordNo}
-			, (SELECT IFNULL(MAX(CAST(S.REPORT_SEQ AS UNSIGNED)), 0) + 1 FROM wit_bord120t S
-				WHERE S.BORD_TYPE = #{bordType}
-				AND S.BORD_NO = #{bordNo})
-			, NULL
+			  #{bordNo}
+			, (SELECT IFNULL(MAX(CAST(S.REPORT_SEQ AS UNSIGNED)), 0) + 1 FROM IBJ_BORD120T S
+				WHERE S.BORD_NO = #{bordNo})
 			, #{reportReason}
 			, #{reportCont}
+			, '10'
 			, #{creUser}
 			, NOW()
 		) 
 	</insert>
+	
+	<!-- 게시판 신고 리스트 조회 -->
+	<select id="selectBoardReportList" resultType="BoardReportDTO">
+		SELECT
+			  A.BORD_NO AS bordNo
+			, A.DEL_YN AS delYn
+			, A.BORD_TYPE AS bordType
+			, (SELECT APT_NAME FROM apt000t WHERE APT_NO  = A.BORD_NO ) bordName
+			, A.BORD_TITLE AS bordTitle
+			, A.BORD_SUB_TITLE AS bordSubTitle
+			, A.BORD_CONTENT AS bordContent
+			, A.BORD_RD_CNT AS bordRdCnt
+			, A.BORD_GD_CNT AS bordGdCnt
+			, (SELECT COUNT(S.CMMT_NO) FROM IBJ_BORD110T S
+				WHERE S.BORD_NO = A.BORD_NO
+				AND S.DEL_YN = 'N') AS commentCnt
+			, A.CRE_USER AS creUser
+			, (SELECT S.NICK_NAME FROM prsn000t S
+				WHERE S.CLERK_NO = A.CRE_USER) AS creUserNm
+			, A.CRE_DATE AS creDate
+			, CASE 
+			        WHEN TIMESTAMPDIFF(MINUTE, A.CRE_DATE, NOW()) <![CDATA[<]]> 5 THEN '방금 전'
+			        WHEN TIMESTAMPDIFF(HOUR, A.CRE_DATE, NOW()) <![CDATA[<]]> 1 THEN CONCAT(TIMESTAMPDIFF(MINUTE, A.CRE_DATE, NOW()), '분 전')
+			        WHEN TIMESTAMPDIFF(HOUR, A.CRE_DATE, NOW()) <![CDATA[<]]> 4 THEN CONCAT(TIMESTAMPDIFF(HOUR, A.CRE_DATE, NOW()), '시간 ', MOD(TIMESTAMPDIFF(MINUTE, A.CRE_DATE, NOW()), 60), '분 전')
+			        WHEN DATE(A.CRE_DATE) = CURDATE() THEN DATE_FORMAT(A.CRE_DATE, '%H:%i')
+			        ELSE DATE_FORMAT(A.CRE_DATE, '%y.%m.%d')
+			  END AS creDateTxt
+			, A.UPD_USER AS updUser
+			, A.UPD_DATE AS updDate
+			, (SELECT CONCAT(S.FILE_LOC, S.FILE_ID) FROM wit_file000t S
+				WHERE S.BIZ_CD = #{bizCd}
+				AND S.BIZ_KEY = A.BORD_NO
+				LIMIT 1) AS imagePath
+		FROM
+			IBJ_BORD100T A
+			, IBJ_BORD120T B
+		WHERE A.DEL_YN = 'N'
+		AND B.BORD_NO = A.BORD_NO
+		AND B.REPORT_STAT = '10'
+		ORDER BY B.CRE_DATE DESC
+		LIMIT #{pageSize} OFFSET #{currentPage}
+	</select>
 	
 </mapper>

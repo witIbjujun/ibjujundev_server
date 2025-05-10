@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.wit.inspaction.board.model.BoardDTO;
+import com.wit.inspaction.board.model.BoardReportDTO;
 import com.wit.inspaction.board.model.CommentDTO;
 
 @Repository
@@ -57,9 +58,9 @@ public class BoardMapper {
 	/**
 	 * 게시판 번호 조회
 	 * @param paramMap
-	 * @return int
+	 * @return String
 	 */
-	public int selectNewBordNo(HashMap<String, Object> paramMap) {
+	public String selectNewBordNo(HashMap<String, Object> paramMap) {
 		return sql.selectOne(path + "selectNewBordNo", paramMap);
 	}
 	
@@ -159,7 +160,16 @@ public class BoardMapper {
 	public int boardSendReport(HashMap<String, Object> paramMap) {
 		return sql.insert(path + "boardSendReport", paramMap);
 	}
-
 	
+	//------------------------------------------------------------------------------------------------------------------------------------------------
+
+	/**
+	 * 게시판 신고 리스트 조회
+	 * @param paramMap
+	 * @return List<BoardReportDTO>
+	 */
+	public List<BoardReportDTO> selectBoardReportList(HashMap<String, Object> paramMap) {
+		return sql.selectList(path + "selectBoardReportList", paramMap);
+	}
 	
 }

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.wit.inspaction.board.model.BoardDTO;
+import com.wit.inspaction.board.model.BoardReportDTO;
 import com.wit.inspaction.board.model.CommentDTO;
 
 /**
@@ -42,9 +43,9 @@ public interface BoardService {
 	/**
 	 * 게시판 번호 조회
 	 * @param paramMap
-	 * @return int
+	 * @return String
 	 */
-	public int getNewBordNo(HashMap<String, Object> paramMap);
+	public String getNewBordNo(HashMap<String, Object> paramMap);
 	
 	/**
 	 * 게시판 저장
@@ -122,5 +123,14 @@ public interface BoardService {
 	 * @return int
 	 */
 	public int boardSendReport(HashMap<String, Object> paramMap);
+
+	//------------------------------------------------------------------------------------------------------------------------------------------------
+	
+	/**
+	 * 게시판 신고 리스트 조회
+	 * @param paramMap
+	 * @return List<BoardReportDTO>
+	 */
+	public List<BoardReportDTO> getBoardReportList(HashMap<String, Object> paramMap);
 	
 }

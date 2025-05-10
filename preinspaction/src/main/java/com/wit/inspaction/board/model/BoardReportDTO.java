@@ -1,18 +1,17 @@
 package com.wit.inspaction.board.model;
 
-public class BoardDTO {
+public class BoardReportDTO {
 
-	private String bordNo;				// 게시판 번호
+	private int bordNo;					// 게시판 번호
 	private String bordName;			// 게시판 이름
-	private String bordKey;			// 게시판 KEY
+	private int bordSeq;				// 게시판 순번
 	private String delYn;				// 삭제여부
 	private String bordType;			// 게시판 타입
 	private String bordTitle;			// 게시판 제목
 	private String bordSubTitle;		// 게시판 소제목
 	private String bordContent;		// 게시판 내용
 	private int bordRdCnt;				// 게시판 조회수
-	private int bordGdCnt;				// 게시판 좋아요 수
-	private int bordErCnt;				// 게시판 싫어요 수
+	private int bordGdCnt;				// 게시판 좋아요수
 	private int commentCnt;			// 댓글 수
 	private String imagePath;			// 이미지 경로
 	private String reportYn;			// 신고여부
@@ -33,26 +32,26 @@ public class BoardDTO {
 	/**
 	 * @return the bordNo
 	 */
-	public String getBordNo() {
+	public int getBordNo() {
 		return bordNo;
 	}
 	/**
 	 * @param bordNo the bordNo to set
 	 */
-	public void setBordNo(String bordNo) {
+	public void setBordNo(int bordNo) {
 		this.bordNo = bordNo;
 	}
 	/**
-	 * @return the bordKey
+	 * @return the bordSeq
 	 */
-	public String getBordKey() {
-		return bordKey;
+	public int getBordSeq() {
+		return bordSeq;
 	}
 	/**
-	 * @param bordKey the bordKey to set
+	 * @param bordSeq the bordSeq to set
 	 */
-	public void setBordKey(String bordKey) {
-		this.bordKey = bordKey;
+	public void setBordSeq(int bordSeq) {
+		this.bordSeq = bordSeq;
 	}
 	/**
 	 * @return the delYn
@@ -137,18 +136,6 @@ public class BoardDTO {
 	 */
 	public void setBordGdCnt(int bordGdCnt) {
 		this.bordGdCnt = bordGdCnt;
-	}
-	/**
-	 * @return the bordErCnt
-	 */
-	public int getBordErCnt() {
-		return bordErCnt;
-	}
-	/**
-	 * @param bordErCnt the bordErCnt to set
-	 */
-	public void setBordErCnt(int bordErCnt) {
-		this.bordErCnt = bordErCnt;
 	}
 	/**
 	 * @return the commentCnt

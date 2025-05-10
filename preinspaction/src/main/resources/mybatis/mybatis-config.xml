@@ -9,9 +9,8 @@
         
         <!-- 게시판 -->
     	<typeAlias alias="BoardDTO" type="com.wit.inspaction.board.model.BoardDTO"/>
-    	
-    	<!-- 댓글 -->
     	<typeAlias alias="CommentDTO" type="com.wit.inspaction.board.model.CommentDTO"/>
+    	<typeAlias alias="BoardReportDTO" type="com.wit.inspaction.board.model.BoardReportDTO"/>    	
     	
     	<!-- 채팅 -->
     	<typeAlias alias="ChatDTO" type="com.wit.inspaction.chat.model.ChatDTO"/>
