@@ -1,12 +1,12 @@
 package com.wit.inspaction.board;
 
 import java.io.File;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +21,8 @@ import com.wit.inspaction.board.service.BoardService;
 
 @RestController
 public class BoardController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(BoardController.class);
 	
 	@Autowired
 	private BoardService boardService;
@@ -91,7 +93,7 @@ public class BoardController {
 					
 					int fileResult = boardService.saveFileInfo(fileInfo);
 					
-					System.out.println("파일 등록 ::: " + fileResult);
+					logger.info("파일 등록 ::: " + fileResult);
 				}
 			}
 		}
@@ -107,7 +109,7 @@ public class BoardController {
 	@PostMapping("/wit/updateBoardInfo")
     public int updateBoardInfo(@RequestBody HashMap<String, Object> paramMap) throws Exception {
 		
-		System.out.println("boardService updateBoardInfo 호출");
+		logger.info("boardService updateBoardInfo 호출");
 		
 		// 게시판 수정
 		int result = boardService.updateBoardInfo(paramMap);
@@ -130,7 +132,7 @@ public class BoardController {
 					
 					int fileResult = boardService.saveFileInfo(fileInfo);
 					
-					System.out.println("파일 등록 ::: " + fileResult);
+					logger.info("파일 등록 ::: " + fileResult);
 				}
 			}
 			
@@ -145,13 +147,13 @@ public class BoardController {
 					delParam.put("fileId", fileDelInfo.split("/")[3]);
 					int fileDelResult = boardService.deleteFileInfo(delParam);
 					
-					System.out.println("파일 삭제 ::: " + fileDelResult);
+					logger.info("파일 삭제 ::: " + fileDelResult);
 					
 					if (fileDelResult > 0) {
 						File delFile = new File("/ibjujundev/tomcat/webapps/FILE/ibjujun/Board/" + fileDelInfo.split("/")[3]);
 						Boolean delFlag =  delFile.delete();
 						
-						System.out.println("파일 삭제 ::: " + delFlag);
+						logger.info("파일 삭제 ::: " + delFlag);
 						
 					}
 				}
@@ -170,21 +172,19 @@ public class BoardController {
     public int endBoardInfo(@RequestBody HashMap<String, Object> paramMap) throws Exception {
 		
 		String bordNo = (String) paramMap.get("bordNo");
-		String bordSeq =  (String) paramMap.get("bordSeq");
 		
-		System.out.println("boardService endBoardInfo 호출");
-		System.out.println("bordNo : " + bordNo);
-		System.out.println("bordSeq : " + bordSeq);
+		logger.info("boardService endBoardInfo 호출");
+		logger.info("bordNo : " + bordNo);
 		
 		// 게시판 댓글 종료
 		int result1 = boardService.endCommentList(paramMap);
 		
-		System.out.println("댓글 종료 ::: " + result1);
+		logger.info("댓글 종료 ::: " + result1);
 		
 		// 작성글 종료
 		int result2 = boardService.endBoardInfo(paramMap);
 		
-		System.out.println("게시판 종료 ::: " + result2);
+		logger.info("게시판 종료 ::: " + result2);
 		
         return result2; 
     }
@@ -197,7 +197,7 @@ public class BoardController {
 	@PostMapping("/wit/getCommentList")
     public List<CommentDTO> getCommentList(@RequestBody HashMap<String, Object> paramMap) {
 		
-		System.out.println("boardService getCommentList 호출");
+		logger.info("boardService getCommentList 호출");
 		
 		return boardService.getCommentList(paramMap);
     }
@@ -209,11 +209,11 @@ public class BoardController {
 	@PostMapping("/wit/saveCommentInfo")
     public List<CommentDTO> saveCommentInfo(@RequestBody HashMap<String, Object> paramMap) {
 		
-		System.out.println("boardService saveCommentInfo 호출");
+		logger.info("boardService saveCommentInfo 호출");
 		
 		int result = boardService.saveCommentInfo(paramMap);
 		
-		System.out.println("댓글 저장 ::: " + result);
+		logger.info("댓글 저장 ::: " + result);
 		
         return boardService.getCommentList(paramMap);
     }
@@ -225,11 +225,11 @@ public class BoardController {
 	@PostMapping("/wit/endCommentInfo")
     public int endCommentInfo(@RequestBody HashMap<String, Object> paramMap) {
 		
-		System.out.println("boardService endCommentInfo 호출");
+		logger.info("boardService endCommentInfo 호출");
 		
 		int result = boardService.endCommentInfo(paramMap);
 		
-		System.out.println("댓글 삭제 ::: " + result);
+		logger.info("댓글 삭제 ::: " + result);
 		
         return result;
     }
@@ -242,15 +242,15 @@ public class BoardController {
 	@PostMapping("/wit/fileUpload")
     public List<HashMap<String, Object>> fileUpload(@RequestParam("images") MultipartFile[] fileList) throws Exception {
 		
-		System.out.println("boardService fileUpload 호출");
+		logger.info("boardService fileUpload 호출");
 		
 		List<HashMap<String, Object>> fileParamList = new ArrayList<HashMap<String, Object>>();
 		
 		for (MultipartFile file : fileList) {
 			
-			System.out.println("file.getOriginalFilename() :::" + file.getOriginalFilename());
-			System.out.println("file.getName() :::" + file.getName());
-			System.out.println("file.getSize() :::" + file.getSize());
+			logger.info("file.getOriginalFilename() :::" + file.getOriginalFilename());
+			logger.info("file.getName() :::" + file.getName());
+			logger.info("file.getSize() :::" + file.getSize());
 			
 			// 저장할 경로 설정
 			String filePath = "/ibjujundev/tomcat/webapps/FILE/ibjujun/Board/";
@@ -280,7 +280,7 @@ public class BoardController {
 	@PostMapping("/wit/boardSendReport")
     public int boardSendReport(@RequestBody HashMap<String, Object> paramMap) {
 		
-		System.out.println("boardService boardSendReport 호출");
+		logger.info("boardService boardSendReport 호출");
 		
 		// 기신고건 있는지 체크
 		int checkResult = boardService.checkSendReport(paramMap);
@@ -290,7 +290,7 @@ public class BoardController {
 		// 신규 신고 등록
 		int result = boardService.boardSendReport(paramMap);
 		
-		System.out.println("게시글 신고 ::: " + result);
+		logger.info("게시글 신고 ::: " + result);
 		
         return result;
     }

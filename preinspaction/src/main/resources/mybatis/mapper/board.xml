@@ -35,8 +35,7 @@
 			, A.UPD_USER AS updUser
 			, A.UPD_DATE AS updDate
 			, (SELECT CONCAT(S.FILE_LOC, S.FILE_ID) FROM wit_file000t S
-				WHERE S.BIZ_CD = #{bordType}
-				AND S.BIZ_KEY = A.BORD_NO
+				WHERE S.BIZ_KEY = A.BORD_NO
 				LIMIT 1) AS imagePath
 		FROM 
 			IBJ_BORD100T A
@@ -319,21 +318,11 @@
 	<select id="selectBoardReportList" resultType="BoardReportDTO">
 		SELECT
 			  A.BORD_NO AS bordNo
-			, A.DEL_YN AS delYn
 			, A.BORD_TYPE AS bordType
-			, (SELECT APT_NAME FROM apt000t WHERE APT_NO  = A.BORD_NO ) bordName
+			, (SELECT S.CD_NM FROM wit_code000t S WHERE S.CD_CLS = 'BD001' AND S.CD = A.BORD_TYPE) AS bordTypeNm
 			, A.BORD_TITLE AS bordTitle
-			, A.BORD_SUB_TITLE AS bordSubTitle
-			, A.BORD_CONTENT AS bordContent
-			, A.BORD_RD_CNT AS bordRdCnt
-			, A.BORD_GD_CNT AS bordGdCnt
-			, (SELECT COUNT(S.CMMT_NO) FROM IBJ_BORD110T S
-				WHERE S.BORD_NO = A.BORD_NO
-				AND S.DEL_YN = 'N') AS commentCnt
-			, A.CRE_USER AS creUser
 			, (SELECT S.NICK_NAME FROM prsn000t S
 				WHERE S.CLERK_NO = A.CRE_USER) AS creUserNm
-			, A.CRE_DATE AS creDate
 			, CASE 
 			        WHEN TIMESTAMPDIFF(MINUTE, A.CRE_DATE, NOW()) <![CDATA[<]]> 5 THEN '방금 전'
 			        WHEN TIMESTAMPDIFF(HOUR, A.CRE_DATE, NOW()) <![CDATA[<]]> 1 THEN CONCAT(TIMESTAMPDIFF(MINUTE, A.CRE_DATE, NOW()), '분 전')
@@ -341,18 +330,14 @@
 			        WHEN DATE(A.CRE_DATE) = CURDATE() THEN DATE_FORMAT(A.CRE_DATE, '%H:%i')
 			        ELSE DATE_FORMAT(A.CRE_DATE, '%y.%m.%d')
 			  END AS creDateTxt
-			, A.UPD_USER AS updUser
-			, A.UPD_DATE AS updDate
-			, (SELECT CONCAT(S.FILE_LOC, S.FILE_ID) FROM wit_file000t S
-				WHERE S.BIZ_CD = #{bizCd}
-				AND S.BIZ_KEY = A.BORD_NO
-				LIMIT 1) AS imagePath
+			, COUNT(A.BORD_NO) AS reportCnt
 		FROM
-			IBJ_BORD100T A
+			  IBJ_BORD100T A
 			, IBJ_BORD120T B
 		WHERE A.DEL_YN = 'N'
 		AND B.BORD_NO = A.BORD_NO
-		AND B.REPORT_STAT = '10'
+		AND B.REPORT_STAT = #{reportStat}
+		GROUP BY A.BORD_NO
 		ORDER BY B.CRE_DATE DESC
 		LIMIT #{pageSize} OFFSET #{currentPage}
 	</select>
