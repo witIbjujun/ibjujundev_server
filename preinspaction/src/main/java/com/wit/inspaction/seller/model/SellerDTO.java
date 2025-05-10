@@ -39,6 +39,7 @@ public class SellerDTO {
     private String categoryImage; // 품목이미지
     private String rateFlag; // 품목이미지
     private String certificationYn; // 본인인증여부
+    private String regiLevel; // 등록단계
     
 	/**
 	 * @return the sllrNo
@@ -484,7 +485,18 @@ public class SellerDTO {
 	public void setCertificationYn(String certificationYn) {
 		this.certificationYn = certificationYn;
 	}
-	
-	
+	/**
+	 * @return the regiLevel
+	 */
+	public String getRegiLevel() {
+		return regiLevel;
+	}
+	/**
+	 * @param regiLevel the regiLevel to set
+	 */
+	public void setRegiLevel(String regiLevel) {
+		this.regiLevel = regiLevel;
+	}
+
 	
 }
