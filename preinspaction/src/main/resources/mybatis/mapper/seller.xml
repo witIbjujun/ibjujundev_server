@@ -10,26 +10,28 @@
 		SELECT 	A.REQ_NO AS estNo
 		        , B.SEQ AS seq
 		        , C.APT_NAME AS aptName
-		        , D.imagePath AS  itemImage
+		        , D.IMAGEPATH AS  itemImage
 			    , B.REQ_DATE estDt
 			    , B.REQ_CONTENTS reqContents
 			    , B.COMPANY_ID companyId
 			    , B.CATEGORY_ID categoryId
-		        , D.category_nm AS itemName
+		        , D.CATEGORY_NM AS itemName
 			    , B.REQ_STATE   reqState
-		        , (select cd_nm from wit_code000t where cd_cls = 'EST01' and appl_en_date = '99991231235959' and cd = B.REQ_STATE) AS stat
+		        , (SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'EST01' AND APPL_EN_DATE = '99991231235959' AND CD = B.REQ_STATE) AS stat
 		        , B.estimate_contents content
 			    , B.REQ_USER reqUser
 		        , IF(B.auto_yn = 'Y', '바로 견적서비스 발송', '일반 견적서비스 발송') AS autoYn
 		        , E.NICK_NAME AS prsnName
 				, (SELECT category_nm FROM category WHERE category_id = B.category_id) AS categoryNm 
-				, B.estimate_amount itemPrice1
+				, B.ESTIMATE_AMOUNT itemPrice1
 				, DATE_FORMAT(B.ESTIMATE_DATE, '%Y%m%d') AS estimateDate
                 , DATE_FORMAT(B.ESTIMATE_PROC_DATE, '%Y%m%d') AS estimateProcDate		
-		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E
+		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E, wit_sllr000t F
 		WHERE   A.REQ_NO = B.REQ_NO
 		AND 	B.END_DATE = '99991231'
-	    AND 	B.company_id  = #{sllrNo}
+	    AND 	B.COMPANY_ID  = #{sllrNo}
+	    AND     A.CATEGORY_ID = F.SERVICE_ITEM
+	    AND     B.COMPANY_ID = F.SLLR_NO
 	    <if test="stat == null or stat.equals('')">
 			AND B.REQ_STATE != 01
 		</if>
@@ -39,7 +41,7 @@
 		<if test="basDate !=null and !basDate.equals('')">
 			AND DATE_FORMAT(B.REQ_DATE, '%Y%m') = #{basDate}
 		</if>
-        AND 	A.APT_NO = C.APT_NO
+        AND 	C.APT_NO = E.APT_NO
         AND 	B.CATEGORY_ID = D.CATEGORY_ID
         AND 	B.REQ_USER = E.CLERK_NO
 		ORDER BY B.REQ_DATE DESC	
@@ -71,12 +73,14 @@
 				, B.estimate_amount itemPrice1
 				, DATE_FORMAT(B.ESTIMATE_DATE, '%Y%m%d') AS estimateDate
                 , DATE_FORMAT(B.ESTIMATE_PROC_DATE, '%Y%m%d') AS estimateProcDate
-		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E
+		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E, wit_sllr000t F
 		WHERE   A.REQ_NO = B.REQ_NO
 		AND 	B.END_DATE = '99991231'
 	    AND 	B.company_id = #{sllrNo}
+	    AND     A.CATEGORY_ID = F.SERVICE_ITEM
+	    AND     B.COMPANY_ID = F.SLLR_NO
 		AND     B.REQ_STATE != 01
-        AND 	A.APT_NO = C.APT_NO
+        AND 	C.APT_NO = E.APT_NO
         AND 	B.CATEGORY_ID = D.CATEGORY_ID
         AND 	B.REQ_USER = E.CLERK_NO
         AND     B.REQ_DATE BETWEEN DATE_ADD(NOW(), INTERVAL -1 WEEK) AND NOW()
@@ -106,8 +110,9 @@
 		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E, wit_sllr000t F
 		WHERE   A.REQ_NO = B.REQ_NO
 		AND 	B.END_DATE = '99991231'
-        AND 	A.APT_NO = C.APT_NO
+        AND 	C.APT_NO = E.APT_NO
         AND 	B.CATEGORY_ID = D.CATEGORY_ID
+	    AND     A.CATEGORY_ID = F.SERVICE_ITEM
         AND 	B.REQ_USER = E.CLERK_NO
         AND     B.COMPANY_ID = F.SLLR_NO
         AND     B.REQ_NO = #{estNo}
@@ -272,8 +277,8 @@
 		       , zip_code AS zipCode
 		       , address1 AS address1
 		       , address2 AS address2
-		       , (select count(req_no) from request100t where req_state = '01' and company_id = sllrNo) AS reqCnt /* 견적요청내역 건수 */
-               , (select count(req_no) from request100t where req_state in ('02', '03', '04') and company_id = sllrNo) AS ingCnt /* 거래내역 건수 */
+		       , (select count(req_no) from request110t where req_state = '01' and company_id = sllrNo) AS reqCnt /* 견적요청내역 건수 */
+               , (select count(req_no) from request110t where req_state in ('02', '03', '04') and company_id = sllrNo) AS ingCnt /* 거래내역 건수 */
                , rate AS rate
                , clerk_no AS clerkNo
                , bord_no AS bordNo
