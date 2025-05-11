@@ -9,6 +9,8 @@ public class BoardReportDTO {
 	private String creUserNm;				// 게시판 작성자명
 	private String creDateTxt;				// 게시판 작성일자
 	private String reportCnt;				// 게시판 신고건수
+	private String reportReason;			// 신고 사유
+	private String reportContent;			// 신고 내용
 	
 	/**
 	 * @return the bordNo
@@ -94,4 +96,29 @@ public class BoardReportDTO {
 	public void setReportCnt(String reportCnt) {
 		this.reportCnt = reportCnt;
 	}
+	/**
+	 * @return the reportReason
+	 */
+	public String getReportReason() {
+		return reportReason;
+	}
+	/**
+	 * @param reportReason the reportReason to set
+	 */
+	public void setReportReason(String reportReason) {
+		this.reportReason = reportReason;
+	}
+	/**
+	 * @return the reportContent
+	 */
+	public String getReportContent() {
+		return reportContent;
+	}
+	/**
+	 * @param reportContent the reportContent to set
+	 */
+	public void setReportContent(String reportContent) {
+		this.reportContent = reportContent;
+	}
+	
 }

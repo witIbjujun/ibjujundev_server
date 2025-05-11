@@ -307,4 +307,32 @@ public class BoardController {
         return boardService.getBoardReportList(paramMap);
     }
 	
+	/**
+	 * 게시판 신고 상세 리스트 조회
+	 * @param paramMap
+	 * @return List<BoardReportDTO>
+	 */
+	@PostMapping("/wit/getBoardReportDetailList")
+    public List<BoardReportDTO> getBoardReportDetailList(@RequestBody HashMap<String, Object> paramMap) {
+        return boardService.getBoardReportDetailList(paramMap);
+    }
+	
+	/**
+	 * 게시판 신고 상태 변경
+	 * @param paramMap
+	 * @return int
+	 */
+	@PostMapping("/wit/updateReportStat")
+    public int updateReportStat(@RequestBody HashMap<String, Object> paramMap) {
+		
+		logger.info("신고 상태 bordNo ::: " + paramMap.get("bordNo"));
+		logger.info("신고 상태 reportStat ::: " + paramMap.get("reportStat"));
+		
+		int result = boardService.updateReportStat(paramMap);
+		
+		logger.info("신고 상태 변경 ::: " + result);
+		
+        return result;
+    }
+	
 }

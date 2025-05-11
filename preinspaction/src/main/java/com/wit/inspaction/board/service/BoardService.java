@@ -132,5 +132,19 @@ public interface BoardService {
 	 * @return List<BoardReportDTO>
 	 */
 	public List<BoardReportDTO> getBoardReportList(HashMap<String, Object> paramMap);
+
+	/**
+	 * 게시판 신고 상세 리스트 조회
+	 * @param paramMap
+	 * @return List<BoardReportDTO>
+	 */
+	public List<BoardReportDTO> getBoardReportDetailList(HashMap<String, Object> paramMap);
+
+	/**
+	 * 게시판 신고 상태 변경
+	 * @param paramMap
+	 * @return int
+	 */
+	public int updateReportStat(HashMap<String, Object> paramMap);
 	
 }

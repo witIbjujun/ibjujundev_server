@@ -39,8 +39,12 @@
 				LIMIT 1) AS imagePath
 		FROM 
 			IBJ_BORD100T A
+			LEFT OUTER JOIN IBJ_BORD120T B
+			ON B.BORD_NO = A.BORD_NO
 		WHERE A.DEL_YN = 'N'
 		AND A.BORD_TYPE = #{bordType}
+		AND IFNULL((SELECT MAX(S.REPORT_STAT) FROM IBJ_BORD120T S
+				WHERE S.BORD_NO = A.BORD_NO), '') NOT IN ('20', '30')
 	<if test="bordKey != null and bordKey != ''">
 		AND A.BORD_KEY = #{bordKey}
 	</if>
@@ -73,7 +77,6 @@
 					END
 			    FROM IBJ_BORD120T S
 				WHERE S.BORD_NO = A.BORD_NO
-				AND S.REPORT_STAT = '10'
 				AND S.CRE_USER = #{creUser}) AS reportYn
 			, (SELECT S.NICK_NAME FROM prsn000t S
 				WHERE S.CLERK_NO = A.CRE_USER) AS creUserNm
@@ -341,5 +344,33 @@
 		ORDER BY B.CRE_DATE DESC
 		LIMIT #{pageSize} OFFSET #{currentPage}
 	</select>
+	
+	<!-- 게시판 신고 상세 리스트 조회 -->
+	<select id="selectBoardReportDetailList" resultType="BoardReportDTO">
+		SELECT 
+			  A.BORD_NO AS bordNo
+			, REPORT_REASON AS reportReason
+			, REPORT_CONTENT AS reportContent
+			, (SELECT S.NICK_NAME FROM prsn000t S
+				WHERE S.CLERK_NO = A.CRE_USER) AS creUserNm
+			, CASE 
+			        WHEN TIMESTAMPDIFF(MINUTE, A.CRE_DATE, NOW()) <![CDATA[<]]> 5 THEN '방금 전'
+			        WHEN TIMESTAMPDIFF(HOUR, A.CRE_DATE, NOW()) <![CDATA[<]]> 1 THEN CONCAT(TIMESTAMPDIFF(MINUTE, A.CRE_DATE, NOW()), '분 전')
+			        WHEN TIMESTAMPDIFF(HOUR, A.CRE_DATE, NOW()) <![CDATA[<]]> 4 THEN CONCAT(TIMESTAMPDIFF(HOUR, A.CRE_DATE, NOW()), '시간 ', MOD(TIMESTAMPDIFF(MINUTE, A.CRE_DATE, NOW()), 60), '분 전')
+			        WHEN DATE(A.CRE_DATE) = CURDATE() THEN DATE_FORMAT(A.CRE_DATE, '%H:%i')
+			        ELSE DATE_FORMAT(A.CRE_DATE, '%y.%m.%d')
+			  END AS creDateTxt
+		FROM
+			IBJ_BORD120T A
+		WHERE BORD_NO = #{bordNo}
+		ORDER BY REPORT_SEQ
+	</select>
+	
+	<!-- 게시판 신고 상태 변경 -->
+	<update id="updateReportStat" parameterType="java.util.HashMap">
+		UPDATE IBJ_BORD120T SET
+			REPORT_STAT = #{reportStat}
+		WHERE BORD_NO = #{bordNo}
+	</update>
 	
 </mapper>

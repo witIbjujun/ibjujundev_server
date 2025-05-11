@@ -172,4 +172,22 @@ public class BoardMapper {
 		return sql.selectList(path + "selectBoardReportList", paramMap);
 	}
 	
+	/**
+	 * 게시판 신고 상세 리스트 조회
+	 * @param paramMap
+	 * @return List<BoardReportDTO>
+	 */
+	public List<BoardReportDTO> selectBoardReportDetailList(HashMap<String, Object> paramMap) {
+		return sql.selectList(path + "selectBoardReportDetailList", paramMap);
+	}
+
+	/**
+	 * 게시판 신고 상태 변경
+	 * @param paramMap
+	 * @return int
+	 */
+	public int updateReportStat(HashMap<String, Object> paramMap) {
+		return sql.update(path + "updateReportStat", paramMap);
+	}
+	
 }

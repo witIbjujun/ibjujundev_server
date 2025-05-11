@@ -185,6 +185,20 @@ public class BoardServiceImpl implements BoardService{
 		return boardMapper.selectBoardReportList(paramMap);
 	}
 
+	/**
+	 * 게시판 신고 상세 리스트 조회
+	 */
+	@Override
+	public List<BoardReportDTO> getBoardReportDetailList(HashMap<String, Object> paramMap) {
+		return boardMapper.selectBoardReportDetailList(paramMap);
+	}
 	
+	/**
+	 * 게시판 신고 상태 변경
+	 */
+	@Override
+	public int updateReportStat(HashMap<String, Object> paramMap) {
+		return boardMapper.updateReportStat(paramMap);
+	}
 	
 }
