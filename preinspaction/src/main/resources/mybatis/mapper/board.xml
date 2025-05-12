@@ -29,7 +29,7 @@
 			        WHEN TIMESTAMPDIFF(MINUTE, A.CRE_DATE, NOW()) <![CDATA[<]]> 5 THEN '방금 전'
 			        WHEN TIMESTAMPDIFF(HOUR, A.CRE_DATE, NOW()) <![CDATA[<]]> 1 THEN CONCAT(TIMESTAMPDIFF(MINUTE, A.CRE_DATE, NOW()), '분 전')
 			        WHEN TIMESTAMPDIFF(HOUR, A.CRE_DATE, NOW()) <![CDATA[<]]> 4 THEN CONCAT(TIMESTAMPDIFF(HOUR, A.CRE_DATE, NOW()), '시간 ', MOD(TIMESTAMPDIFF(MINUTE, A.CRE_DATE, NOW()), 60), '분 전')
-			        WHEN DATE(CRE_DATE) = CURDATE() THEN DATE_FORMAT(A.CRE_DATE, '%H:%i')
+			        WHEN DATE(A.CRE_DATE) = CURDATE() THEN DATE_FORMAT(A.CRE_DATE, '%H:%i')
 			        ELSE DATE_FORMAT(A.CRE_DATE, '%y.%m.%d')
 			  END AS creDateTxt
 			, A.UPD_USER AS updUser
@@ -126,6 +126,7 @@
 	    INSERT INTO IBJ_BORD100T
 	    (
 	          BORD_NO,
+	          BORD_KEY,
 	          DEL_YN,
 	          BORD_TYPE,
 	          BORD_TITLE,
@@ -140,6 +141,7 @@
 	    VALUES
 	    (
 	          #{bordNo},
+	          #{bordKey},
 	          'N',
 	          #{bordType},
 	          #{bordTitle},
