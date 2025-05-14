@@ -33,10 +33,10 @@
 	    AND     A.CATEGORY_ID = F.SERVICE_ITEM
 	    AND     B.COMPANY_ID = F.SLLR_NO
 	    <if test="stat == null or stat.equals('')">
-			AND B.REQ_STATE != 01
+			AND B.REQ_STATE != 10
 		</if>
 		<if test="stat !=null and !stat.equals('')">
-			AND B.REQ_STATE = 01
+			AND B.REQ_STATE = 10
 		</if>
 		<if test="basDate !=null and !basDate.equals('')">
 			AND DATE_FORMAT(B.REQ_DATE, '%Y%m') = #{basDate}
@@ -79,7 +79,7 @@
 	    AND 	B.company_id = #{sllrNo}
 	    AND     A.CATEGORY_ID = F.SERVICE_ITEM
 	    AND     B.COMPANY_ID = F.SLLR_NO
-		AND     B.REQ_STATE != 01
+		AND     B.REQ_STATE != 10
         AND 	C.APT_NO = E.APT_NO
         AND 	B.CATEGORY_ID = D.CATEGORY_ID
         AND 	B.REQ_USER = E.CLERK_NO
@@ -299,6 +299,10 @@
 		WHERE  BIZ_CERTIFICATION IS NOT NULL
 		<if test="storeName !=null and !storeName.equals('')">
 			AND STORE_NAME LIKE CONCAT('%', #{storeName}, '%')
+			
+		</if>
+		<if test="bizCertification !=null and !bizCertification.equals('')">
+			AND BIZ_CERTIFICATION = #{bizCertification}
 			
 		</if>
 		ORDER BY  (CASE WHEN BIZ_CERTIFICATION = '01' THEN 0 ELSE 1 END),
