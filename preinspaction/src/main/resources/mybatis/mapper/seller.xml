@@ -237,8 +237,8 @@
 		       , zip_code AS zipCode
 		       , address1 AS address1
 		       , address2 AS address2
-		       , (select count(req_no) from request110t where req_state = '01' and company_id = #{sllrNo}) AS reqCnt /* 견적요청내역 건수 */
-               , (select count(req_no) from request110t where req_state in ('02', '03', '04') and company_id = #{sllrNo}) AS ingCnt /* 거래내역 건수 */
+		       , (select count(req_no) from request110t where req_state = '10' and company_id = #{sllrNo}) AS reqCnt /* 견적요청내역 건수 */
+               , (select count(req_no) from request110t where req_state not in ('10') and company_id = #{sllrNo}) AS ingCnt /* 거래내역 건수 */
                , rate AS rate
                , clerk_no AS clerkNo
                , bord_no AS bordNo
@@ -277,8 +277,8 @@
 		       , zip_code AS zipCode
 		       , address1 AS address1
 		       , address2 AS address2
-		       , (select count(req_no) from request110t where req_state = '01' and company_id = sllrNo) AS reqCnt /* 견적요청내역 건수 */
-               , (select count(req_no) from request110t where req_state in ('02', '03', '04') and company_id = sllrNo) AS ingCnt /* 거래내역 건수 */
+		       , (select count(req_no) from request110t where req_state = '10' and company_id = sllrNo) AS reqCnt /* 견적요청내역 건수 */
+               , (select count(req_no) from request110t where req_state not in ('10') and company_id = sllrNo) AS ingCnt /* 거래내역 건수 */
                , rate AS rate
                , clerk_no AS clerkNo
                , bord_no AS bordNo
