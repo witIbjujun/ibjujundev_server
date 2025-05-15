@@ -25,6 +25,7 @@ import com.wit.inspaction.seller.model.CodeDTO;
 import com.wit.inspaction.seller.model.DirectEstimateSetDTO;
 import com.wit.inspaction.seller.model.EstimateCntDTO;
 import com.wit.inspaction.seller.model.EstimateRequestDTO;
+import com.wit.inspaction.seller.model.GpInfoDTO;
 import com.wit.inspaction.seller.model.SellerDTO;
 import com.wit.inspaction.seller.model.SellerSendDTO;
 import com.wit.inspaction.seller.service.SellerService;
@@ -644,4 +645,18 @@ public class SellerController {
 
         return result;
 	}
+	
+	/**
+	 * 공동구매 목록 조회
+	 * @return List<GpInfoDTO>
+	 */
+	@PostMapping("/wit/getGPList")
+    public List<GpInfoDTO> getGPList(@RequestBody HashMap<String, Object> param) {
+
+		System.out.println("getGPList 호출");
+
+		List<GpInfoDTO> getGPList = sellerService.getGPList(param);
+
+        return getGPList;
+    }
 }

@@ -14,6 +14,7 @@ import com.wit.inspaction.seller.model.CodeDTO;
 import com.wit.inspaction.seller.model.DirectEstimateSetDTO;
 import com.wit.inspaction.seller.model.EstimateCntDTO;
 import com.wit.inspaction.seller.model.EstimateRequestDTO;
+import com.wit.inspaction.seller.model.GpInfoDTO;
 import com.wit.inspaction.seller.model.SellerDTO;
 import com.wit.inspaction.seller.model.SellerSendDTO;
 
@@ -236,5 +237,12 @@ public interface SellerService {
 	 * @return int
 	 */
 	public int updateCertificationYn(HashMap<String, Object> param);
+	
+	/**
+	 * 공동구매 목록 조회
+	 * @param param
+	 * @return List<GpInfoDTO>
+	 */
+	public List<GpInfoDTO> getGPList(HashMap<String, Object> param);
 	
 }

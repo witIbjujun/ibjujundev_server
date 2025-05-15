@@ -16,6 +16,7 @@ import com.wit.inspaction.seller.model.CodeDTO;
 import com.wit.inspaction.seller.model.DirectEstimateSetDTO;
 import com.wit.inspaction.seller.model.EstimateCntDTO;
 import com.wit.inspaction.seller.model.EstimateRequestDTO;
+import com.wit.inspaction.seller.model.GpInfoDTO;
 import com.wit.inspaction.seller.model.SellerDTO;
 import com.wit.inspaction.seller.model.SellerSendDTO;
 
@@ -258,6 +259,12 @@ public class SellerServiceImpl implements SellerService{
 	@Override
 	public int updateCertificationYn(HashMap<String, Object> param) {
 		return sellerMapper.updateCertificationYn(param);
+	}
+
+	@Override
+	public List<GpInfoDTO> getGPList(HashMap<String, Object> param) {
+		System.out.println("SellerServiceImpl getGPList 호출");
+		return sellerMapper.selectGPList(param);
 	}
 
 }
