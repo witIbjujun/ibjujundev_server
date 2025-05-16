@@ -174,6 +174,14 @@ public class BoardServiceImpl implements BoardService{
 	public int boardSendReport(HashMap<String, Object> paramMap) {
 		return boardMapper.boardSendReport(paramMap);
 	}
+	
+	/**
+	 * 업체 후기 별점 변경
+	 */
+	@Override
+	public int updateStarRateInfo(HashMap<String, Object> paramMap) {
+		return boardMapper.updateStarRateInfo(paramMap);
+	}
 
 	//------------------------------------------------------------------------------------------------------------------------------------------------
 	

@@ -124,6 +124,14 @@ public interface BoardService {
 	 */
 	public int boardSendReport(HashMap<String, Object> paramMap);
 
+	/**
+	 * 업체 후기 별점 변경
+	 * @param paramMap
+	 * @return int
+	 */
+	public int updateStarRateInfo(HashMap<String, Object> paramMap);
+	
+	
 	//------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	/**
@@ -146,5 +154,4 @@ public interface BoardService {
 	 * @return int
 	 */
 	public int updateReportStat(HashMap<String, Object> paramMap);
-	
 }

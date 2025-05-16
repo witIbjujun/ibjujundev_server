@@ -18,6 +18,13 @@
 			, A.BORD_CONTENT AS bordContent
 			, A.BORD_RD_CNT AS bordRdCnt
 			, A.BORD_GD_CNT AS bordGdCnt
+			, A.APT_NO AS aptNo
+	        , A.SLLR_NO AS sllrNo
+	        , A.REQ_NO AS reqNo
+	        , A.CTGR_ID AS ctgrId
+	        , (SELECT S.STSF_RATE FROM request110t S
+	        	WHERE S.REQ_NO = A.REQ_NO
+	        	AND S.COMPANY_ID = A.SLLR_NO)  AS stsfRate
 			, (SELECT COUNT(S.CMMT_NO) FROM IBJ_BORD110T S
 				WHERE S.BORD_NO = A.BORD_NO
 				AND S.DEL_YN = 'N') AS commentCnt
@@ -48,6 +55,21 @@
 	<if test="bordKey != null and bordKey != ''">
 		AND A.BORD_KEY = #{bordKey}
 	</if>
+	<if test="aptNo != null and aptNo != ''">
+		AND A.APT_NO = #{aptNo}
+	</if>
+	<if test="sllrNo != null and sllrNo != ''">
+		AND A.SLLR_NO = #{sllrNo}
+	</if>
+	<if test="reqNo != null and reqNo != ''">
+		AND A.REQ_NO = #{reqNo}
+	</if>
+	<if test="ctgrId != null and ctgrId != ''">
+		AND A.CTGR_ID = #{ctgrId}
+	</if>
+	<if test="creUserId != null and creUserId != ''">
+		AND A.CRE_USER = #{creUserId}
+	</if>
 	<if test="searchText != null and searchText != ''">
 		AND A.BORD_TITLE LIKE CONCAT('%', #{searchText}, '%')
 	</if>
@@ -66,6 +88,13 @@
 			, A.BORD_CONTENT AS bordContent
 			, A.BORD_RD_CNT AS bordRdCnt
 			, A.BORD_GD_CNT AS bordGdCnt
+			, A.APT_NO AS aptNo
+	        , A.SLLR_NO AS sllrNo
+	        , A.REQ_NO AS reqNo
+	        , A.CTGR_ID AS ctgrId
+	        , (SELECT S.STSF_RATE FROM request110t S
+	        	WHERE S.REQ_NO = A.REQ_NO
+	        	AND S.COMPANY_ID = A.SLLR_NO)  AS stsfRate
 			, (SELECT COUNT(S.CMMT_NO) FROM IBJ_BORD110T S
 				WHERE S.BORD_NO = A.BORD_NO
 				AND S.DEL_YN = 'N') AS commentCnt
@@ -135,6 +164,10 @@
 	          BORD_RD_CNT,
 	          BORD_GD_CNT,
 	          BORD_ER_CNT,
+	          APT_NO,
+	          SLLR_NO,
+	          REQ_NO,
+	          CTGR_ID,
 	          CRE_USER,
 	          CRE_DATE
 	    ) 
@@ -150,6 +183,10 @@
 	          0,
 	          0,
 	          0,
+	           #{aptNo},
+	           #{sllrNo},
+	           #{reqNo},
+	           #{ctgrId},
 	          #{creUser},
 	          NOW()
 	    )
@@ -373,6 +410,14 @@
 		UPDATE IBJ_BORD120T SET
 			REPORT_STAT = #{reportStat}
 		WHERE BORD_NO = #{bordNo}
+	</update>
+	
+	<!-- 업체 별점 수정 -->
+	<update id="updateStarRateInfo" parameterType="java.util.HashMap">
+		UPDATE request110t SET
+			STSF_RATE = #{starRating}
+		WHERE REQ_NO = #{reqNo}
+		AND   COMPANY_ID = #{sllrNo}
 	</update>
 	
 </mapper>

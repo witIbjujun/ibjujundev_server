@@ -14,6 +14,11 @@ public class BoardDTO {
 	private int bordGdCnt;				// 게시판 좋아요 수
 	private int bordErCnt;				// 게시판 싫어요 수
 	private int commentCnt;			// 댓글 수
+	private String aptNo;				// 아파트ID
+	private String sllrNo;				// 판매자ID
+	private String reqNo;				// 신청ID
+	private String ctgrId;				// 카테고리ID
+	private String stsfRate;				// 별점
 	private String imagePath;			// 이미지 경로
 	private String reportYn;			// 신고여부
 	private String creUser;				// 작성자
@@ -161,6 +166,66 @@ public class BoardDTO {
 	 */
 	public void setCommentCnt(int commentCnt) {
 		this.commentCnt = commentCnt;
+	}
+	/**
+	 * @return the aptNo
+	 */
+	public String getAptNo() {
+		return aptNo;
+	}
+	/**
+	 * @param aptNo the aptNo to set
+	 */
+	public void setAptNo(String aptNo) {
+		this.aptNo = aptNo;
+	}
+	/**
+	 * @return the sllrNo
+	 */
+	public String getSllrNo() {
+		return sllrNo;
+	}
+	/**
+	 * @param sllrNo the sllrNo to set
+	 */
+	public void setSllrNo(String sllrNo) {
+		this.sllrNo = sllrNo;
+	}
+	/**
+	 * @return the reqNo
+	 */
+	public String getReqNo() {
+		return reqNo;
+	}
+	/**
+	 * @param reqNo the reqNo to set
+	 */
+	public void setReqNo(String reqNo) {
+		this.reqNo = reqNo;
+	}
+	/**
+	 * @return the ctgrId
+	 */
+	public String getCtgrId() {
+		return ctgrId;
+	}
+	/**
+	 * @param ctgrId the ctgrId to set
+	 */
+	public void setCtgrId(String ctgrId) {
+		this.ctgrId = ctgrId;
+	}
+	/**
+	 * @return the stsfRate
+	 */
+	public String getStsfRate() {
+		return stsfRate;
+	}
+	/**
+	 * @param stsfRate the stsfRate to set
+	 */
+	public void setStsfRate(String stsfRate) {
+		this.stsfRate = stsfRate;
 	}
 	/**
 	 * @return the imagePath

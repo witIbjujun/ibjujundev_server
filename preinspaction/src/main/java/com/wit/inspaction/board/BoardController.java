@@ -79,6 +79,16 @@ public class BoardController {
 		
 		if (result > 0) {
 			
+			// 후기 별점 수정
+			String bordType = (String) paramMap.get("bordType") == null ? "" : (String) paramMap.get("bordType");
+			if (!"".equals(bordType)) {
+				bordType = bordType.substring(0,2);
+				if ("UH".equals(bordType)) {
+					int updateResult = boardService.updateStarRateInfo(paramMap);
+					logger.info("별점 등록 ::: " + updateResult);
+				}
+			}
+			
 			// 파일 리스트
 			List<HashMap<String, Object>> fileList = (List<HashMap<String, Object>>) paramMap.get("fileInfo");
 			
@@ -115,6 +125,27 @@ public class BoardController {
 		int result = boardService.updateBoardInfo(paramMap);
 		
 		if (result > 0) {
+			
+			// 후기 별점 수정
+			String bordType = (String) paramMap.get("bordType") == null ? "" : (String) paramMap.get("bordType");
+			
+			logger.info("bordType1 ::: " + bordType);
+			
+			if (!"".equals(bordType)) {
+				bordType = bordType.substring(0,2);
+				
+				logger.info("bordType2 ::: " + bordType);
+				
+				if ("UH".equals(bordType)) {
+					
+					logger.info("sllrNo ::: " + paramMap.get("sllrNo"));
+					logger.info("reqNo ::: " + paramMap.get("reqNo"));
+					logger.info("starRating ::: " + paramMap.get("starRating"));
+					
+					int updateResult = boardService.updateStarRateInfo(paramMap);
+					logger.info("별점 수정 ::: " + updateResult);
+				}
+			}
 			
 			// 파일 저장 리스트
 			List<HashMap<String, Object>> fileList = (List<HashMap<String, Object>>) paramMap.get("fileInfo");
