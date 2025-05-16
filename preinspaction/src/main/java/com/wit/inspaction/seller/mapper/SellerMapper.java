@@ -350,6 +350,16 @@ public class SellerMapper {
 		System.out.println("############# selectGPList : " + param);
 		return sql.selectList(path + "selectGPList", param);
 	}
+	
+	/**
+	 * 공동구매 상태 값 수정
+	 * @param paramMap
+	 * @return int
+	 */
+	public int updateGPstat(HashMap<String, Object> param) {
+		System.out.println("############# updateGPstat : " + param);
+		return sql.update(path + "updateGPstat", param);
+	}
 
 
 }

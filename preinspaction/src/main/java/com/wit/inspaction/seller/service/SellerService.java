@@ -245,4 +245,11 @@ public interface SellerService {
 	 */
 	public List<GpInfoDTO> getGPList(HashMap<String, Object> param);
 	
+	/**
+	 * 공동구매 상태 값 수정
+	 * @param paramMap
+	 * @return int
+	 */
+	public int updateGPstat(HashMap<String, Object> param);
+	
 }

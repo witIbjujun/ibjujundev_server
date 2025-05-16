@@ -850,5 +850,14 @@
         AND    C.END_DATE = '99991231'
         AND    D.END_DATE = '99991231'
 	</select>
+	
+	<!-- 공동구매 상태 값 수정 -->
+	<update id="updateGPstat" parameterType="java.util.HashMap">
+		UPDATE IBJ_CTGR100T
+		SET    GP_STAT = #{gpStat}
+		       , UDT_USER = #{udtUser}
+		       , UDT_DATE = SYSDATE()
+		WHERE  CTGR_ID = #{ctgrId}
+	</update>
 
 </mapper>

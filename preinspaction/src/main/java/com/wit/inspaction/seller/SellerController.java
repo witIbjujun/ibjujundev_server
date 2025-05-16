@@ -662,4 +662,18 @@ public class SellerController {
 
         return getGPList;
     }
+	
+	/**
+	 * 공동구매 상태 값 수정
+	 * @param paramMap
+	 * @return int
+	 */
+	@PostMapping("/wit/updateGPstat")
+	public int updateGPstat(@RequestBody HashMap<String, Object> param) {
+		System.out.println("updateGPstat 호출");
+
+		int result = sellerService.updateGPstat(param);
+
+        return result;
+	}
 }

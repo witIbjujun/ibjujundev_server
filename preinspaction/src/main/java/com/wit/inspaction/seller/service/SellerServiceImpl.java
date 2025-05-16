@@ -267,4 +267,10 @@ public class SellerServiceImpl implements SellerService{
 		return sellerMapper.selectGPList(param);
 	}
 
+	@Override
+	public int updateGPstat(HashMap<String, Object> param) {
+		return sellerMapper.updateGPstat(param);
+
+	}
+
 }
