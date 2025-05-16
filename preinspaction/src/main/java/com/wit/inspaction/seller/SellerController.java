@@ -656,6 +656,9 @@ public class SellerController {
 		System.out.println("getGPList 호출");
 
 		List<GpInfoDTO> getGPList = sellerService.getGPList(param);
+		
+		System.out.println("공동구매 목록 조회 ::: " + getGPList.size());
+		System.out.println("공동구매 목록 조회 ::: 122312123312132132");
 
         return getGPList;
     }

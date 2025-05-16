@@ -30,18 +30,29 @@
 		WHERE   A.REQ_NO = B.REQ_NO
 		AND 	B.END_DATE = '99991231'
 	    AND 	B.COMPANY_ID  = #{sllrNo}
+	    <if test="1==2">
 	    AND     A.CATEGORY_ID = F.SERVICE_ITEM
+	    </if>
+	    
 	    AND     B.COMPANY_ID = F.SLLR_NO
-	    <if test="stat == null or stat.equals('')">
-			AND B.REQ_STATE != 10
-		</if>
-		<if test="stat !=null and !stat.equals('')">
-			AND B.REQ_STATE = 10
-		</if>
+	    
 		<if test="basDate !=null and !basDate.equals('')">
 			AND DATE_FORMAT(B.REQ_DATE, '%Y%m') = #{basDate}
 		</if>
-        AND 	C.APT_NO = E.APT_NO
+		<if test="reqGubun !=null and !reqGubun.equals('')">
+			AND A.REQ_GUBUN = 'G'
+			AND C.APT_NO = #{aptNo}
+		</if>
+		<if test="reqGubun ==null or reqGubun.equals('')">
+			<if test="stat == null or stat.equals('')">
+				AND B.REQ_STATE != 10
+			</if>
+			<if test="stat !=null and !stat.equals('')">
+				AND B.REQ_STATE = 10
+			</if>
+		</if>
+		
+        AND 	C.APT_NO = A.APT_NO
         AND 	B.CATEGORY_ID = D.CATEGORY_ID
         AND 	B.REQ_USER = E.CLERK_NO
 		ORDER BY B.REQ_DATE DESC	
@@ -237,8 +248,15 @@
 		       , zip_code AS zipCode
 		       , address1 AS address1
 		       , address2 AS address2
-		       , (select count(req_no) from request110t where req_state = '10' and company_id = #{sllrNo}) AS reqCnt /* 견적요청내역 건수 */
-               , (select count(req_no) from request110t where req_state not in ('10') and company_id = #{sllrNo}) AS ingCnt /* 거래내역 건수 */
+		       , (select count(req_no) from request110t where req_state = '10' and company_id = A.SLLR_NO) AS reqCnt /* 견적요청내역 건수 */
+               , (select count(req_no) from request110t where req_state not in ('10') and company_id = A.SLLR_NO) AS ingCnt /* 거래내역 건수 */
+               , (SELECT COUNT(R.REQ_NO) 
+                  FROM   request110t R, request100t B
+                  WHERE  R.REQ_NO = B.REQ_NO 
+                  AND    R.REQ_STATE NOT IN ('99') 
+                  AND    R.COMPANY_ID = A.SLLR_NO
+                  AND    B.REQ_GUBUN = 'G'
+               ) AS gpCnt /* 공동구매 요청받은 건수 */
                , rate AS rate
                , clerk_no AS clerkNo
                , bord_no AS bordNo
@@ -252,8 +270,8 @@
                , CASE WHEN rate >= 4.5 THEN 'Y' ELSE 'N' END AS rateFlag
                , CERTIFICATION_YN AS certificationYn
                , REGI_LEVEL AS regiLevel
-		FROM   wit_sllr000t
-		WHERE  SLLR_NO = #{sllrNo}
+		FROM   wit_sllr000t A
+		WHERE  A.SLLR_NO = #{sllrNo}
 	</select>
 	
 	<!-- 판매자 프로필 목록 조회 -->
@@ -797,7 +815,8 @@
 
 	<!-- 공동구매 목록 조회 -->
 	<select id="selectGPList" parameterType="java.util.HashMap" resultType="GpInfoDTO">	
-		SELECT A.CTGR_ID AS ctgrId
+		
+        SELECT A.CTGR_ID AS ctgrId
 		       , A.END_DATE AS endDate
 		       , A.GP_START_DATE AS gpStartDate
 		       , A.GP_END_DATE AS gpEndDate
@@ -811,9 +830,25 @@
 		       , A.REG_DATE AS regDate
 		       , A.UDT_USER AS udtDate
 		       , A.UDT_DATE AS udtDate
-		FROM   IBJ_CTGR100T A
-		WHERE  A.END_DATE = '99991231'
-		AND    A.CTGR_ID = #{ctgrId}   
+			   , B.APT_NO AS aptNo
+               , C.APT_NAME AS aptName
+		FROM   IBJ_CTGR100T A, IBJ_CTRG010T B, IBJ_APT000T C, IBJ_SLLR200T D
+		WHERE  A.CTGR_ID  = B.CTGR_ID
+        AND    B.APT_NO   = C.APT_NO
+        AND    B.APT_NO   = D.APT_NO
+        <if test="ctgrId !=null and !ctgrId.equals('')">
+        	AND    A.CTGR_ID  = #{ctgrId}
+        </if>
+        <if test="aptNo !=null and !aptNo.equals('')">
+			AND    C.APT_NO   = #{aptNo}  
+        </if>
+        <if test="sllrNo !=null and !sllrNo.equals('')">
+            AND    D.SLLR_NO = #{sllrNo}
+		</if>
+        AND    A.END_DATE = '99991231'
+        AND    B.END_DATE = '99991231'
+        AND    C.END_DATE = '99991231'
+        AND    D.END_DATE = '99991231'
 	</select>
 
 </mapper>

@@ -40,6 +40,7 @@ public class SellerDTO {
     private String rateFlag; // 품목이미지
     private String certificationYn; // 본인인증여부
     private String regiLevel; // 등록단계
+    private String gpCnt;     // 공동구매 요청받은 건수
     
 	/**
 	 * @return the sllrNo
@@ -497,6 +498,17 @@ public class SellerDTO {
 	public void setRegiLevel(String regiLevel) {
 		this.regiLevel = regiLevel;
 	}
+	/**
+	 * @return the gpCnt
+	 */
+	public String getGpCnt() {
+		return gpCnt;
+	}
+	/**
+	 * @param gpCnt the gpCnt to set
+	 */
+	public void setGpCnt(String gpCnt) {
+		this.gpCnt = gpCnt;
+	}
 
-	
 }

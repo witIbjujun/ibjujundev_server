@@ -3,8 +3,8 @@ package com.wit.inspaction.seller.model;
 public class GpInfoDTO {
 	private String ctgrId;         // 상품명 ID
 	private String endDate;        // 상품명
-	private String gpStartDate;   // 공동구매시작일
-	private String gpEndDate;     // 공동구매 종료일
+	private String gpStartDate;    // 공동구매시작일
+	private String gpEndDate;      // 공동구매 종료일
 	private String gpStat;         // 진행상태: 공동구매 진행중 / 조기마감 / 매진
 	private String limitCount;     // 최대수량 : 공동구매 수량 9999 는 무한
 	private String reqCount;       // 요청수량
@@ -14,6 +14,8 @@ public class GpInfoDTO {
 	private String regDate;        // 등록일시
 	private String udtUser;        // 수정자
 	private String udtDate;        // 수정일시
+	private String aptNo;     	   // 아파트번호
+	private String aptName;        // 아파트명
 	
 	/**
 	 * @return the ctgrId
@@ -171,7 +173,30 @@ public class GpInfoDTO {
 	public void setUdtDate(String udtDate) {
 		this.udtDate = udtDate;
 	}
-
+	/**
+	 * @return the aptNo
+	 */
+	public String getAptNo() {
+		return aptNo;
+	}
+	/**
+	 * @param aptNo the aptNo to set
+	 */
+	public void setAptNo(String aptNo) {
+		this.aptNo = aptNo;
+	}
+	/**
+	 * @return the aptName
+	 */
+	public String getAptName() {
+		return aptName;
+	}
+	/**
+	 * @param aptName the aptName to set
+	 */
+	public void setAptName(String aptName) {
+		this.aptName = aptName;
+	}
 	
 }
 
