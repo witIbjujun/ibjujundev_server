@@ -137,6 +137,7 @@ public class SellerController {
 		String reqState = (String) param.get("stat");
 		String reqUser = (String) param.get("sllrClerkNo");
 		String sllrNo = (String) param.get("sllrNo");
+		String endReason = (String) param.get("endReason");
 		
 		HashMap<String, Object> updateMap = new HashMap<String, Object>();
 		updateMap.put("reqState", reqState);
@@ -145,6 +146,7 @@ public class SellerController {
 		updateMap.put("reqUser", reqUser);
 		updateMap.put("reqNo", reqNo);
 		updateMap.put("seq", seq);
+		updateMap.put("endReason", endReason);
 		
 		int result = userService.updateRequestState(updateMap);
 		   result += userService.updateDetailRequestState(updateMap);
