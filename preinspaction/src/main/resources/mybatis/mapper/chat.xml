@@ -5,21 +5,248 @@
         
 <mapper namespace="com.wit.inspaction.chat.mapper.ChatMapper">
 
-	<!-- 채팅내용 조회 -->
+	<!-- 채팅내용 조회-->
 	<select id="selectChatList" parameterType="java.util.HashMap" resultType="ChatDTO">
-	SELECT A.CHAT_ID roomId
-          ,A.CHAT_NAME roomNm
-          ,A.CRE_DT
-          ,B.CLERK_NO authorId
-          ,B.MESSAGE_CONTENT text
-          ,B.MESSAGE_STATUS status
-          ,B.MESSAGE_TYPE type
-          ,UNIX_TIMESTAMP(B.created_at) createdAt
-	FROM chats100t A , chats110t B
-	WHERE A.CHAT_ID = B.CHAT_ID
-	AND   A.CHAT_ID = #{chatId}
-	ORDER BY B.created_at desc
+		
+		SELECT  
+		    A.CHAT_ID AS chatId,
+		    A.message_id AS messageId,
+		    B.CHAT_NAME AS roomNm,  
+            A.reqState ,
+            DATE_FORMAT(A.estimateDate, '%Y.%m.%d') estimateDate,
+            DATE_FORMAT(A.estimateProcDate, '%Y.%m.%d') estimateProcDate,
+		    DATE_FORMAT(A.reg_date, '%H:%i') AS time,
+		    A.CLERK_NO AS authorId,
+		    COALESCE(P.nick_name, S.store_name) AS storeName,
+		    CASE 
+		        WHEN A.msg_type = 'image' THEN CONCAT(F.FILE_LOC, F.FILE_ID)
+		        WHEN C.keyword_text IS NOT NULL THEN C.keyword_text
+		        ELSE A.msg_content  
+		    END AS text,
+		    A.msg_status AS status,
+		    A.msg_type AS type,
+		    CASE 
+		        WHEN A.CLERK_NO = #{clerkNo} THEN 'me'
+		        WHEN A.CLERK_NO = 'system' THEN 'system'
+		        ELSE 'other'
+		    END AS chatgubun,
+		    S.CATEGORY_IMAGE AS imageUrl,
+		    S.store_name AS storeName,
+		    A.msg_code AS msgCode,
+		    C.upp_msg_code AS anwCode,
+		    C.msg_code AS keywordCode,
+		    D.target AS targetView,
+		    C.keyword_text AS keyword_text,
+		    C.seq AS orderSeq
+	FROM 
+    IBJ_CHAT100T B
+    JOIN (
+    
+			SELECT   B.CHAT_ID
+					,B.message_id 
+					,A.REQ_NO
+					,A.SEQ
+					,B.CLERK_NO
+					, B.msg_status 
+					, B.msg_type 
+					, A.req_state reqState
+                    , B.reg_date
+                    , B.chat_gubun
+                    ,B.msg_content  
+					, A.estimate_date estimateDate
+					,A.estimate_proc_date estimateProcDate
+					, B.msg_code 
+		FROM request110t A  , IBJ_CHAT110T B
+		WHERE A.chat_id = B.chat_id
+		AND  A.REQ_NO = #{reqNo}
+		AND  A.SEQ = #{seq}
+    
+    ) A ON A.CHAT_ID = B.CHAT_ID
+    LEFT JOIN IBJ_CHAT210T C ON A.msg_code = C.msg_code
+    LEFT JOIN IBJ_CHAT200T D ON C.msg_code = D.msg_code
+    LEFT JOIN wit_sllr000t S ON S.sllr_no = A.CLERK_NO
+    LEFT JOIN (
+        SELECT clerk_no, nick_name 
+        FROM IBJ_PRSN000T
+    ) P ON P.clerk_no = A.CLERK_NO
+    LEFT JOIN (
+        SELECT BIZ_KEY, FILE_LOC, FILE_ID 
+        FROM wit_file000t 
+        WHERE BIZ_CD = 'C001'
+    ) F ON F.BIZ_KEY = A.message_id
+	WHERE 
+	    A.CHAT_ID = #{chatId}
+	    AND (A.chat_gubun = 'system' OR D.target IS NULL)
+	    AND (D.target = #{target} OR D.target IS NULL)
+	ORDER BY 
+	    A.message_id
+	    
+	 
 	</select>
+	
+	<!-- 채팅생성-->
+	<select id="selectCreateChatNo" parameterType="java.util.HashMap" resultType="String">
+		SELECT COALESCE(MAX(chat_id), 0) + 1 
+		FROM IBJ_CHAT100T
+	</select>
+	
+	<!-- 채팅생성-->
+	<select id="selectChatInfo" parameterType="java.util.HashMap" resultType="ChatDTO">
+		SELECT 
+		    A.category_id AS categoryId,
+		    (SELECT category_nm 
+		       FROM category 
+		      WHERE END_DATE = '99991231' 
+		        AND category_id = A.category_id) AS categoryNm,
+		    FORMAT(A.estimate_amount, 0) AS estimateAmount,
+		    A.req_user AS reqUser,
+		    (SELECT NICK_NAME 
+		       FROM prsn000t 
+		      WHERE CLERK_NO = A.req_user) AS reqName,
+		    A.req_state reqState,
+		    
+	     CASE WHEN A.req_state  ='20' AND #{target}  = 'sellerView' THEN '-'
+              WHEN A.req_state  ='30' AND #{target}  = 'sellerView' THEN '-'
+              WHEN A.req_state  ='40' AND #{target}  = 'sellerView' THEN '50'
+              WHEN A.req_state  ='50' AND #{target}  = 'sellerView' THEN '60'
+              WHEN A.req_state  ='60' AND #{target}  = 'sellerView' THEN '-'
+              WHEN A.req_state  ='20' AND #{target}  = 'userView' THEN '40'
+              WHEN A.req_state  ='30' AND #{target}  = 'userView' THEN '40'
+              WHEN A.req_state  ='40' AND #{target}  = 'userView' THEN '-'
+              WHEN A.req_state  ='50' AND #{target}  = 'userView' THEN '-'
+              WHEN A.req_state  ='60' AND #{target}  = 'userView' THEN '70'
+              WHEN A.req_state  ='70'  THEN '-'
+         END nextReqState,
+         
+
+	    CASE WHEN A.req_state  ='20' AND #{target}  = 'sellerView' THEN '진행대기'
+	         WHEN A.req_state  ='30' AND #{target}  = 'sellerView' THEN '진행대기'
+			 WHEN A.req_state  ='40' AND #{target} = 'sellerView' THEN '작업진행'
+	         WHEN A.req_state  ='50' AND #{target}  = 'sellerView' THEN '작업완료'
+			 WHEN A.req_state  ='60' AND #{target}  = 'sellerView' THEN '최종점검중'
+			 WHEN A.req_state  ='20' AND #{target}  = 'userView' THEN '진행요청'
+			 WHEN A.req_state  ='30' AND #{target}  = 'userView' THEN '진행요청'
+	         WHEN A.req_state ='40'  AND #{target}  = 'userView' THEN '작업대기'
+			 WHEN A.req_state  ='50' AND #{target}  = 'userView' THEN '작업중'
+			 WHEN A.req_state  ='60' AND #{target}  = 'userView' THEN '최종완료'
+	         WHEN A.req_state  ='70' THEN '완료'
+	         END reqBtenNm,
+         
+		    CONCAT(DATE_FORMAT(A.estimate_date, '%Y년 %c월 %e일 '), 
+		        CASE DAYOFWEEK(A.estimate_date)
+		          WHEN 1 THEN '(일)'
+		          WHEN 2 THEN '(월)'
+		          WHEN 3 THEN '(화)'
+		          WHEN 4 THEN '(수)'
+		          WHEN 5 THEN '(목)'
+		          WHEN 6 THEN '(금)'
+		          WHEN 7 THEN '(토)'
+		        END) AS estimateDate,
+		   
+		   CONCAT(DATE_FORMAT(A.estimate_proc_date, '%Y년 %c월 %e일 '), 
+		        CASE DAYOFWEEK(A.estimate_proc_date)
+		          WHEN 1 THEN '(일)'
+		          WHEN 2 THEN '(월)'
+		          WHEN 3 THEN '(화)'
+		          WHEN 4 THEN '(수)'
+		          WHEN 5 THEN '(목)'
+		          WHEN 6 THEN '(금)'
+		          WHEN 7 THEN '(토)'
+		        END) AS estimateProcDate,
+		    (SELECT store_name 
+		       FROM wit_sllr000t 
+		      WHERE sllr_no = A.company_id) AS storeName
+		FROM request110t A
+	    WHERE A.req_no = #{reqNo} 
+	    AND   A.seq = #{seq}
+	</select>
+	
+	<!-- 채팅생성-->
+	<select id="selectRequestChatInfo" parameterType="java.util.HashMap" resultType="String">
+		SELECT chat_id
+		FROM  request110t 
+		WHERE req_no = #{reqNo}
+		AND   seq = #{seq}
+	</select>
+	
+	<!-- 사전점검 항목 저장 -->
+	<update id="updateReqChatInfo" parameterType="java.util.HashMap">
+		UPDATE request110t
+		    SET  chat_id =  #{newChatd}
+		WHERE REQ_NO = #{reqNo}
+		AND SEQ = #{seq}
+	</update>
+	
+	<!-- 사전점검 항목 저장 -->
+	<update id="updateRequestStatus" parameterType="java.util.HashMap">
+		UPDATE request110t
+		    SET  req_state =  #{upState}
+		WHERE REQ_NO = #{reqNo}
+		AND SEQ = #{seq}
+	</update>
+	
+		<!-- 채팅글 저장 -->
+	<insert id="insertChatMessage" parameterType="java.util.HashMap" useGeneratedKeys="false">
+		
+	 <selectKey keyProperty="message_id" resultType="String" order="BEFORE">
+	    SELECT COALESCE(MAX(CAST(message_id AS UNSIGNED)), 0) + 1
+	    FROM IBJ_CHAT110T
+	    WHERE chat_id = #{chatId}
+	  </selectKey>
+	  
+		INSERT INTO IBJ_CHAT110T(
+			 message_id
+			, chat_id
+			, clerk_no
+			, msg_content
+			, msg_status
+			, msg_type
+			, chat_gubun
+			, msg_code
+			, ans_val
+			, reg_date
+		) VALUES (
+			  #{message_id}
+			, #{chatId}
+			, #{clerkNo}
+			, #{messageContent}
+			, #{messageStatus}
+			, #{messageType}
+			, #{chatgubun}
+			, #{msgCode}
+			, #{anwCode}
+			, NOW()
+		)		
+	</insert>
+	
+		<!-- 채팅글 저장 -->
+	<insert id="insertChatMain" parameterType="java.util.HashMap" useGeneratedKeys="false">
+		
+	 <selectKey keyProperty="newChatd" resultType="String" order="BEFORE">
+	   SELECT COALESCE(MAX(chat_id), 0) + 1 
+		FROM IBJ_CHAT100T
+	  </selectKey>
+	  
+		INSERT INTO IBJ_CHAT100T(
+			 chat_id
+			, chat_name
+			, reg_date
+		) VALUES (
+			  #{newChatd}
+			, #{reqNo}
+			, NOW()
+		)		
+	</insert>
+	
+	<!-- 채팅내용 조회-->
+	<select id="selectAnswerMessages" parameterType="java.util.HashMap" resultType="ChatDTO">
+    SELECT
+        keyword_text AS keywordText
+    FROM IBJ_CHAT210T
+    WHERE msg_code = #{answers}
+    ORDER BY order_seq ASC
+	</select>
+	
 	
 	<!-- 채팅내용 조회 -->
 	<select id="selectAuthorsByIds" parameterType="java.util.HashMap" resultType="AuthorDTO">
@@ -34,32 +261,13 @@
 	AND A.CHAT_ID = #{chatId}
 	</select>
 	
-	<!-- 채팅글 저장 -->
-	<insert id="insertChatMessage" parameterType="java.util.HashMap">
 		
-	<selectKey keyProperty="message_id" resultType="String" order="BEFORE">
-        SELECT  (MAX(CAST(message_id AS UNSIGNED)) + 1) 
-        FROM chats110t
-        WHERE chat_id = #{chatId}
-    </selectKey>
-    
-		INSERT INTO chats110t(
-			 message_id
-			, chat_id
-			, CLERK_NO
-			, message_content
-			, message_status
-			, message_type
-			, created_at
-		) VALUES (
-			#{message_id}
-			, #{chatId}
-			, #{clerkNo}
-			, #{messageContent}
-			, #{messageStatus}
-			, #{messageType}
-			, NOW()
-		)		
-	</insert>
+	<!-- 체팅수정 -->
+	<update id="updateChatMessage" parameterType="java.util.HashMap">
+		UPDATE IBJ_CHAT110T SET
+			chat_gubun = #{chatGubun}
+		WHERE message_id = #{messageId}
+		AND chat_id = #{chatId}
+	</update>
 
 </mapper>

@@ -9,6 +9,13 @@ public class UserDTO {
     private String categoryNm;				// 점검순번
     private String detail;					// 점검명
     private String imagePath;				// 점검명
+    private String gpStartDate;				// 공동구매시작일
+    private String gpEndDate;				// 공동구매 종료일
+    private String gpStat;				    // 공동구매 진행상태
+    private String limitCount;				// 공동구매 종료일
+    private String reqCount;				// 요청수량
+    private String saleRate;				// 할인율%
+    private String saleAmt;				    // 할인된 금액
     private String clickCount;				// 점검명
     private String companyCnt;				// 점검명
     private String companyId;				// 점검명
@@ -25,7 +32,8 @@ public class UserDTO {
     private String timeAgo;				// 점검명
     private String estimateAmount;				// 점검명
     private String estimateContents;				// 점검명
-    
+    private String reqGubun;				// 점검명
+    private String email;				// 점검명
     private String clerkNo;
     private String kakaoId;
     private String role;
@@ -39,10 +47,78 @@ public class UserDTO {
     private String token;               // 메인아파트 이름
     private String price;               // 메인아파트 이름
     private String imageFilePath;               // 업체 이미지 파일path
+    private String estimateDate;               // 업체 이미지 파일path
+    private String finishCount;               // 업체 이미지 파일path
     private List<String> aptNo;               // 아파트 번호 리스트
     private List<String> aptName;             // 아파트 이름 리스트
 
     
+	public String getGpStartDate() {
+		return gpStartDate;
+	}
+	public void setGpStartDate(String gpStartDate) {
+		this.gpStartDate = gpStartDate;
+	}
+	public String getGpEndDate() {
+		return gpEndDate;
+	}
+	public void setGpEndDate(String gpEndDate) {
+		this.gpEndDate = gpEndDate;
+	}
+	public String getGpStat() {
+		return gpStat;
+	}
+	public void setGpStat(String gpStat) {
+		this.gpStat = gpStat;
+	}
+	public String getLimitCount() {
+		return limitCount;
+	}
+	public void setLimitCount(String limitCount) {
+		this.limitCount = limitCount;
+	}
+	public String getReqCount() {
+		return reqCount;
+	}
+	public void setReqCount(String reqCount) {
+		this.reqCount = reqCount;
+	}
+	public String getSaleRate() {
+		return saleRate;
+	}
+	public void setSaleRate(String saleRate) {
+		this.saleRate = saleRate;
+	}
+	public String getSaleAmt() {
+		return saleAmt;
+	}
+	public void setSaleAmt(String saleAmt) {
+		this.saleAmt = saleAmt;
+	}
+	public String getFinishCount() {
+		return finishCount;
+	}
+	public void setFinishCount(String finishCount) {
+		this.finishCount = finishCount;
+	}
+	public String getEstimateDate() {
+		return estimateDate;
+	}
+	public void setEstimateDate(String estimateDate) {
+		this.estimateDate = estimateDate;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getReqGubun() {
+		return reqGubun;
+	}
+	public void setReqGubun(String reqGubun) {
+		this.reqGubun = reqGubun;
+	}
 	public String getFormatReqNo() {
 		return formatReqNo;
 	}

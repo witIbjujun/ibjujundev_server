@@ -41,8 +41,26 @@ public class UserMapper {
 	 * @param paramMap
 	 * @return List<UserDTO>
 	 */
+	public List<String> selectCompanyIdList(HashMap<String, Object> paramMap) {
+		return sql.selectList(path + "selectCompanyIdList", paramMap);
+	}
+	
+	/**
+	 * 회사 상세 리스트
+	 * @param paramMap
+	 * @return List<UserDTO>
+	 */
 	public List<UserDTO> selectNoticeList(HashMap<String, Object> paramMap) {
 		return sql.selectList(path + "selectNoticeList", paramMap);
+	}
+	
+	/**
+	 * 공구목록
+	 * @param paramMap
+	 * @return List<UserDTO>
+	 */
+	public List<UserDTO> selectGonguList(HashMap<String, Object> paramMap) {
+		return sql.selectList(path + "selectGonguList", paramMap);
 	}
 	
 	/**
@@ -161,6 +179,15 @@ public class UserMapper {
 	 */
 	public int userCheckCount(HashMap<String, Object> paramMap) {
 		return sql.selectOne(path + "userCheckCount", paramMap);
+	}
+	
+	/**
+	 * 사전점검 항목 저장
+	 * @param paramMap
+	 * @return int
+	 */
+	public int userCheckKakaoCount(HashMap<String, Object> paramMap) {
+		return sql.selectOne(path + "userCheckKakaoCount", paramMap);
 	}
 	
 	/**

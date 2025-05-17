@@ -27,17 +27,19 @@
 
 	<!-- 사전점검 항목 리스트 조회 -->
 	<select id="userCheckCount" parameterType="java.util.HashMap" resultType="int">
-		SELECT COUNT(CLERK_NO) CNT
-        FROM  prsn000t 
-         <trim prefix="WHERE" prefixOverrides="AND |OR">
-	        <if test="kakaoId != null and kakaoId.trim() != ''">
-	            KAKAO_ID = #{kakaoId}
-	        </if>
-	        <if test="clerkNo != null and clerkNo.trim() != ''">
-	            AND CLERK_NO = #{clerkNo}
-	        </if>
-    	</trim>
+		SELECT COUNT(clerk_no) CNT
+        FROM  IBJ_PRSN000T 
+        WHERE clerk_no = #{clerkNo}
 	</select>
+	
+	
+		<!-- 사전점검 항목 리스트 조회 -->
+	<select id="userCheckKakaoCount" parameterType="java.util.HashMap" resultType="int">
+		SELECT COUNT(clerk_no) CNT
+        FROM  IBJ_PRSN000T 
+        WHERE  sns_id = #{kakaoId}
+	</select>
+	
 	
 	<!-- 사전점검 상세항목 리스트 조회 -->
 	<select id="selectCompanyList" parameterType="java.util.HashMap" resultType="UserDTO">
@@ -45,6 +47,13 @@
 		     ,sllr_no companyId
 		     ,rate
 		     ,store_name companyNm
+		FROM wit_sllr000t 
+		WHERE service_item = #{categoryId}
+	</select>
+	
+	<!-- 사전점검 상세항목 리스트 조회 -->
+	<select id="selectCompanyIdList" parameterType="java.util.HashMap" resultType="java.lang.String">
+		SELECT sllr_no companyId
 		FROM wit_sllr000t 
 		WHERE service_item = #{categoryId}
 	</select>
@@ -66,18 +75,20 @@
 			  ,A.REQ_USER
 		      ,A.REQ_DATE reqDate
 		      ,A.REQ_CONTENTS reqContents
-		      ,A.COMPANY_ID companyId
+		      ,B.sllr_no companyId
 		      ,A.CATEGORY_ID categoryId
 		      ,B.REQ_STATE   reqState
 		      ,B.reqStateNm
 			  , (SELECT category_nm FROM category WHERE category_id = A.category_id) AS categoryNm 
-		      , (SELECT RATE FROM wit_sllr000t WHERE service_item = A.category_id AND sllr_no = A.COMPANY_ID) AS rate
-		      , (SELECT store_name FROM wit_sllr000t WHERE service_item = A.category_id AND sllr_no = A.COMPANY_ID) AS companyNm
+		      , (SELECT RATE FROM wit_sllr000t WHERE service_item = A.category_id AND sllr_no = B.sllr_no) AS rate
+		      , B.store_name companyNm
 		      , DATE_FORMAT(A.REQ_DATE, '%c월 %e일') AS reqDateInfo
-		      , A.SEQ
+		      , B.SEQ
+		      , B.finishCount
 		      , B.estimateAmount
 		      , B.estimateContents
               , B.file_path imageFilePath
+               , DATE_FORMAT(B.estimate_date, '%Y.%m.%d') AS estimateDate
 		FROM request100t A ,(
 							SELECT     AA.sllr_no
                               ,BB.req_no
@@ -86,121 +97,128 @@
                               ,BB.seq
 							 , AA.store_name
                              , BB.END_DATE
+                             ,(SELECT COUNT(company_id) FROM request110t WHERE COMPANY_ID = AA.sllr_no AND req_state ='70')  finishCount
 							 , (select CONCAT(FILE_LOC,FILE_ID)   from wit_file000t  where BIZ_CD = 'SR01'   and BIZ_KEY = AA.sllr_no  and file_seq ='1' ) FILE_PATH
 							 , BB.estimate_amount estimateAmount
 							 , BB.estimate_contents estimateContents
 							 , BB.REQ_STATE
+							 , BB.estimate_date
 							 , DATE_FORMAT(BB.REQ_DATE, '%c월 %e일') AS reqDateInfo
-							 ,CASE WHEN BB.REQ_STATE = '01' THEN '견적요청' 
-										WHEN BB.REQ_STATE = '02' THEN '진행요청'
-										WHEN BB.REQ_STATE = '03' THEN '진행중'
-										WHEN BB.REQ_STATE = '04' THEN '미참여'         
-										ELSE BB.REQ_STATE
-									END AS reqStateNm
+							 ,(SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'EST01' AND CD = BB.REQ_STATE )  reqStateNm
 					FROM wit_sllr000t AA , request110t BB 
 					WHERE AA.sllr_no = BB.COMPANY_ID
+					AND BB.END_DATE = '99991231'
+					AND BB.REQ_STATE  !='10'
 					AND BB.REQ_NO = #{reqNo}
         
         ) B
 		WHERE A.REQ_NO = B.REQ_NO
 		AND  A.CATEGORY_ID = A.CATEGORY_ID 
-		AND A.COMPANY_ID = B.COMPANY_ID
-		AND A.SEQ = B.SEQ
-		AND A.REQ_STATE  IN  ('02','03')
-		AND B.END_DATE = '99991231'
 	    AND A.REQ_USER  = #{reqUser}	
 		AND A.CATEGORY_ID = #{categoryId}	
 		AND A.REQ_NO = #{reqNo}
-	ORDER BY A.REQ_DATE DESC , A.category_id
+		ORDER BY A.REQ_DATE DESC 
+	</select>
+	
+	<!-- 공동구매 목록 -->
+	<select id="selectGonguList" parameterType="java.util.HashMap" resultType="UserDTO">
+		SELECT A.ctgr_id categoryId
+		      ,A.ctgr_nm categoryNm
+		      ,A.ctgr_dtl_txt detail
+		      ,A.img_path imagePath   
+		      ,B.gp_start_date  gpStartDate /*공동구매시작일*/
+		      ,CASE WHEN DATEDIFF(B.gp_end_date, CURDATE()) > 0 
+		            THEN CONCAT('D-', DATEDIFF(B.gp_end_date, CURDATE())) 
+		            ELSE '종료됨'   END AS gpEndDate  /*공동구매 종료일*/
+		      ,B.gp_stat gpStat  /*진행상태: 공동구매 진행중 / 조기마감 / 매진*/
+		      ,B.limit_count limitCount /*최대수량*/
+		      ,B.req_count reqCount /*요청수량*/
+		      ,B.sale_rate saleRate /*할인율%*/
+		      ,B.sale_amt saleAmt   /*할인된 금액*/
+		FROM IBJ_CTGR000T A , IBJ_CTGR100T B
+		WHERE A.ctgr_id = B.ctgr_id
+		AND  A.end_date = '99991231'
+		AND  B.end_date = '99991231'
+		AND  A.group_pchs_gbn = 'C'
 	</select>
 	
 	<!-- 사전점검 견적전 리스트 조회 -->
 	<select id="selectRequesAsistList" parameterType="java.util.HashMap" resultType="UserDTO">
-	SELECT A.REQ_NO reqNo
-	       ,CONCAT(LEFT(A.REQ_NO, 1), SUBSTRING(A.REQ_NO, 2, 8), '-', 
-	               CAST(SUBSTRING(A.REQ_NO, 10) AS UNSIGNED) 
-                  ) AS formatReqNo
-           , A.CATEGORY_ID categoryId
-           , (SELECT category_nm FROM category WHERE category_id = A.category_id) AS categoryNm
-           , COALESCE(R.estimate_amount, '') AS estimateAmount
-           , W.rate
-           ,CASE 
-		        WHEN R.REQ_STATE = '01' THEN COALESCE(R.estimate_contents, '견적대기중')
-		        WHEN R.REQ_STATE = '02' THEN '진행대기'
-		        WHEN R.REQ_STATE = '03' THEN '작업진행'
-		        WHEN R.REQ_STATE = '04' THEN '진행완료'
-		        WHEN R.REQ_STATE = '05' THEN '견적취소'
-		        ELSE '상태미정'  
-		    END AS estimateContents
-		  , (SELECT GROUP_CONCAT(DISTINCT company_id ORDER BY company_id SEPARATOR ', ') 
+	SELECT  A.req_no AS reqNo,
+		    CONCAT(LEFT(A.REQ_NO, 1), SUBSTRING(A.REQ_NO, 2, 8), '-', CAST(SUBSTRING(A.REQ_NO, 10) AS UNSIGNED)) AS formatReqNo,
+		    MIN(A.CATEGORY_ID) AS categoryId, 
+		    CASE 
+		        WHEN MIN(A.req_gubun) = 'T' THEN 
+		        
+		          (  CASE WHEN MIN(A.type) = 'S' THEN "Simple 인테리어" 
+		                  WHEN MIN(A.type) = 'T' THEN "Standard 인테리어" 
+		                  WHEN MIN(A.type) = 'P' THEN "Premium 인테리어" 
+		                  ELSE "My Choice 인테리어" END )
+		        ELSE (SELECT category_nm FROM category WHERE category_id = MIN(A.category_id))
+		    END AS categoryNm,
+		    (SELECT COUNT(*) 
 		     FROM request110t 
-			 WHERE REQ_NO = A.REQ_NO 
-			 AND CATEGORY_ID = A.CATEGORY_ID  
-			 AND REQ_STATE IN ('02','03','04')) AS companyIds
-	    , R.company_id AS companyId
-	    , W.store_name AS companyNm
-	    , R.REQ_DATE AS req_date
-	    , DATE_FORMAT(R.REQ_DATE, '%c월 %e일') AS reqDateInfo
-	    , CASE
-	        WHEN TIMESTAMPDIFF(SECOND, R.REQ_DATE, NOW()) <![CDATA[<=]]> 10 THEN '방금 전'
-	        WHEN TIMESTAMPDIFF(SECOND, R.REQ_DATE, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(SECOND, R.REQ_DATE, NOW()), '초 전')
-	        WHEN TIMESTAMPDIFF(MINUTE, R.REQ_DATE, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(MINUTE, R.REQ_DATE, NOW()), '분 전')
-	        WHEN TIMESTAMPDIFF(HOUR, R.REQ_DATE, NOW()) <![CDATA[<]]> 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, R.REQ_DATE, NOW()), '시간 전')
-	        ELSE CONCAT(TIMESTAMPDIFF(DAY, R.REQ_DATE, NOW()), '일 전')
-    END AS timeAgo
-    ,R.REQ_STATE AS reqState
-   
-   FROM 
-    (SELECT REQ_NO, CATEGORY_ID 
-     FROM request100t
-     WHERE REQ_USER = #{reqUser}	
-     
-      <if test="reqNo != null">
-		AND REQ_NO = #{reqNo}
-	</if>
-	<if test="seq != null">
-		AND SEQ = #{seq}
-	</if>
-	
-     GROUP BY REQ_NO, CATEGORY_ID) A
-
-LEFT JOIN 
-    request110t R
-ON A.REQ_NO = R.REQ_NO 
-AND A.CATEGORY_ID = R.CATEGORY_ID
-AND R.REQ_STATE IN ('02','03','04')
-LEFT JOIN wit_sllr000t W
-ON R.company_id = W.sllr_no 
-AND A.CATEGORY_ID = W.service_item
-
-  <if test="reqNo != null">
-		AND R.REQ_NO = #{reqNo}
-	</if>
-	
-
-
-ORDER BY R.REQ_DATE DESC, A.CATEGORY_ID, R.company_id
-
+		     WHERE req_no = A.req_no
+		       AND req_state !=10) AS companyCnt,
+		    (SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'EST01'    AND CD =  (
+		             SELECT max(req_state)
+		             FROM request110t 
+		             WHERE req_no = A.req_no
+		        )) AS estimateContents,
+		        	(SELECT max(req_state)
+		             FROM request110t 
+		             WHERE req_no = A.req_no) reqState ,
+		    DATE_FORMAT(MIN(A.REQ_DATE), '%c월 %e일') AS reqDateInfo, 
+		    MIN(A.req_gubun) AS reqGubun,
+		    MIN(A.req_state) AS reqState,
+		   CASE 
+		        WHEN MIN(A.req_gubun) = 'T' THEN 
+		            CONCAT(
+		                (
+		                  SELECT GROUP_CONCAT(category_nm SEPARATOR ' / ')
+		                  FROM category
+		                  WHERE category_id IN (
+		                    SELECT category_id
+		                    FROM request100t
+		                    WHERE req_no = A.req_no
+		                  )
+		                ),
+		                ' ',
+		                MIN(A.req_contents)
+		            )
+		        ELSE MIN(A.req_contents)
+		    END AS reqContents,
+	        CASE
+		        WHEN TIMESTAMPDIFF(SECOND, A.REQ_DATE, NOW()) <![CDATA[<=]]> 10 THEN '방금 전'
+		        WHEN TIMESTAMPDIFF(SECOND, A.REQ_DATE, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(SECOND, A.REQ_DATE, NOW()), '초 전')
+		        WHEN TIMESTAMPDIFF(MINUTE, A.REQ_DATE, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(MINUTE, A.REQ_DATE, NOW()), '분 전')
+		        WHEN TIMESTAMPDIFF(HOUR, A.REQ_DATE, NOW()) <![CDATA[<]]> 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, A.REQ_DATE, NOW()), '시간 전')
+		        ELSE CONCAT(TIMESTAMPDIFF(DAY, A.REQ_DATE, NOW()), '일 전')
+    		END AS timeAgo
+	FROM request100t A
+	WHERE A.req_user =  #{reqUser}	
+	GROUP BY A.req_no
+	ORDER BY MIN(A.REQ_DATE) DESC
 	</select>
 	
 	
 	<!--알림 리스트 조회 -->
 	<select id="selectAptPyoungList" parameterType="java.util.HashMap" resultType="UserDTO">
-		SELECT APT_NO mainAptNo
-	      ,PYOUNG mainAptPyoung
-	      ,TYPE type
-	      ,PRICE price
-	      ,UPDOWN_GUBUN updownGubun
-	FROM apt100t
-	WHERE APT_NO = #{aptNo}	
-	AND END_DATE = '99991231'
-	ORDER BY PYOUNG 
+		SELECT apt_no mainAptNo
+	      ,apt_pyoung mainAptPyoung
+	      ,apt_type type
+	      ,real_price price
+	      ,updown_gbn updownGubun
+	FROM IBJ_APT100T
+	WHERE apt_no = #{aptNo}	
+	AND end_date = '99991231'
+	ORDER BY apt_pyoung 
 	</select>
 	
 	<!--토근 리스트 조회 -->
 	<select id="selectTokenList" parameterType="java.util.HashMap" resultType="UserDTO">
-	SELECT TOKEN token
-	FROM prsn000t 
+	SELECT token 
+	FROM IBJ_PRSN000T 
 	WHERE clerk_no IN (
 
 	SELECT clerk_no
@@ -215,80 +233,95 @@ ORDER BY R.REQ_DATE DESC, A.CATEGORY_ID, R.company_id
 	
 	<!--알림 리스트 조회 -->
 	<select id="selectNoticeList" parameterType="java.util.HashMap" resultType="UserDTO">
-	SELECT A.REQ_NO
-      ,A.SEQ
-      ,A.REQ_GUBUN reqGubun
-      ,B.REQ_DATE reqDate
-      ,A.REQ_STATE
-      ,COALESCE(B.estimate_amount, "") AS estimateAmount
-      ,B.estimate_contents estimateContents
-      ,(SELECT category_nm FROM category WHERE category_id = B.category_id) AS categoryNm 
-       ,(SELECT store_name FROM wit_sllr000t WHERE service_item = A.category_id AND sllr_no = B.company_id) AS companyNm
-       ,  CASE
-            WHEN TIMESTAMPDIFF(SECOND, B.REQ_DATE, NOW()) <![CDATA[<=]]> 10 THEN '방금 전'
-            WHEN TIMESTAMPDIFF(SECOND, B.REQ_DATE, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(SECOND, B.REQ_DATE, NOW()), '초 전')
-            WHEN TIMESTAMPDIFF(MINUTE, B.REQ_DATE, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(MINUTE, B.REQ_DATE, NOW()), '분 전')
-            WHEN TIMESTAMPDIFF(HOUR, B.REQ_DATE, NOW()) <![CDATA[<]]> 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, B.REQ_DATE, NOW()), '시간 전')
-            ELSE CONCAT(TIMESTAMPDIFF(DAY, B.REQ_DATE, NOW()), '일 전')
-       END AS timeAgo  
-       	FROM request100t A , request110t B
-	WHERE A.REQ_NO = B.REQ_NO 
-	AND  A.SEQ = B.SEQ
-    AND  B.END_DATE = '99991231'
-    AND B.REQ_STATE = '02'
-	AND A.REQ_USER  = #{reqUser}	
-	ORDER BY B.REQ_DATE DESC , A.category_id
+		SELECT      AA.sllr_no 
+                  , BB.req_no reqNo
+                  , BB.category_id categoryId
+                  , BB.company_id companyId
+                  , BB.seq 
+                  , BB.REQ_DATE  reqDate
+				  , AA.store_name companyNm
+                  , BB.END_DATE
+				  , (SELECT CONCAT(FILE_LOC,FILE_ID)   FROM wit_file000t  where BIZ_CD = 'SR01'   AND BIZ_KEY = AA.sllr_no  AND file_seq ='1' ) FILE_PATH
+				  , BB.estimate_amount estimateAmount
+				  , BB.estimate_contents estimateContents
+				  , BB.REQ_STATE reqState
+				  , DATE_FORMAT(BB.REQ_DATE, '%c월 %e일') AS reqDateInfo
+			 	  , CASE
+		            WHEN TIMESTAMPDIFF(SECOND, BB.REQ_DATE, NOW()) <![CDATA[<=]]> 10 THEN '방금 전'
+		            WHEN TIMESTAMPDIFF(SECOND, BB.REQ_DATE, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(SECOND, BB.REQ_DATE, NOW()), '초 전')
+		            WHEN TIMESTAMPDIFF(MINUTE, BB.REQ_DATE, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(MINUTE, BB.REQ_DATE, NOW()), '분 전')
+		            WHEN TIMESTAMPDIFF(HOUR, BB.REQ_DATE, NOW()) <![CDATA[<]]> 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, BB.REQ_DATE, NOW()), '시간 전')
+		            ELSE CONCAT(TIMESTAMPDIFF(DAY, BB.REQ_DATE, NOW()), '일 전')
+		       END AS timeAgo  
+				,(SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'EST01' AND CD = BB.REQ_STATE )  reqStateNm
+		FROM wit_sllr000t AA , request110t BB 
+		WHERE AA.sllr_no = BB.COMPANY_ID
+		AND BB.REQ_USER = #{reqUser}	
+		AND BB.END_DATE = '99991231'
+		AND BB.REQ_STATE != '10'
+	ORDER BY BB.REQ_DATE DESC
+	
 	</select>
 	
 	<!--알림 리스트 조회 -->
 	<select id="selectUserInfo" parameterType="java.util.HashMap" resultType="UserDTO">
-		SELECT A.CLERK_NO AS clerkNo,
-		       A.KAKAO_ID AS kakaoId,
-		       A.ROLE AS role,
-		       A.NICK_NAME AS nickName,
-		       A.NAME AS name,
-		       A.APT_NO AS mainAptNo,
+	 SELECT A.clerk_no AS clerkNo,
+		       A.sns_id AS kakaoId,
+		       A.role AS role,
+		       A.nick_name AS nickName,
+		       A.apt_no AS mainAptNo,
+		       A.email ,
 		       TT.mainAptNm
-		FROM prsn000t A
+		FROM IBJ_PRSN000T A
 		LEFT JOIN (
-		    SELECT AA.APT_NO,
-		           BB.PYOUNG,
-		           BB.TYPE,
-		           BB.PRICE,
-		           BB.UPDOWN_GUBUN,
-		           AA.APT_NAME,
-		           CONCAT(AA.APT_NAME, ' ', BB.PYOUNG, '평') AS mainAptNm
-		    FROM apt000t AA
-		    JOIN apt100t BB
-		      ON AA.APT_NO = BB.APT_NO
-		    WHERE AA.END_DATE = '99991231'
-		      AND BB.END_DATE = '99991231'
+		    SELECT AA.apt_no,
+		           BB.apt_pyoung,
+		           BB.apt_type,
+		           BB.sale_price,
+		           BB.updown_gbn,
+		           AA.apt_name,
+		           CONCAT(AA.apt_name, ' ', BB.apt_pyoung, '평') AS mainAptNm
+		    FROM IBJ_APT000T AA
+		    JOIN IBJ_APT100T BB
+		      ON AA.apt_no = BB.apt_no
+		    WHERE AA.end_date = '99991231'
+		      AND BB.end_date = '99991231'
 		) TT
-		ON A.APT_NO = TT.APT_NO
-		   AND A.PYOUNG = TT.PYOUNG
-	
-	 <if test="clerkNo != null and clerkNo != ''">
-           WHERE  A.CLERK_NO = #{clerkNo}
-     </if>
+		ON A.apt_no = TT.apt_no
+	   AND A.apt_pyoung = TT.apt_pyoung
+	   
+	    <where>
+		    <trim prefixOverrides="AND">
+		      
+		      <if test="clerkNo != null and clerkNo != ''">
+		        AND A.clerk_no = #{clerkNo}
+		      </if>
+		      
+		      <if test="(clerkNo == null or clerkNo == '') and kakaoId != null and kakaoId != ''">
+		        AND A.sns_id = #{kakaoId}
+		      </if>
+		      
+		    </trim>
+		  </where>
 
 	</select>
 	
 	<!--알림 리스트 조회 -->
 	<select id="selectAptList" parameterType="java.util.HashMap" resultType="java.util.Map">
-		SELECT APT_NO aptNo
-		       ,APT_NAME aptName
-		FROM apt000t 
-		WHERE END_DATE = '99991231'	
+		SELECT apt_no aptNo
+		       ,apt_name aptName
+		FROM IBJ_APT000T 
+		WHERE end_date = '99991231'	
 	</select>
 	
 	<!--알림 리스트 조회 -->
 	<select id="selectMyAptList" parameterType="java.util.HashMap" resultType="java.util.Map">
-		SELECT a.APT_NO aptNo
-		       ,a.APT_NAME aptName
-		FROM apt000t a , prsn000t b
-		WHERE a.APT_NO = b.APT_NO
+		SELECT a.apt_no aptNo
+		       ,a.apt_name aptName
+		FROM IBJ_APT000T a , IBJ_PRSN000T b
+		WHERE a.apt_no = b.apt_no
         AND  b.clerk_no = #{clerkNo}
-        AND  a.END_DATE = '99991231'
+        AND  a.end_date = '99991231'
 	</select>
 	
 	<!-- 사전점검 항목 저장 -->
@@ -335,10 +368,10 @@ ORDER BY R.REQ_DATE DESC, A.CATEGORY_ID, R.company_id
 	<update id="updateRequestState" parameterType="java.util.HashMap">
 		UPDATE request100t
 		  SET req_state = #{reqState}
+		     ,END_REASON = #{endReason}
 		     ,UPDATE_DT =  SYSDATE() 
 		     ,UPDATE_USER = #{reqUser}
 		WHERE REQ_NO =   #{reqNo}
-		AND SEQ =  #{seq}
 	</update>
 	<!-- 사전점검 항목 저장 -->
 	<update id="updateDetailRequestState" parameterType="java.util.HashMap">
@@ -354,40 +387,39 @@ ORDER BY R.REQ_DATE DESC, A.CATEGORY_ID, R.company_id
 	
 	<!-- 사전점검 항목 저장 -->
 	<update id="updateUserInfo" parameterType="java.util.HashMap">
-		UPDATE prsn000t
-		  SET NICK_NAME = #{nickName}
+		UPDATE IBJ_PRSN000T
+		  SET nick_name = #{nickName}
 		   <if test="aptNo != null and aptNo != ''">
-	            ,APT_NO = #{aptNo}
+	            ,apt_no = #{aptNo}
 	        </if>
 		   <if test="pyoung != null and pyoung != ''">
-		      ,PYOUNG = #{pyoung}
+		      ,apt_pyoung = #{pyoung}
 	        </if>
-		     ,UDT_DATE =  SYSDATE() 
-		     ,UDT_USER = #{clerkNo}
+		     ,udt_date =  SYSDATE() 
+		     ,udt_user = #{clerkNo}
 	    <trim prefix="WHERE" prefixOverrides="AND |OR">
 	        <if test="kakaoId != null and kakaoId != ''">
-	            KAKAO_ID = #{kakaoId}
+	            sns_id = #{kakaoId}
 	        </if>
 	        <if test="clerkNo != null and clerkNo != ''">
-	            AND CLERK_NO = #{clerkNo}
+	            AND clerk_no = #{clerkNo}
 	        </if>
     	</trim>
 	</update>
 	
 	<!-- 사전점검 항목 저장 -->
 	<update id="updateTokenOnServer" parameterType="java.util.HashMap">
-		UPDATE prsn000t
-		  SET TOKEN = #{token}
-		     ,UDT_DATE =  SYSDATE() 
-		     ,UDT_USER = #{clerkNo}
+		UPDATE IBJ_PRSN000T
+		  SET token = #{token}
+		     ,udt_date =  SYSDATE() 
+		     ,udt_user = #{clerkNo}
      <if test="kakaoId != null and kakaoId != ''">
-		WHERE KAKAO_ID = #{kakaoId}	
+		WHERE sns_id = #{kakaoId}	
 	</if>
 	<if test="clerkNo != null and clerkNo != ''">
-		WHERE CLERK_NO = #{clerkNo}
+		WHERE clerk_no = #{clerkNo}
 	</if>
 	</update>
-	
 	
 	<!-- 사전점검 항목 저장 -->
 	<insert id="insertHistoryRequest" parameterType="java.util.HashMap">
@@ -401,6 +433,7 @@ ORDER BY R.REQ_DATE DESC, A.CATEGORY_ID, R.company_id
         req_date,
         req_state,
         req_contents,
+        estimate_date,
         estimate_amount,
         estimate_contents        
     ) 
@@ -414,6 +447,7 @@ ORDER BY R.REQ_DATE DESC, A.CATEGORY_ID, R.company_id
         SYSDATE(),  
         #{reqState},     
         #{reqContents},
+        STR_TO_DATE(#{expectedDate}, '%Y%m%d'),  
         #{estimateAmount},
         #{estimateContents}
                 
@@ -424,25 +458,33 @@ ORDER BY R.REQ_DATE DESC, A.CATEGORY_ID, R.company_id
 	<insert id="insertUserInfo" parameterType="java.util.HashMap">
 		
 		 <selectKey keyProperty="clerkNo" resultType="String" order="BEFORE">
-        	SELECT IFNULL(MAX(CAST(CLERK_NO AS UNSIGNED)), 0) + 1
-        	FROM prsn000t
+        	SELECT IFNULL(MAX(CAST(clerk_no AS UNSIGNED)), 0) + 1
+        	FROM IBJ_PRSN000T
   		  </selectKey>
-		INSERT INTO prsn000t (
-		    CLERK_NO, 
-		    KAKAO_ID, 
-		    ROLE, 
-		    NICK_NAME, 
-		    NAME, 
-		    APT_NO,
-		    PYOUNG,
-		    END_DATE, 
-		    REG_DATE, 
-		    REG_USER, 
-		    imageUrl,
-		    TOKEN
+		INSERT INTO IBJ_PRSN000T (
+		    clerk_no, 
+		    sns_id, 
+		    login_sns_type,
+		    email,
+		    agree_gbn,
+		    agree_date,
+		    role, 
+		    nick_name, 
+		    user_name, 
+		    apt_no,
+		    apt_pyoung,
+		    end_date, 
+		    reg_user, 
+		     reg_date, 
+		    img_path,
+		    token
 		) VALUES (
 		      #{clerkNo},
 		      #{kakaoId},
+		      #{loginSnsType},
+		      #{email},
+		       #{agreeGbn},
+		        NOW(),
 		      #{role},
 		      #{nickName},
 		      #{name},
@@ -464,11 +506,11 @@ ORDER BY R.REQ_DATE DESC, A.CATEGORY_ID, R.company_id
         category_id,
         APT_NO,
         req_gubun,
+        type,
         req_user,
         req_date,
         req_state,
-        req_contents,
-        seq
+        req_contents
     ) 
     VALUES (
        #{reqNo},
@@ -476,11 +518,11 @@ ORDER BY R.REQ_DATE DESC, A.CATEGORY_ID, R.company_id
         #{categoryId},
         #{aptNo},
         #{reqGubun},  
+        #{type},  
         #{reqUser}, 
         SYSDATE(),  
         #{reqState},     
-        #{reqContents},        
-        #{seq}
+        #{reqContents}    
     )
 	</insert>
 	

@@ -25,6 +25,13 @@ public interface UserService {
 	public List<UserDTO> getCompanyList(HashMap<String, Object> paramMap);
 	
 	/**
+	 * 회사 상세 리스트
+	 * @param paramMap
+	 * @return List<UserDTO>
+	 */
+	public List<String> selectCompanyIdList(HashMap<String, Object> paramMap);
+	
+	/**
 	 * 신청이력조회 
 	 * @param paramMap
 	 * @return List<UserDTO>
@@ -44,6 +51,14 @@ public interface UserService {
 	 * @return List<UserDTO>
 	 */
 	public List<UserDTO> getNoticeList(HashMap<String, Object> paramMap);
+	
+	/**
+	 * 공구목록
+	 * @param paramMap
+	 * @return List<UserDTO>
+	 */
+	public List<UserDTO> getGonguList(HashMap<String, Object> paramMap);
+	
 	/**
 	 * 아파트_평형 목록
 	 * @param paramMap
@@ -71,6 +86,12 @@ public interface UserService {
 	 * @return int
 	 */
 	public int userCheckCount(HashMap<String, Object> paramMap);
+	/**
+	 * 유저 등록 체크 
+	 * @param param
+	 * @return int
+	 */
+	public int userCheckKakaoCount(HashMap<String, Object> paramMap);
 	
 	/**
 	 * 유저 등록 체크 

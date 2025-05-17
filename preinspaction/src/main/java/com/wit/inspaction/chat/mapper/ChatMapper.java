@@ -26,6 +26,29 @@ public class ChatMapper {
 	public List<ChatDTO> selectChatList(HashMap<String, Object> paramMap) {
 		return sql.selectList(path + "selectChatList", paramMap);
 	}
+	/**
+	 * 채팅내용 조회 
+	 * @return ChatDTO
+	 */
+	public ChatDTO selectChatInfo(HashMap<String, Object> paramMap) {
+		return sql.selectOne(path + "selectChatInfo", paramMap);
+	}
+	
+	/**
+	 * 채팅답변 조회 
+	 * @return <ChatDTO>
+	 */
+	public List<ChatDTO> selectAnswerMessages(HashMap<String, Object> paramMap) {
+		return sql.selectList(path + "selectAnswerMessages", paramMap);
+	}
+	
+	/**
+	 * 채팅생성
+	 * @return ChatDTO
+	 */
+	public String selectRequestChatInfo(HashMap<String, Object> paramMap) {
+		return sql.selectOne(path + "selectRequestChatInfo", paramMap);
+	}
 	
 	/**
 	 * 채팅내용 조회 
@@ -36,6 +59,14 @@ public class ChatMapper {
 	}
 	
 	/**
+	 * 채팅내용 조회 
+	 * @return int
+	 */
+	public int insertChatMain(HashMap<String, Object> paramMap) {
+		return sql.update(path + "insertChatMain", paramMap);
+	}
+	
+	/**
 	 * 채팅글 저장
 	 * @param paramMap
 	 * @return int
@@ -43,4 +74,32 @@ public class ChatMapper {
 	public int insertChatMessage(HashMap<String, Object> paramMap) {
 		return sql.update(path + "insertChatMessage", paramMap);
 	}
+	
+	/**
+	 * 채팅글 저장
+	 * @param paramMap
+	 * @return int
+	 */
+	public int updateRequestStatus(HashMap<String, Object> paramMap) {
+		return sql.update(path + "updateRequestStatus", paramMap);
+	}
+	
+	/**
+	 * 채팅글 저장
+	 * @param paramMap
+	 * @return int
+	 */
+	public int updateChatMessage(HashMap<String, Object> paramMap) {
+		return sql.update(path + "updateChatMessage", paramMap);
+	}
+	
+	/**
+	 * 채팅글 저장
+	 * @param paramMap
+	 * @return int
+	 */
+	public int updateReqChatInfo(HashMap<String, Object> paramMap) {
+		return sql.update(path + "updateReqChatInfo", paramMap);
+	}
+	
 }

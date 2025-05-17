@@ -50,6 +50,16 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
+	public List<String> selectCompanyIdList(HashMap<String, Object> paramMap) {
+		
+		logger.info("UserServiceImpl selectCompanyIdList 호출");
+		
+		List<String> list = userMapper.selectCompanyIdList(paramMap);
+		
+		return list;
+	}
+	
+	@Override
 	public List<UserDTO> getNoticeList(HashMap<String, Object> paramMap) {
 		
 		logger.info("UserServiceImpl getNoticeList 호출");
@@ -58,6 +68,16 @@ public class UserServiceImpl implements UserService{
 		
 		return list;
 	}
+	@Override
+	public List<UserDTO> getGonguList(HashMap<String, Object> paramMap) {
+		
+		logger.info("UserServiceImpl selectGonguList 호출");
+		
+		List<UserDTO> list = userMapper.selectGonguList(paramMap);
+		
+		return list;
+	}
+	
 	@Override
 	public List<UserDTO> getAptPyoungList(HashMap<String, Object> paramMap) {
 		
@@ -132,33 +152,40 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public int saveRequestInfo(HashMap<String, Object> paramMap) {
 		
-		List<String> companyIds = (List<String>) paramMap.get("companyIds");
+		List<String> companyIds = userMapper.selectCompanyIdList(paramMap);
+		
 
 	    int insertCount = 0;
 	    int loopCount = 0;  // 루프 카운터 변수
 	    
 	    String reqNo = userMapper.generateReqNo(paramMap);  // 생성된 req_no 값을 얻기 위한 함수 호출
 
-	    for (String companyId : companyIds) {
-	    	logger.info("companyId==="+companyId);
-	    	 HashMap<String, Object> insertMap = new HashMap<>();
-	    	 insertMap.put("categoryId", paramMap.get("categoryId"));
-	    	 insertMap.put("reqNo", reqNo);
-	    	 insertMap.put("seq",  loopCount++);
-			 insertMap.put("companyId", companyId);
-			 insertMap.put("reqGubun", paramMap.get("reqGubun"));
-			 insertMap.put("reqUser",  paramMap.get("reqUser"));
-			 insertMap.put("reqState", paramMap.get("reqState"));
-			 insertMap.put("reqContents", paramMap.get("reqContents"));
-			 insertMap.put("aptNo",    paramMap.get("aptNo"));
-			 insertMap.put("reqUser",  paramMap.get("reqUser"));
-			 insertMap.put("reqState", paramMap.get("reqState"));
-			 
-	         insertCount += userMapper.insertTotalRequestInfo(insertMap);
+    	 HashMap<String, Object> insertMap = new HashMap<>();
+    	 insertMap.put("categoryId", paramMap.get("categoryId"));
+    	 insertMap.put("reqNo", reqNo);
+    
+		 insertMap.put("reqGubun", paramMap.get("reqGubun"));
+		 insertMap.put("reqUser",  paramMap.get("reqUser"));
+		 insertMap.put("reqState", paramMap.get("reqState"));
+		 insertMap.put("reqContents", paramMap.get("reqContents"));
+		 insertMap.put("aptNo",    paramMap.get("aptNo"));
+		 insertMap.put("reqUser",  paramMap.get("reqUser"));
+		 insertMap.put("reqState", paramMap.get("reqState"));
+		 insertMap.put("expectedDate", paramMap.get("expectedDate"));
+         insertCount += userMapper.insertTotalRequestInfo(insertMap);
+	         
+         for (String companyId : companyIds) {
 	    	logger.info("===================================");
 	    	logger.info("reqNo===insertTotalRequestInfo "+insertMap.get("reqNo"));
+	    	logger.info("reqNo===expectedDate "+insertMap.get("expectedDate"));
+	    	logger.info("seq===seq "+loopCount++);
 	    	logger.info("===================================");
-	    	  insertMap.put("reqNo",  insertMap.get("reqNo"));
+	    	logger.info("===================================");
+	    	logger.info("===================================");
+	    	
+	    	insertMap.put("seq",  loopCount++);
+	    	insertMap.put("companyId", companyId);
+	    	insertMap.put("reqNo",  insertMap.get("reqNo"));
 
 	        insertCount += userMapper.insertHistoryRequest(insertMap);
 	    }
@@ -169,6 +196,13 @@ public class UserServiceImpl implements UserService{
 	public int userCheckCount(HashMap<String, Object> paramMap) {
 		
 		 int userCount = userMapper.userCheckCount(paramMap);
+		
+		return userCount;
+	}
+	@Override
+	public int userCheckKakaoCount(HashMap<String, Object> paramMap) {
+		
+		int userCount = userMapper.userCheckKakaoCount(paramMap);
 		
 		return userCount;
 	}
@@ -185,11 +219,21 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public int updateRequestState(HashMap<String, Object> paramMap) {
+		logger.info("===updateRequestState=======");
+		logger.info("reqNo==="+paramMap.get("reqNo"));
+		logger.info("seq==="+paramMap.get("seq"));
+		logger.info("endReason-===="+paramMap.get("endReason"));
 		
 		return userMapper.updateRequestState(paramMap);
 	}
 	@Override
 	public int updateDetailRequestState(HashMap<String, Object> paramMap) {
+		
+		
+		logger.info("===updateDetailRequestState=======");
+		logger.info("reqNo==="+paramMap.get("reqNo"));
+		logger.info("seq==="+paramMap.get("seq"));
+		logger.info("reqState-===="+paramMap.get("reqState"));
 		
 		return userMapper.updateDetailRequestState(paramMap);
 	}
@@ -225,20 +269,25 @@ public class UserServiceImpl implements UserService{
 			paramMap.put("categoryId", categoryId);
 			
 			List<UserDTO> companyList = userMapper.selectCompanyList(paramMap);
+			
+			 HashMap<String, Object> insertMap = new HashMap<>();
+			 insertMap.put("reqNo", reqNo);
+			 insertMap.put("categoryId", categoryId);
+			 insertMap.put("reqGubun", paramMap.get("reqGubun"));
+			 insertMap.put("reqUser", paramMap.get("reqUser"));
+			 insertMap.put("reqState",     paramMap.get("reqState"));
+			 insertMap.put("reqContents",   paramMap.get("reqContents"));
+			 insertMap.put("aptNo",         paramMap.get("aptNo"));
+			 insertMap.put("expectedDate",  paramMap.get("expectedDate"));
+			 insertMap.put("type",  paramMap.get("type"));
+			
+			 insertCount += userMapper.insertTotalRequestInfo(insertMap);
+				
 			 for (UserDTO company : companyList) {
-				 HashMap<String, Object> insertMap = new HashMap<>();
-				 insertMap.put("reqNo", reqNo);
 				 insertMap.put("companyId", company.getCompanyId());
-				 insertMap.put("categoryId", categoryId);
-				 insertMap.put("reqGubun", paramMap.get("reqGubun"));
-				 insertMap.put("reqUser", paramMap.get("reqUser"));
-				 insertMap.put("reqState", paramMap.get("reqState"));
-				 insertMap.put("reqContents", paramMap.get("reqContents"));
-				 insertMap.put("aptNo",  paramMap.get("aptNo"));
 				 insertMap.put("seq",  loopCount++);
-			     insertCount += userMapper.insertTotalRequestInfo(insertMap);
 			     insertMap.put("reqNo",  insertMap.get("reqNo"));
-		        insertCount += userMapper.insertHistoryRequest(insertMap);
+		         insertCount += userMapper.insertHistoryRequest(insertMap);
 			     
 			    }
 		}

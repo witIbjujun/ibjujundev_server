@@ -171,7 +171,31 @@ public class UserController {
 	}
 	
 	/**
-	 * 회사 목록
+	 * 공구목록
+	 * @param param
+	 * @return List<UserDTO>
+	 */
+	@RequestMapping("/wit/getGonguList")
+	public List<UserDTO> getGonguList(@RequestBody HashMap<String, Object> param) {
+		logger.info("getGonguList 호출");
+		
+		// 파라미터
+		String reqUser = param.get("reqUser") == null ? "" : (String) param.get("reqUser");
+		
+		logger.info("reqUser :: " + reqUser);
+		
+		HashMap<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("reqUser", reqUser);
+		
+		List<UserDTO> noticeList = userService.getGonguList(paramMap);
+		
+		logger.info("공구목록 ::: " + noticeList.size());
+		
+		return noticeList;
+	}
+	
+	/**
+	 * 공동구매 목록
 	 * @param param
 	 * @return List<UserDTO>
 	 */
@@ -214,13 +238,22 @@ public class UserController {
 		paramMap.put("kakaoId", kakaoId);
 		paramMap.put("clerkNo", clerkNo);
 		
-		int cnt = userService.userCheckCount(paramMap);
+		 int cnt = 0;
+		 
+	    if (!kakaoId.isEmpty() && clerkNo.isEmpty()) {
+	        logger.info("▶️ kakaoId 기반 사용자 확인");
+	        cnt = userService.userCheckKakaoCount(paramMap);
+	    } else if (kakaoId.isEmpty() && !clerkNo.isEmpty()) {
+	        logger.info("▶️ clerkNo 기반 사용자 확인");
+	        cnt = userService.userCheckCount(paramMap);
+	    } else {
+	        logger.info("❗ kakaoId와 clerkNo가 모두 없거나 모두 존재 → 기본값 0 반환");
+	    }
 		
 		logger.info("사용자 ::: " + cnt);
 		
 		return cnt;
 	}
-	
 	
 	
 	/**
@@ -242,6 +275,7 @@ public class UserController {
 		String aptNo = param.get("aptNo") == null ? "" : (String) param.get("aptNo");
 		String pyoung = param.get("pyoung") == null ? "" : (String) param.get("pyoung");
 		String token = param.get("token") == null ? "" : (String) param.get("token");
+		String loginGubun = param.get("loginGubun") == null ? "" : (String) param.get("loginGubun");
 		
 		logger.info("kakaoId :: " + kakaoId);
 		logger.info("nickName :: " + nickName);
@@ -252,6 +286,7 @@ public class UserController {
 		logger.info("aptNo :: " + aptNo);
 		logger.info("pyoung :: " + pyoung);
 		logger.info("token :: " + token);
+		logger.info("loginGubun :: " + loginGubun);
 		
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("kakaoId", kakaoId);
@@ -267,20 +302,16 @@ public class UserController {
 		UserDTO userInfo = null;
 		int cnt  = 0;
 		
-		 cnt = userService.userCheckCount(paramMap);
+		if("S".equals(loginGubun)) {
+			cnt = userService.userCheckKakaoCount(paramMap);
+			
+		}else {
+			cnt = userService.userCheckCount(paramMap);
+			
+		}
 		 logger.info("요기 들어갔나?? "+cnt);
 		
-		if(cnt == 0 ) {
-			
-			logger.info("1111111111111 들어갔나?? "+cnt);
-			//계정생성
-	       int prsnInCnt = userService.insertUserInfo(paramMap);
-	       
-	       String clerkNewNo = (String) paramMap.get("clerkNo");
-	       
-	       paramMap.put("clerkNo", clerkNewNo);
-	       logger.info("prsnInCnt :: " + prsnInCnt);
-		}else {
+   	if(cnt > 0 ) {
 			logger.info("222222222222222222 들어갔나?? "+cnt);
 			logger.info("clerkNo=== :: " + (String)paramMap.get("clerkNo"));
 			
@@ -294,9 +325,10 @@ public class UserController {
 				logger.info("444444444444444 들어갔나?? "+clerkNo);
 				searchMap.put("clerkNo", clerkNo);
 			}
-			
+			searchMap.put("kakaoId", kakaoId);
 			
 			logger.info("들어가기전 clerkNo=== :: " + (String)paramMap.get("clerkNo"));
+			logger.info("들어가기전 kakaoId=== :: " + (String)paramMap.get("kakaoId"));
 			
 			userInfo = userService.getUserInfo(searchMap);
 			logger.info("가져왔냐?????clerkNo :: " + userInfo.getClerkNo());
@@ -351,6 +383,8 @@ public class UserController {
 		String aptNo = param.get("aptNo") == null ? "" : (String) param.get("aptNo");
 		String pyoung = param.get("pyoung") == null ? "" : (String) param.get("pyoung");
 		String token = param.get("token") == null ? "" : (String) param.get("token");
+		String loginSnsType = param.get("loginSnsType") == null ? "" : (String) param.get("loginSnsType");
+		String agreeGbn = param.get("agreeGbn") == null ? "" : (String) param.get("agreeGbn");
 		
 		logger.info("kakaoId :: " + kakaoId);
 		logger.info("nickName :: " + nickName);
@@ -361,6 +395,8 @@ public class UserController {
 		logger.info("aptNo :: " + aptNo);
 		logger.info("pyoung :: " + pyoung);
 		logger.info("token :: " + token);
+		logger.info("loginSnsType :: " + loginSnsType);
+		logger.info("agreeGbn :: " + agreeGbn);
 		
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("kakaoId", kakaoId);
@@ -372,6 +408,8 @@ public class UserController {
 		paramMap.put("aptNo", aptNo);
 		paramMap.put("pyoung", pyoung);
 		paramMap.put("token", token);
+		paramMap.put("loginSnsType", loginSnsType);
+		paramMap.put("agreeGbn", agreeGbn);
 		
 			//계정생성
 		int prsnInCnt = userService.insertUserInfo(paramMap);
@@ -483,34 +521,40 @@ public class UserController {
 	    String reqGubun = param.get("reqGubun") == null ? "" : (String) param.get("reqGubun");
 	    String aptNo = param.get("aptNo") == null ? "1" : (String) param.get("aptNo").toString();
 	    String reqContents = param.get("reqContents") == null ? "" : (String) param.get("reqContents");
+	    String expectedDate = param.get("expectedDate") == null ? "" : (String) param.get("expectedDate");
 	    
-	    String reqState = "01";
+	    String reqState = "10";
 	    logger.info("aptNo:: " + aptNo);
 	    logger.info("categoryId 11111:: " + categoryId);
 	    logger.info("reqGubun :: " + reqGubun);
 	    logger.info("reqUser :: " + reqUser);
 	    logger.info("reqContents :: " + reqContents);
+	    logger.info("expectedDate :: " + expectedDate.replace(".", ""));
 
 	    // companyIds 배열 추출
-	    List<String> companyIds = param.get("companyIds") != null ? (List<String>) param.get("companyIds") : new ArrayList<>();
-	    logger.info("선택된 companyIds :: " + companyIds);
-		
+	     
+	    
+	  		
 	    HashMap<String, Object> paramMap = new HashMap<>();
 	    paramMap.put("categoryId", categoryId);
-	    paramMap.put("companyIds", companyIds);  // 선택된 회사 ID 배열 추가
-	    paramMap.put("userIds", companyIds);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("reqGubun", reqGubun);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("reqUser", reqUser);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("reqState", reqState);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("reqContents", reqContents);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("aptNo", aptNo);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("reqContents", reqContents);  // 선택된 회사 ID 배열 추가
+	    paramMap.put("expectedDate", expectedDate.replace(".", ""));  // 선택된 회사 ID 배열 추가
 	    paramMap.put("gubun", "S");  // 선택된 회사 ID 배열 추가
 	    paramMap.put("title", "입주전");  // 선택된 회사 ID 배열 추가
 	    paramMap.put("body", "견적요청이 왔습니다!!!");  // 선택된 회사 ID 배열 추가
 		
 	    int result = userService.saveRequestInfo(paramMap);
-	   
+	    
+	    List<String> companyIds = userService.selectCompanyIdList(paramMap);
+		
+	    paramMap.put("companyIds", companyIds);  // 선택된 회사 ID 배열 추가
+	    paramMap.put("userIds", companyIds);  // 선택된 회사 ID 배열 추가
+	    
 	    int token  = fcmService.sendAppMessage(paramMap);
 	    
 	    logger.info("메세지 갔나??? :: " + token);
@@ -534,11 +578,17 @@ public class UserController {
 	    String reqGubun = param.get("reqGubun") == null ? "" : (String) param.get("reqGubun");
 	    String aptNo = param.get("aptNo") != null ? param.get("aptNo").toString() : "";
 	    String reqContents = param.get("reqContents") == null ? "" : (String) param.get("reqContents");
-	    String reqState = "01";
+	    String expectedDate = param.get("expectedDate") == null ? "" : (String) param.get("expectedDate");
+	    String type = param.get("type") == null ? "" : (String) param.get("type");
+	    
+	    
+	    String reqState = "10";
 	    logger.info("reqGubun :: " + reqGubun);
 	    logger.info("reqUser :: " + reqUser);
 	    logger.info("aptNo11111 :: " + aptNo);
 	    logger.info("reqContents :: " + reqContents);
+	    logger.info("expectedDate :: " + expectedDate);
+	    logger.info("type :: " + type);
 
 	    // companyIds 배열 추출
 	    List<String> categoryIds = param.get("categoryIds") != null ? (List<String>) param.get("categoryIds") : new ArrayList<>();
@@ -551,6 +601,8 @@ public class UserController {
 	    paramMap.put("reqState", reqState);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("reqContents", reqContents);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("aptNo", aptNo);  // 선택된 회사 ID 배열 추가
+	    paramMap.put("type", type);  // 선택된 회사 ID 배열 추가
+	    paramMap.put("expectedDate", expectedDate.replace(".", ""));  // 선택된 회사 ID 배열 추가
 	    paramMap.put("gubun", "S");  // 선택된 회사 ID 배열 추가
 	    paramMap.put("title", "입주전");  // 선택된 회사 ID 배열 추가
 	    paramMap.put("body", "견적요청이 왔습니다!!!");  // 선택된 회사 ID 배열 추가
