@@ -191,6 +191,7 @@
 			, BIZ_CERTIFICATION
 			, CATEGORY_CONTENT
 			, REGI_LEVEL
+			, CLERK_NO
 		) VALUES (
 			  #{storeName}
 			, '99991231'
@@ -215,6 +216,7 @@
 			, #{bizCertification}
 			, #{categoryContent}
 			, #{regiLevel}
+			, #{clerkNo}
 		)
 	</insert>
 	
