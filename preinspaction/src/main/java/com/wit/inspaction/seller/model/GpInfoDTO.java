@@ -1,8 +1,9 @@
 package com.wit.inspaction.seller.model;
 
 public class GpInfoDTO {
-	private String ctgrId;         // 상품명 ID
-	private String endDate;        // 상품명
+	private String ctgrId;         // 상품 ID
+	private String ctgrNm;         // 상품명 ID
+	private String endDate;        // 종료일시
 	private String gpStartDate;    // 공동구매시작일
 	private String gpEndDate;      // 공동구매 종료일
 	private String gpStat;         // 진행상태: 공동구매 진행중 / 조기마감 / 매진
@@ -16,6 +17,7 @@ public class GpInfoDTO {
 	private String udtDate;        // 수정일시
 	private String aptNo;     	   // 아파트번호
 	private String aptName;        // 아파트명
+	private String sllrNo;         // 판매자번호
 	
 	/**
 	 * @return the ctgrId
@@ -28,6 +30,18 @@ public class GpInfoDTO {
 	 */
 	public void setCtgrId(String ctgrId) {
 		this.ctgrId = ctgrId;
+	}
+	/**
+	 * @return the ctgrNm
+	 */
+	public String getCtgrNm() {
+		return ctgrNm;
+	}
+	/**
+	 * @param ctgrNm the ctgrNm to set
+	 */
+	public void setCtgrNm(String ctgrNm) {
+		this.ctgrNm = ctgrNm;
 	}
 	/**
 	 * @return the endDate
@@ -197,6 +211,19 @@ public class GpInfoDTO {
 	public void setAptName(String aptName) {
 		this.aptName = aptName;
 	}
+	/**
+	 * @return the sllrNo
+	 */
+	public String getSllrNo() {
+		return sllrNo;
+	}
+	/**
+	 * @param sllrNo the sllrNo to set
+	 */
+	public void setSllrNo(String sllrNo) {
+		this.sllrNo = sllrNo;
+	}
+
 	
 }
 

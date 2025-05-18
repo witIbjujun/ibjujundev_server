@@ -817,49 +817,40 @@
 
 	<!-- 공동구매 목록 조회 -->
 	<select id="selectGPList" parameterType="java.util.HashMap" resultType="GpInfoDTO">	
-		
-        SELECT A.CTGR_ID AS ctgrId
+		SELECT A.CTGR_ID AS ctgrId
+			   ,A.ctgr_nm AS ctgrNm
 		       , A.END_DATE AS endDate
-		       , A.GP_START_DATE AS gpStartDate
-		       , A.GP_END_DATE AS gpEndDate
-		       , A.GP_STAT AS gpStat
-		       , (SELECT CD_NM FROM wit_code000t C WHERE C.CD_CLS = 'GP01' AND C.CD = A.GP_STAT AND C.APPL_EN_DATE = '99991231235959' ) AS gpStatName
-		       , A.LIMIT_COUNT AS limitCount
-		       , A.REQ_COUNT AS reqCount
-		       , A.SALE_RATE AS saleRate
-		       , A.SALE_AMT AS saleAmt
-		       , A.REG_USER AS regUser
-		       , A.REG_DATE AS regDate
-		       , A.UDT_USER AS udtDate
-		       , A.UDT_DATE AS udtDate
+		       , B.GP_START_DATE AS gpStartDate
+		       , B.GP_END_DATE AS gpEndDate
+		       , B.GP_STAT AS gpStat
+		       , (SELECT CD_NM FROM wit_code000t C WHERE C.CD_CLS = 'GP01' AND C.CD = B.GP_STAT AND C.APPL_EN_DATE = '99991231235959' ) AS gpStatName
+		       , B.LIMIT_COUNT AS limitCount
+		       , B.REQ_COUNT AS reqCount
+		       , B.SALE_RATE AS saleRate
+		       , B.SALE_AMT AS saleAmt
 			   , B.APT_NO AS aptNo
+               , B.SLLR_NO AS sllrNo
                , C.APT_NAME AS aptName
-		FROM   IBJ_CTGR100T A, IBJ_CTRG010T B, IBJ_APT000T C, IBJ_SLLR200T D
+		FROM   IBJ_CTGR000T A, IBJ_CTGR100T B, IBJ_APT000T C
 		WHERE  A.CTGR_ID  = B.CTGR_ID
         AND    B.APT_NO   = C.APT_NO
-        AND    B.APT_NO   = D.APT_NO
-        <if test="ctgrId !=null and !ctgrId.equals('')">
-        	AND    A.CTGR_ID  = #{ctgrId}
-        </if>
-        <if test="aptNo !=null and !aptNo.equals('')">
-			AND    C.APT_NO   = #{aptNo}  
-        </if>
-        <if test="sllrNo !=null and !sllrNo.equals('')">
-            AND    D.SLLR_NO = #{sllrNo}
-		</if>
+        AND    B.sllr_no  = #{sllrNo}
+        AND    A.group_pchs_gbn = 'C'
         AND    A.END_DATE = '99991231'
         AND    B.END_DATE = '99991231'
         AND    C.END_DATE = '99991231'
-        AND    D.END_DATE = '99991231'
 	</select>
 	
 	<!-- 공동구매 상태 값 수정 -->
 	<update id="updateGPstat" parameterType="java.util.HashMap">
 		UPDATE IBJ_CTGR100T
-		SET    GP_STAT = #{gpStat}
+		SET    GP_STAT    = #{gpStat}
 		       , UDT_USER = #{udtUser}
 		       , UDT_DATE = SYSDATE()
-		WHERE  CTGR_ID = #{ctgrId}
+		WHERE  CTGR_ID    = #{ctgrId}
+		AND    APT_NO     = #{aptNo}
+		AND    SLLR_NO    = #{sllrNO}
+		AND    END_DATE   = '99991231'
 	</update>
 
 </mapper>
