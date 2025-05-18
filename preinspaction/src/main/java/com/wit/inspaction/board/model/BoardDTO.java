@@ -14,10 +14,15 @@ public class BoardDTO {
 	private int bordGdCnt;				// 게시판 좋아요 수
 	private int bordErCnt;				// 게시판 싫어요 수
 	private int commentCnt;			// 댓글 수
+	private String cmmtContent;		// 댓글
+	private String cmmtUserNm;		// 댓글 작성자
+	private String cmmtcreDateTxt;	// 댓글 작성시간
 	private String aptNo;				// 아파트ID
+	private String aptNm;				// 아파트명
 	private String sllrNo;				// 판매자ID
 	private String reqNo;				// 신청ID
 	private String ctgrId;				// 카테고리ID
+	private String ctgrNm;				// 카테고리명
 	private String stsfRate;				// 별점
 	private String imagePath;			// 이미지 경로
 	private String reportYn;			// 신고여부
@@ -168,6 +173,42 @@ public class BoardDTO {
 		this.commentCnt = commentCnt;
 	}
 	/**
+	 * @return the cmmtContent
+	 */
+	public String getCmmtContent() {
+		return cmmtContent;
+	}
+	/**
+	 * @param cmmtContent the cmmtContent to set
+	 */
+	public void setCmmtContent(String cmmtContent) {
+		this.cmmtContent = cmmtContent;
+	}
+	/**
+	 * @return the cmmtUserNm
+	 */
+	public String getCmmtUserNm() {
+		return cmmtUserNm;
+	}
+	/**
+	 * @param cmmtUserNm the cmmtUserNm to set
+	 */
+	public void setCmmtUserNm(String cmmtUserNm) {
+		this.cmmtUserNm = cmmtUserNm;
+	}
+	/**
+	 * @return the cmmtcreDateTxt
+	 */
+	public String getCmmtcreDateTxt() {
+		return cmmtcreDateTxt;
+	}
+	/**
+	 * @param cmmtcreDateTxt the cmmtcreDateTxt to set
+	 */
+	public void setCmmtcreDateTxt(String cmmtcreDateTxt) {
+		this.cmmtcreDateTxt = cmmtcreDateTxt;
+	}
+	/**
 	 * @return the aptNo
 	 */
 	public String getAptNo() {
@@ -178,6 +219,18 @@ public class BoardDTO {
 	 */
 	public void setAptNo(String aptNo) {
 		this.aptNo = aptNo;
+	}
+	/**
+	 * @return the aptNm
+	 */
+	public String getAptNm() {
+		return aptNm;
+	}
+	/**
+	 * @param aptNm the aptNm to set
+	 */
+	public void setAptNm(String aptNm) {
+		this.aptNm = aptNm;
 	}
 	/**
 	 * @return the sllrNo
@@ -214,6 +267,18 @@ public class BoardDTO {
 	 */
 	public void setCtgrId(String ctgrId) {
 		this.ctgrId = ctgrId;
+	}
+	/**
+	 * @return the ctgrNm
+	 */
+	public String getCtgrNm() {
+		return ctgrNm;
+	}
+	/**
+	 * @param ctgrNm the ctgrNm to set
+	 */
+	public void setCtgrNm(String ctgrNm) {
+		this.ctgrNm = ctgrNm;
 	}
 	/**
 	 * @return the stsfRate

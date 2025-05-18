@@ -19,15 +19,31 @@
 			, A.BORD_RD_CNT AS bordRdCnt
 			, A.BORD_GD_CNT AS bordGdCnt
 			, A.APT_NO AS aptNo
+			, (SELECT S.APT_NAME FROM IBJ_APT000T S
+	        	WHERE S.APT_NO = A.APT_NO) aptNm
 	        , A.SLLR_NO AS sllrNo
 	        , A.REQ_NO AS reqNo
 	        , A.CTGR_ID AS ctgrId
+	        , (SELECT S.CTGR_NM FROM IBJ_CTGR000T S
+	        	WHERE S.CTGR_ID = A.CTGR_ID) ctgrNm
 	        , (SELECT S.STSF_RATE FROM request110t S
 	        	WHERE S.REQ_NO = A.REQ_NO
 	        	AND S.COMPANY_ID = A.SLLR_NO)  AS stsfRate
 			, (SELECT COUNT(S.CMMT_NO) FROM IBJ_BORD110T S
 				WHERE S.BORD_NO = A.BORD_NO
 				AND S.DEL_YN = 'N') AS commentCnt
+			, (SELECT S.CMMT_CONTENT FROM IBJ_BORD110T S
+				WHERE S.BORD_NO = A.BORD_NO
+				AND S.DEL_YN = 'N'
+				LIMIT 1) AS cmmtContent
+			, (SELECT (SELECT S2.NICK_NAME FROM prsn000t S2 WHERE S2.CLERK_NO = S.CRE_USER) FROM IBJ_BORD110T S
+				WHERE S.BORD_NO = A.BORD_NO
+				AND S.DEL_YN = 'N'
+				LIMIT 1) AS cmmtUserNm
+			, (SELECT DATE_FORMAT(S.CRE_DATE, '%y.%m.%d') FROM IBJ_BORD110T S
+				WHERE S.BORD_NO = A.BORD_NO
+				AND S.DEL_YN = 'N'
+				LIMIT 1) AS cmmtcreDateTxt
 			, A.CRE_USER AS creUser
 			, (SELECT S.NICK_NAME FROM prsn000t S
 				WHERE S.CLERK_NO = A.CRE_USER) AS creUserNm
@@ -41,9 +57,8 @@
 			  END AS creDateTxt
 			, A.UPD_USER AS updUser
 			, A.UPD_DATE AS updDate
-			, (SELECT CONCAT(S.FILE_LOC, S.FILE_ID) FROM wit_file000t S
-				WHERE S.BIZ_KEY = A.BORD_NO
-				LIMIT 1) AS imagePath
+			, (SELECT GROUP_CONCAT(S.FILE_LOC, S.FILE_ID) FROM wit_file000t S
+				WHERE S.BIZ_KEY = A.BORD_NO) AS imagePath
 		FROM 
 			IBJ_BORD100T A
 			LEFT OUTER JOIN IBJ_BORD120T B
