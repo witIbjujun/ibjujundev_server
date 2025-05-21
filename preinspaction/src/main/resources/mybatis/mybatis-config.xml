@@ -35,6 +35,7 @@
     	<typeAlias alias="EstimateCntDTO" type="com.wit.inspaction.seller.model.EstimateCntDTO"/>
     	<typeAlias alias="AptDTO" type="com.wit.inspaction.seller.model.AptDTO"/>
     	<typeAlias alias="GpInfoDTO" type="com.wit.inspaction.seller.model.GpInfoDTO"/>
+    	<typeAlias alias="SubscribePaymentDTO" type="com.wit.inspaction.seller.model.SubscribePaymentDTO"/>
 		
 		<!-- 스케쥴 -->
     	<typeAlias alias="ScheduleInfoDTO" type="com.wit.inspaction.schedule.model.ScheduleInfoDTO"/>

@@ -19,6 +19,7 @@ import com.wit.inspaction.seller.model.EstimateRequestDTO;
 import com.wit.inspaction.seller.model.GpInfoDTO;
 import com.wit.inspaction.seller.model.SellerDTO;
 import com.wit.inspaction.seller.model.SellerSendDTO;
+import com.wit.inspaction.seller.model.SubscribePaymentDTO;
 
 /**
  * 사전점검 서비스 상세
@@ -271,6 +272,25 @@ public class SellerServiceImpl implements SellerService{
 	public int updateGPstat(HashMap<String, Object> param) {
 		return sellerMapper.updateGPstat(param);
 
+	}
+
+	@Override
+	public int insertSubscribePaymentData(HashMap<String, Object> param) {
+		return sellerMapper.insertSubscribePaymentData(param);
+	}
+
+	@Override
+	public List<SubscribePaymentDTO> getSubscribePaymentDataList(HashMap<String, Object> param) {
+		System.out.println("SellerServiceImpl getSubscribePaymentDataList 호출");
+
+		List<SubscribePaymentDTO> list = sellerMapper.selectSubscribePaymentDataList(param);
+
+		return list;
+	}
+
+	@Override
+	public int updatePartnerYn(HashMap<String, Object> param) {
+		return sellerMapper.updatePartnerYn(param);
 	}
 
 }

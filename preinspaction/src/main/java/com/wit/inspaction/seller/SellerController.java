@@ -28,6 +28,7 @@ import com.wit.inspaction.seller.model.EstimateRequestDTO;
 import com.wit.inspaction.seller.model.GpInfoDTO;
 import com.wit.inspaction.seller.model.SellerDTO;
 import com.wit.inspaction.seller.model.SellerSendDTO;
+import com.wit.inspaction.seller.model.SubscribePaymentDTO;
 import com.wit.inspaction.seller.service.SellerService;
 import com.wit.inspaction.user.service.UserService;
 
@@ -675,6 +676,49 @@ public class SellerController {
 		System.out.println("updateGPstat 호출");
 
 		int result = sellerService.updateGPstat(param);
+
+        return result;
+	}
+	
+	/**
+	 * 결제정보 저장
+	 * @param param
+	 * @return int
+	 */
+	@PostMapping("/wit/insertSubscribePaymentData")
+    public int insertSubscribePaymentData(@RequestBody HashMap<String, Object> param) {
+
+		System.out.println("insertSubscribePaymentData 호출");
+		int result = sellerService.insertSubscribePaymentData(param);
+
+        return result;
+    }
+	
+	/**
+	 * 공동구매 목록 조회
+	 * @return List<SubscribePaymentDTO>
+	 */
+	@PostMapping("/wit/getSubscribePaymentDataList")
+    public List<SubscribePaymentDTO> getSubscribePaymentDataList(@RequestBody HashMap<String, Object> param) {
+
+		System.out.println("getSubscribePaymentDataList 호출");
+
+		List<SubscribePaymentDTO> getSubscribePaymentDataList = sellerService.getSubscribePaymentDataList(param);
+
+
+        return getSubscribePaymentDataList;
+    }
+	
+	/**
+	 * 협력업체 인증 정보 수정
+	 * @param paramMap
+	 * @return int
+	 */
+	@PostMapping("/wit/updatePartnerYn")
+	public int updatePartnerYn(@RequestBody HashMap<String, Object> param) {
+		System.out.println("updatePartnerYn 호출");
+
+		int result = sellerService.updatePartnerYn(param);
 
         return result;
 	}

@@ -271,6 +271,10 @@
                , category_content AS categoryContent
                , CASE WHEN rate >= 4.5 THEN 'Y' ELSE 'N' END AS rateFlag
                , CERTIFICATION_YN AS certificationYn
+               , CASE
+                  WHEN certification_yn = 'Y' THEN '협력업체 인증'
+                  ELSE '협력업체 미인증'
+                  END AS certificationNm
                , REGI_LEVEL AS regiLevel
 		FROM   wit_sllr000t A
 		WHERE  A.SLLR_NO = #{sllrNo}
@@ -315,6 +319,12 @@
 		            WHEN TIMESTAMPDIFF(HOUR, BIZ_CERTIFICATION_DATE, NOW()) <![CDATA[<]]> 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, BIZ_CERTIFICATION_DATE, NOW()), '시간 전')
 		            ELSE CONCAT(TIMESTAMPDIFF(DAY, BIZ_CERTIFICATION_DATE, NOW()), '일 전') END  AS bizCertificationDate
 		       , category_content AS categoryContent     
+		       , CERTIFICATION_YN AS certificationYn
+               , CASE
+                  WHEN certification_yn = 'Y' THEN '협력업체 인증'
+                  ELSE '협력업체 미인증'
+                  END AS certificationNm
+                  
 		FROM   wit_sllr000t
 		WHERE  BIZ_CERTIFICATION IS NOT NULL
 		<if test="storeName !=null and !storeName.equals('')">
@@ -325,6 +335,9 @@
 			AND BIZ_CERTIFICATION = #{bizCertification}
 			
 		</if>
+		<if test="certificationYn !=null and !certificationYn.equals('')">
+	          AND CERTIFICATION_YN = #{certificationYn}
+	    </if>
 		ORDER BY  (CASE WHEN BIZ_CERTIFICATION = '01' THEN 0 ELSE 1 END),
                   BIZ_CERTIFICATION_DATE ASC
 	</select>
@@ -754,27 +767,41 @@
 	
 	<!-- 아파트 조회 -->
 	<select id="selectSubscribeAptList" parameterType="java.util.HashMap" resultType="aptDTO">	
-		SELECT A.APT_NO AS aptNo
-		       ,A.APT_NAME AS aptName
-		       ,A.SLLR_NO AS sllrNo
-		       ,A.END_DATE AS endDate
-		       ,A.SSCR_ST_DATE as sscrStDate
-		       ,A.SPL_SIZE as splSize
-		       ,CASE WHEN A.movein_scj_date IS NOT NULL THEN DATE_FORMAT(STR_TO_DATE(A.movein_scj_date, '%Y%m%d'), '%y년 %m월')
-         		ELSE NULL
-   				END AS moveinScjDate
-			   ,CASE WHEN (B.SLLR_NO IS NOT NULL AND B.USE_YN = 'Y') THEN '구독중' ELSE '구독하기' END AS STAT
-			   ,A.SSC_AMT AS sscAmt
-			   ,A.SALE_RATE AS saleRate
-			   ,FLOOR(A.SSC_AMT - (A.SSC_AMT * (CASE WHEN A.SALE_RATE = '' OR A.SALE_RATE IS NULL THEN 0 ELSE A.SALE_RATE END) / 100)) AS saleAmt
-		FROM apt000t A			   
-		LEFT OUTER JOIN sllr100t B ON A.APT_NO = B.APT_NO
-		WHERE  SSCR_ST_DATE IS NOT NULL
-        <if test="searchType !=null and !searchType.equals('')">
-			AND  B.SLLR_NO = #{sllrNo}
-			AND  B.USE_YN = 'Y'
+		SELECT 
+		    A.APT_NO AS aptNo,
+		    A.APT_NAME AS aptName,
+		    A.SLLR_NO AS sllrNo,
+		    A.END_DATE AS endDate,
+		    A.SSCR_ST_DATE as sscrStDate,
+		    A.SPL_SIZE as splSize,
+		    CASE 
+		        WHEN A.movein_scj_date IS NOT NULL 
+		        THEN DATE_FORMAT(STR_TO_DATE(A.movein_scj_date, '%Y%m%d'), '%y년 %m월')
+		        ELSE NULL
+		    END AS moveinScjDate,
+		    CASE 
+		        WHEN B.USE_YN = 'Y' THEN '구독중'
+		        ELSE '구독하기'
+		    END AS STAT,
+		    A.SSC_AMT AS sscAmt,
+		    A.SALE_RATE AS saleRate,
+		    FLOOR(A.SSC_AMT - (A.SSC_AMT * (CASE WHEN A.SALE_RATE = '' OR A.SALE_RATE IS NULL THEN 0 ELSE A.SALE_RATE END) / 100)) AS saleAmt
+		FROM 
+		    apt000t A
+		<if test="searchType !=null and !searchType.equals('')">
+			, sllr100t B 
+        WHERE A.APT_NO = B.APT_NO
+        AND   B.SLLR_NO = #{sllrNo}
 		</if>
-		ORDER BY A.SSCR_ST_DATE, A.APT_NO ASC
+		<if test="searchType == null or searchType.equals('')">
+		LEFT JOIN 
+		    sllr100t B 
+		    ON A.APT_NO = B.APT_NO AND B.SLLR_NO = #{sllrNo}		    
+		</if>    
+
+		ORDER BY 
+		    A.SSCR_ST_DATE, A.APT_NO ASC
+
 	</select>
 	
 	<!-- 아파트 구독 등록 -->
@@ -852,5 +879,68 @@
 		AND    SLLR_NO    = #{sllrNO}
 		AND    END_DATE   = '99991231'
 	</update>
+	
+	
+	<!-- 결제 정보 등록 -->
+	<insert id="insertSubscribePaymentData" parameterType="java.util.HashMap">
+		INSERT INTO wit_kj100t
+		(
+			CUSTOMER_ID,
+			APT_NO,
+			IMP_UID,
+			MERCHANT_UID,
+			PAY_METHOD,
+			AMOUNT,
+			STATUS,
+			CARD_NAME,
+			CARD_NUMBER,
+			PAID_AT,
+			RECEIPT_URL,
+			FAIL_REASON,
+			CRE_DATE
+		)	VALUES	(
+			#{customerId},
+			#{atpNo},
+			#{impUid},
+			#{merchantUid},
+			#{payMethod},
+			#{amount},
+			#{satus},
+			#{cardName},
+			#{cardNumber},
+			#{paidAt},
+			#{receiptUrl},
+			#{failReason},
+			SYSDATE()
+		)
+
+	</insert>
+	
+	<!-- 결재정보 조회 -->
+	<select id="selectSubscribePaymentDataList" parameterType="java.util.HashMap" resultType="SubscribePaymentDTO">	
+		SELECT B.SLLR_NO AS sllrNo
+		       ,B.STORE_NAME AS storeName
+		       ,A.AMOUNT AS amount
+		       ,A.APT_NO AS aptNo
+		       ,D.apt_name AS aptName
+		       ,A.PAY_METHOD AS payMethod
+		       ,A.IMP_UID AS impUid
+		       ,A.MERCHANT_UID AS merchantUid
+		       ,A.STATUS AS status
+		       ,A.FAIL_REASON AS failReason
+		       ,A.RECEIPT_URL AS receiptUrl
+		       ,A.CRE_DATE AS creDate
+		FROM wit_kj100t A, wit_sllr000t B, IBJ_PRSN000T C, IBJ_APT000T D
+		WHERE A.CUSTOMER_ID = B.SLLR_NO
+		AND   B.CLERK_NO = C.CLERK_NO  
+		AND   A.APT_NO = D.APT_NO
+	</select>
+	
+	<!-- 협력업체 인증 수정 -->
+   <update id="updatePartnerYn" parameterType="java.util.HashMap">
+      UPDATE wit_sllr000t SET
+         CERTIFICATION_YN = #{certificationYn}
+      WHERE  SLLR_NO = #{sllrNo}
+   </update>
 
 </mapper>

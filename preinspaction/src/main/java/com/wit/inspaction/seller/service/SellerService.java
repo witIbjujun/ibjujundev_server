@@ -17,6 +17,7 @@ import com.wit.inspaction.seller.model.EstimateRequestDTO;
 import com.wit.inspaction.seller.model.GpInfoDTO;
 import com.wit.inspaction.seller.model.SellerDTO;
 import com.wit.inspaction.seller.model.SellerSendDTO;
+import com.wit.inspaction.seller.model.SubscribePaymentDTO;
 
 /**
  * 사전점검 서비스
@@ -251,5 +252,25 @@ public interface SellerService {
 	 * @return int
 	 */
 	public int updateGPstat(HashMap<String, Object> param);
+	
+	/**
+	 * 결제정보 저장
+	 * @param param
+	 * @return int
+	 */
+	public int insertSubscribePaymentData(HashMap<String, Object> param);
+	
+	/**
+	 * 공동구매 목록 조회
+	 * @return List<SubscribePaymentDTO>
+	 */
+	public List<SubscribePaymentDTO> getSubscribePaymentDataList(HashMap<String, Object> param);
+	
+	/**
+	 * 협력업체 인증 정보 수정
+	 * @param paramMap
+	 * @return int
+	 */
+	public int updatePartnerYn(HashMap<String, Object> param);
 	
 }

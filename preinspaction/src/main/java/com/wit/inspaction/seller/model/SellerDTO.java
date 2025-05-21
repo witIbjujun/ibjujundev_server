@@ -39,6 +39,7 @@ public class SellerDTO {
     private String categoryImage; // 품목이미지
     private String rateFlag; // 품목이미지
     private String certificationYn; // 본인인증여부
+    private String certificationNm; // 본인인증여부 명
     private String regiLevel; // 등록단계
     private String gpCnt;     // 공동구매 요청받은 건수
     
@@ -510,5 +511,17 @@ public class SellerDTO {
 	public void setGpCnt(String gpCnt) {
 		this.gpCnt = gpCnt;
 	}
-
+	/**
+	 * @return the certificationNm
+	 */
+	public String getCertificationNm() {
+		return certificationNm;
+	}
+	/**
+	 * @param certificationNm the certificationNm to set
+	 */
+	public void setCertificationNm(String certificationNm) {
+		this.certificationNm = certificationNm;
+	}
+	
 }
