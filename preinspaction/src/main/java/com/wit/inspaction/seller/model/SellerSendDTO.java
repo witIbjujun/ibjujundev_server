@@ -22,7 +22,20 @@ public class SellerSendDTO {
     private String sllrClerkNo;
     private String estimateDate;			// 최초 작업희망일
     private String estimateProcDate;		// 최종 작업확정일
+    private String chatId;		// 채팅방 ID
     
+	/**
+	 * @return the chatId
+	 */
+	public String getChatId() {
+		return chatId;
+	}
+	/**
+	 * @param chatId the chatId to set
+	 */
+	public void setChatId(String chatId) {
+		this.chatId = chatId;
+	}
 	/**
 	 * @return the sllrNo
 	 */
