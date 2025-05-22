@@ -812,12 +812,14 @@
 			SLLR_NO
 		    , APT_NO
 		    , USE_YN
+		    , END_DATE
 		    , CRE_USER
 		    , CRE_DATE
 		) VALUES (
 			#{sllrNo}
 			, #{aptNo}
 			,'Y'
+			, '99991231'
 			, #{creUser}
 			, SYSDATE()
 		)
