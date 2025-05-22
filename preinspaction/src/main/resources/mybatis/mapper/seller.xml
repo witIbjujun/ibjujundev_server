@@ -900,7 +900,7 @@
 			CRE_DATE
 		)	VALUES	(
 			#{customerId},
-			#{atpNo},
+			#{aptNo},
 			#{impUid},
 			#{merchantUid},
 			#{payMethod},
