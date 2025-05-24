@@ -753,10 +753,10 @@
 			, A.STORE_NAME AS storeName
 			, (SELECT COUNT(S.REQ_NO) FROM request110t S
 				WHERE S.COMPANY_ID = A.SLLR_NO
-				AND S.REQ_STATE = '01') AS waitCnt
+				AND S.REQ_STATE = '10') AS waitCnt
 			, (SELECT COUNT(S.REQ_NO) FROM request110t S
 				WHERE S.COMPANY_ID = A.SLLR_NO
-				AND S.REQ_STATE != '01') AS goingCnt
+				AND S.REQ_STATE != '10') AS goingCnt
 		FROM
 			wit_sllr000t A
 	<if test="storeName !=null and !storeName.equals('')">
@@ -920,24 +920,35 @@
 	</insert>
 	
 	<!-- 결재정보 조회 -->
-	<select id="selectSubscribePaymentDataList" parameterType="java.util.HashMap" resultType="SubscribePaymentDTO">	
-		SELECT B.SLLR_NO AS sllrNo
-		       ,B.STORE_NAME AS storeName
-		       ,A.AMOUNT AS amount
-		       ,A.APT_NO AS aptNo
-		       ,D.apt_name AS aptName
-		       ,A.PAY_METHOD AS payMethod
-		       ,A.IMP_UID AS impUid
-		       ,A.MERCHANT_UID AS merchantUid
-		       ,A.STATUS AS status
-		       ,A.FAIL_REASON AS failReason
-		       ,A.RECEIPT_URL AS receiptUrl
-		       ,A.CRE_DATE AS creDate
-		FROM wit_kj100t A, wit_sllr000t B, IBJ_PRSN000T C, IBJ_APT000T D
-		WHERE A.CUSTOMER_ID = B.SLLR_NO
-		AND   B.CLERK_NO = C.CLERK_NO  
-		AND   A.APT_NO = D.APT_NO
-	</select>
+	<!-- 결재정보 조회 -->
+   <select id="selectSubscribePaymentDataList" parameterType="java.util.HashMap" resultType="SubscribePaymentDTO">   
+      SELECT B.SLLR_NO AS sllrNo
+             ,B.STORE_NAME AS storeName
+             ,A.AMOUNT AS amount
+             ,A.APT_NO AS aptNo
+             ,D.apt_name AS aptName
+             ,A.PAY_METHOD AS payMethod
+             ,A.IMP_UID AS impUid
+             ,A.MERCHANT_UID AS merchantUid
+             ,A.STATUS AS status
+             ,A.FAIL_REASON AS failReason
+             ,A.RECEIPT_URL AS receiptUrl
+             ,A.CRE_DATE AS creDate
+      FROM wit_kj100t A, wit_sllr000t B, IBJ_PRSN000T C, IBJ_APT000T D
+      WHERE A.CUSTOMER_ID = B.SLLR_NO
+      AND   B.CLERK_NO = C.CLERK_NO  
+      AND   A.APT_NO = D.APT_NO
+      <if test="storeName !=null and !storeName.equals('')">
+         AND  B.STORE_NAME LIKE CONCAT('%', #{storeName}, '%')
+      </if>
+      <if test="payMethod !=null and !payMethod.equals('')">
+         AND  A.PAY_METHOD = #{payMethod}
+      </if>
+      <if test="status !=null and !status.equals('')">
+         AND  A.STATUS = #{status}
+      </if>
+      ORDER BY A.CRE_DATE DESC
+   </select>
 	
 	<!-- 협력업체 인증 수정 -->
    <update id="updatePartnerYn" parameterType="java.util.HashMap">
