@@ -10,6 +10,7 @@ public class EstimateCntDTO {
 	private String waitCnt;				// 진행대기 건수
 	private String goingCnt;			// 진행중 건수
 	private String cencelCnt;			// 진행취소 건수
+	private String storeImage;			// 업체 이미지
 	
 	/**
 	 * @return the sllrNo
@@ -70,6 +71,18 @@ public class EstimateCntDTO {
 	 */
 	public void setCencelCnt(String cencelCnt) {
 		this.cencelCnt = cencelCnt;
+	}
+	/**
+	 * @return the storeImage
+	 */
+	public String getStoreImage() {
+		return storeImage;
+	}
+	/**
+	 * @param storeImage the storeImage to set
+	 */
+	public void setStoreImage(String storeImage) {
+		this.storeImage = storeImage;
 	}
 	
 }

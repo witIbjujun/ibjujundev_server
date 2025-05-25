@@ -325,7 +325,7 @@
                   WHEN certification_yn = 'Y' THEN '협력업체 인증'
                   ELSE '협력업체 미인증'
                   END AS certificationNm
-                  
+               , REGI_LEVEL AS regiLevel
 		FROM   wit_sllr000t
 		WHERE  BIZ_CERTIFICATION IS NOT NULL
 		<if test="storeName !=null and !storeName.equals('')">
@@ -757,6 +757,7 @@
 			, (SELECT COUNT(S.REQ_NO) FROM request110t S
 				WHERE S.COMPANY_ID = A.SLLR_NO
 				AND S.REQ_STATE != '10') AS goingCnt
+			, (SELECT CONCAT(B.FILE_LOC, B.FILE_ID) FROM wit_file000t B WHERE BIZ_CD = 'SR01' AND BIZ_KEY = SLLR_NO LIMIT 1 ) AS storeImage
 		FROM
 			wit_sllr000t A
 	<if test="storeName !=null and !storeName.equals('')">
