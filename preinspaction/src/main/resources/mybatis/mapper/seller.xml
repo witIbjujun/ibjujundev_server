@@ -30,10 +30,7 @@
 		WHERE   A.REQ_NO = B.REQ_NO
 		AND 	B.END_DATE = '99991231'
 	    AND 	B.COMPANY_ID  = #{sllrNo}
-	    <if test="1==2">
 	    AND     A.CATEGORY_ID = F.SERVICE_ITEM
-	    </if>
-	    
 	    AND     B.COMPANY_ID = F.SLLR_NO
 	    
 		<if test="basDate !=null and !basDate.equals('')">
@@ -251,8 +248,8 @@
 		       , zip_code AS zipCode
 		       , address1 AS address1
 		       , address2 AS address2
-		       , (select count(req_no) from request110t where req_state = '10' and company_id = A.SLLR_NO) AS reqCnt /* 견적요청내역 건수 */
-               , (select count(req_no) from request110t where req_state not in ('10') and company_id = A.SLLR_NO) AS ingCnt /* 거래내역 건수 */
+		       , (SELECT COUNT(REQ_NO) FROM request110t WHERE REQ_STATE = '10' AND COMPANY_ID = SLLRNO AND REQ_NO NOT LIKE 'G%' ) AS reqCnt /* 견적요청내역 건수 */
+               , (SELECT COUNT(REQ_NO) FROM request110t WHERE REQ_STATE NOT IN ('10') AND COMPANY_ID = SLLRNO AND REQ_NO NOT LIKE 'G%') AS ingCnt /* 거래내역 건수 */
                , (SELECT COUNT(R.REQ_NO) 
                   FROM   request110t R, request100t B
                   WHERE  R.REQ_NO = B.REQ_NO 
@@ -302,8 +299,8 @@
 		       , zip_code AS zipCode
 		       , address1 AS address1
 		       , address2 AS address2
-		       , (select count(req_no) from request110t where req_state = '10' and company_id = sllrNo) AS reqCnt /* 견적요청내역 건수 */
-               , (select count(req_no) from request110t where req_state not in ('10') and company_id = sllrNo) AS ingCnt /* 거래내역 건수 */
+		       , (SELECT COUNT(REQ_NO) FROM request110t WHERE REQ_STATE = '10' AND COMPANY_ID = SLLRNO AND REQ_NO NOT LIKE 'G%' ) AS reqCnt /* 견적요청내역 건수 */
+               , (SELECT COUNT(REQ_NO) FROM request110t WHERE REQ_STATE NOT IN ('10') AND COMPANY_ID = SLLRNO AND REQ_NO NOT LIKE 'G%') AS ingCnt /* 거래내역 건수 */
                , rate AS rate
                , clerk_no AS clerkNo
                , bord_no AS bordNo
@@ -529,6 +526,7 @@
 	<update id="updateBizCertification" parameterType="java.util.HashMap">
 		UPDATE wit_sllr000t
 		SET    BIZ_CERTIFICATION = #{bizCertification}
+		       ,BIZ_CERTIFICATION_DATE = SYSDATE()
 		WHERE  SLLR_NO = #{sllrNo}
 	</update>
 
@@ -839,7 +837,7 @@
 	<!-- 사업자 본인인증 수정 -->
 	<update id="updateCertificationYn" parameterType="java.util.HashMap">
 		UPDATE wit_sllr000t
-		SET    CERTIFICATION_YN = 'Y'
+		SET    CERTIFICATION_YN = 'N'
 			   ,HP = #{hp}
 		       , UPD_USER = #{updUser}
 		       , UPD_DT = SYSDATE()
@@ -866,7 +864,8 @@
 		WHERE  A.CTGR_ID  = B.CTGR_ID
         AND    B.APT_NO   = C.APT_NO
         AND    B.sllr_no  = #{sllrNo}
-        AND    A.group_pchs_gbn = 'C'
+        AND    A.CTGR_ID = #{ctgrId}
+        AND    A.GROUP_PCHS_GBN = 'C'
         AND    A.END_DATE = '99991231'
         AND    B.END_DATE = '99991231'
         AND    C.END_DATE = '99991231'
