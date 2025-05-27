@@ -41,11 +41,8 @@
 			AND C.APT_NO = #{aptNo}
 		</if>
 		<if test="reqGubun ==null or reqGubun.equals('')">
-			<if test="stat == null or stat.equals('')">
-				AND B.REQ_STATE != 10
-			</if>
 			<if test="stat !=null and !stat.equals('')">
-				AND B.REQ_STATE = 10
+				AND B.REQ_STATE = #{stat}
 			</if>
 		</if>
 		
