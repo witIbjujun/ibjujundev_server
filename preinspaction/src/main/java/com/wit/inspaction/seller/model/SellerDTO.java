@@ -42,6 +42,7 @@ public class SellerDTO {
     private String certificationNm; // 본인인증여부 명
     private String regiLevel; // 등록단계
     private String gpCnt;     // 공동구매 요청받은 건수
+    private String gongguCnt; // 공동구매 진행 아파트 건수
     
 	/**
 	 * @return the sllrNo
@@ -523,5 +524,18 @@ public class SellerDTO {
 	public void setCertificationNm(String certificationNm) {
 		this.certificationNm = certificationNm;
 	}
+	/**
+	 * @return the gongguCnt
+	 */
+	public String getGongguCnt() {
+		return gongguCnt;
+	}
+	/**
+	 * @param gongguCnt the gongguCnt to set
+	 */
+	public void setGongguCnt(String gongguCnt) {
+		this.gongguCnt = gongguCnt;
+	}
+
 	
 }

@@ -274,6 +274,7 @@
                   ELSE '협력업체 미인증'
                   END AS certificationNm
                , REGI_LEVEL AS regiLevel
+               , (SELECT COUNT(B.SLLR_NO) FROM IBJ_CTGR100T B WHERE B.SLLR_NO = A.SLLR_NO AND A.SERVICE_ITEM = B.CTGR_ID) AS gongguCnt
 		FROM   wit_sllr000t A
 		WHERE  A.SLLR_NO = #{sllrNo}
 	</select>
