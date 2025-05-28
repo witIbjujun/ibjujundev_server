@@ -21,6 +21,7 @@ public class EstimateRequestDTO {
     private String itmePrice1;				// 견적금액
     private String estimateDate;			// 최초 작업희망일
     private String estimateProcDate;		// 최종 작업확정일
+    private String prsnImageUrl;            // 사용자 이미지 URL 
     
 	/**
 	 * @return the estNo
@@ -250,7 +251,17 @@ public class EstimateRequestDTO {
 	public void setEstimateProcDate(String estimateProcDate) {
 		this.estimateProcDate = estimateProcDate;
 	}
-	
-	
+	/**
+	 * @return the prsnImageUrl
+	 */
+	public String getPrsnImageUrl() {
+		return prsnImageUrl;
+	}
+	/**
+	 * @param prsnImageUrl the prsnImageUrl to set
+	 */
+	public void setPrsnImageUrl(String prsnImageUrl) {
+		this.prsnImageUrl = prsnImageUrl;
+	}
 
 }

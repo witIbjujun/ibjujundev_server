@@ -25,7 +25,8 @@
 				, (SELECT category_nm FROM category WHERE category_id = B.category_id) AS categoryNm 
 				, B.ESTIMATE_AMOUNT itemPrice1
 				, DATE_FORMAT(B.ESTIMATE_DATE, '%Y%m%d') AS estimateDate
-                , DATE_FORMAT(B.ESTIMATE_PROC_DATE, '%Y%m%d') AS estimateProcDate		
+                , DATE_FORMAT(B.ESTIMATE_PROC_DATE, '%Y%m%d') AS estimateProcDate
+                , E.imageUrl AS prsnImageUrl		
 		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E, wit_sllr000t F
 		WHERE   A.REQ_NO = B.REQ_NO
 		AND 	B.END_DATE = '99991231'
@@ -78,6 +79,7 @@
 				, B.estimate_amount itemPrice1
 				, DATE_FORMAT(B.ESTIMATE_DATE, '%Y%m%d') AS estimateDate
                 , DATE_FORMAT(B.ESTIMATE_PROC_DATE, '%Y%m%d') AS estimateProcDate
+                , E.imageUrl AS prsnImageUrl
 		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E, wit_sllr000t F
 		WHERE   A.REQ_NO = B.REQ_NO
 		AND 	B.END_DATE = '99991231'
@@ -113,6 +115,7 @@
                 , DATE_FORMAT(B.ESTIMATE_DATE, '%Y%m%d') AS estimateDate
                 , DATE_FORMAT(B.ESTIMATE_PROC_DATE, '%Y%m%d') AS estimateProcDate
                 , B.chat_id chatId
+                , E.imageUrl AS prsnImageUrl
 		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E, wit_sllr000t F
 		WHERE   A.REQ_NO = B.REQ_NO
 		AND 	B.END_DATE = '99991231'

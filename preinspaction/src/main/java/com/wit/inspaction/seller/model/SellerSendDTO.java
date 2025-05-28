@@ -23,6 +23,8 @@ public class SellerSendDTO {
     private String estimateDate;			// 최초 작업희망일
     private String estimateProcDate;		// 최종 작업확정일
     private String chatId;		// 채팅방 ID
+    private String prsnImageUrl;            // 사용자 이미지 URL 
+
     
 	/**
 	 * @return the chatId
@@ -276,7 +278,18 @@ public class SellerSendDTO {
 	public void setEstimateProcDate(String estimateProcDate) {
 		this.estimateProcDate = estimateProcDate;
 	}
-	
+	/**
+	 * @return the prsnImageUrl
+	 */
+	public String getPrsnImageUrl() {
+		return prsnImageUrl;
+	}
+	/**
+	 * @param prsnImageUrl the prsnImageUrl to set
+	 */
+	public void setPrsnImageUrl(String prsnImageUrl) {
+		this.prsnImageUrl = prsnImageUrl;
+	}
 	
 
 }
