@@ -164,7 +164,7 @@ public class SellerController {
 		// param.put("cashNo", cashNo);
 
 		// stat 02 : 진행대기일 경우 (견적을 발송) 정의된 cash 만큼 캐시 차감해야함
-		if("02".equals(reqState)) {
+		if("20".equals(reqState)) {
 			// result = sellerService.insertCashHistoryInfo(param);
 
 			// 캐시 정보 수정
@@ -220,7 +220,7 @@ public class SellerController {
 	 * @return int
 	 */
 	@PostMapping("/wit/saveSellerProfile")
-    public int saveSellerProfile(@RequestBody HashMap<String, Object> param) {
+    public int saveSellerProfile(@RequestBody HashMap<String, Object> param) throws Exception {
 
 		System.out.println("saveSellerProfile 호출");
 
@@ -233,6 +233,46 @@ public class SellerController {
 		param.put("sllrNo", sllrNo);
 		
 		int result = sellerService.updateSellerBordInfo(param);
+
+		// 사업자 프로필 저장
+		if (result > 0) {
+			
+			// 파일 Json
+			
+			Object fileInfoObj = param.get("fileInfo");
+		    String fileJson;
+
+		    if (fileInfoObj instanceof String) {
+		        fileJson = (String) fileInfoObj;
+		    } else if (fileInfoObj instanceof List) {
+		        ObjectMapper objectMapper = new ObjectMapper();
+		        fileJson = objectMapper.writeValueAsString(fileInfoObj); // List를 JSON 문자열로 변환
+		    } else {
+		        fileJson = ""; // 다른 타입일 경우 빈 문자열
+		    }
+
+			// JSON 문자열을 List<HashMap<String, Object>>로 변환
+			
+			if(!fileJson.isEmpty()) {
+				ObjectMapper objectMapper = new ObjectMapper();
+				List<HashMap<String, Object>> fileList = objectMapper.readValue(fileJson, new TypeReference<List<HashMap<String, Object>>>(){});
+				
+				// 파일 저장
+				for (int i = 0; i < fileList.size(); i++) {
+					
+					HashMap<String, Object> fileInfo = fileList.get(i);
+					fileInfo.put("bizCd", "SR03"); // 파트너 프로필 사진
+					fileInfo.put("bizKey", sllrNo);
+					fileInfo.put("fileType", "01");
+					fileInfo.put("creUser", "테스트");
+					
+					int fileResult = boardServiceImpl.saveFileInfo(fileInfo);
+					
+					System.out.println("파일 등록 ::: " + fileResult);
+				}
+			}
+			
+		}
 
         return sllrNo;
     }

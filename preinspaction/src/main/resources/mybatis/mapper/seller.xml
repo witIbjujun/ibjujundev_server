@@ -242,7 +242,7 @@
 		       , ceo_name AS ceoName
 		       , email AS email
 		       , store_code AS storeCode
-		       , (SELECT CONCAT(B.FILE_LOC, B.FILE_ID) FROM wit_file000t B WHERE BIZ_CD = 'SR01' AND BIZ_KEY = SLLR_NO LIMIT 1 ) AS storeImage
+		       , (SELECT CONCAT(B.FILE_LOC, B.FILE_ID) FROM wit_file000t B WHERE BIZ_CD = 'SR03' AND BIZ_KEY = SLLR_NO LIMIT 1 ) AS storeImage
 		       /* , STORE_IMAGE AS storeImage */
 		       , hp AS hp
 		       , zip_code AS zipCode
@@ -295,7 +295,7 @@
 		       , ceo_name AS ceoName
 		       , email AS email
 		       , store_code AS storeCode
-		       , (SELECT CONCAT(B.FILE_LOC, B.FILE_ID) FROM wit_file000t B WHERE BIZ_CD = 'SR01' AND BIZ_KEY = SLLR_NO LIMIT 1 ) AS storeImage
+		       , (SELECT CONCAT(B.FILE_LOC, B.FILE_ID) FROM wit_file000t B WHERE BIZ_CD = 'SR03' AND BIZ_KEY = SLLR_NO LIMIT 1 ) AS storeImage
 		       , hp AS hp
 		       , zip_code AS zipCode
 		       , address1 AS address1
@@ -756,7 +756,7 @@
 			, (SELECT COUNT(S.REQ_NO) FROM request110t S
 				WHERE S.COMPANY_ID = A.SLLR_NO
 				AND S.REQ_STATE != '10') AS goingCnt
-			, (SELECT CONCAT(B.FILE_LOC, B.FILE_ID) FROM wit_file000t B WHERE BIZ_CD = 'SR01' AND BIZ_KEY = SLLR_NO LIMIT 1 ) AS storeImage
+			, (SELECT CONCAT(B.FILE_LOC, B.FILE_ID) FROM wit_file000t B WHERE BIZ_CD = 'SR03' AND BIZ_KEY = SLLR_NO LIMIT 1 ) AS storeImage
 		FROM
 			wit_sllr000t A
 	<if test="storeName !=null and !storeName.equals('')">
