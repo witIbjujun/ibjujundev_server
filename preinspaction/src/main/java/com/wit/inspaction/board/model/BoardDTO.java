@@ -28,6 +28,7 @@ public class BoardDTO {
 	private String reportYn;			// 신고여부
 	private String creUser;				// 작성자
 	private String creUserNm;			// 작성자명
+	private String profileImg;			// 작성자 이미지 경로
 	private String creDate;				// 작성일자
 	private String creDateTxt;			// 작성일 문구
 	private String updUser;			// 수정자
@@ -339,6 +340,18 @@ public class BoardDTO {
 	 */
 	public void setCreUserNm(String creUserNm) {
 		this.creUserNm = creUserNm;
+	}
+	/**
+	 * @return the profileImg
+	 */
+	public String getProfileImg() {
+		return profileImg;
+	}
+	/**
+	 * @param profileImg the profileImg to set
+	 */
+	public void setProfileImg(String profileImg) {
+		this.profileImg = profileImg;
 	}
 	/**
 	 * @return the creDate

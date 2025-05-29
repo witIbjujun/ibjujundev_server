@@ -8,6 +8,7 @@ public class CommentDTO {
 	private String cmmtContent;
 	private String creUser;
 	private String creUserNm;
+	private String profileImg;
 	private String creDate;
 	private String updUser;
 	private String updDate;
@@ -84,6 +85,18 @@ public class CommentDTO {
 	 */
 	public void setCreUserNm(String creUserNm) {
 		this.creUserNm = creUserNm;
+	}
+	/**
+	 * @return the profileImg
+	 */
+	public String getProfileImg() {
+		return profileImg;
+	}
+	/**
+	 * @param profileImg the profileImg to set
+	 */
+	public void setProfileImg(String profileImg) {
+		this.profileImg = profileImg;
 	}
 	/**
 	 * @return the creDate

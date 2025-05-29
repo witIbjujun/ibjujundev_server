@@ -7,6 +7,7 @@ public class BoardReportDTO {
 	private String bordTypeNm;			// 게시판 타입명
 	private String bordTitle;				// 게시판 제목
 	private String creUserNm;				// 게시판 작성자명
+	private String profileImg;				// 작성자 이미지 경로
 	private String creDateTxt;				// 게시판 작성일자
 	private String reportCnt;				// 게시판 신고건수
 	private String reportReason;			// 신고 사유
@@ -71,6 +72,18 @@ public class BoardReportDTO {
 	 */
 	public void setCreUserNm(String creUserNm) {
 		this.creUserNm = creUserNm;
+	}
+	/**
+	 * @return the profileImg
+	 */
+	public String getProfileImg() {
+		return profileImg;
+	}
+	/**
+	 * @param profileImg the profileImg to set
+	 */
+	public void setProfileImg(String profileImg) {
+		this.profileImg = profileImg;
 	}
 	/**
 	 * @return the creDateTxt
