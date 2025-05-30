@@ -17,7 +17,7 @@
 			    , B.CATEGORY_ID categoryId
 		        , D.CATEGORY_NM AS itemName
 			    , B.REQ_STATE   reqState
-		        , (SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'EST01' AND APPL_EN_DATE = '99991231235959' AND CD = B.REQ_STATE) AS stat
+		        , (SELECT CD_NM FROM wit_code000t WHERE CD_CLS = 'EST02' AND APPL_EN_DATE = '99991231235959' AND CD = B.REQ_STATE) AS stat
 		        , B.estimate_contents content
 			    , B.REQ_USER reqUser
 		        , IF(B.auto_yn = 'Y', '바로 견적서비스 발송', '일반 견적서비스 발송') AS autoYn
@@ -26,7 +26,11 @@
 				, B.ESTIMATE_AMOUNT itemPrice1
 				, DATE_FORMAT(B.ESTIMATE_DATE, '%Y%m%d') AS estimateDate
                 , DATE_FORMAT(B.ESTIMATE_PROC_DATE, '%Y%m%d') AS estimateProcDate
-                , E.imageUrl AS prsnImageUrl		
+                , E.imageUrl AS prsnImageUrl
+                , CASE WHEN A.type = 'S' THEN "Simple 인테리어" 
+		                  WHEN A.type = 'T' THEN "Standard 인테리어" 
+		                  WHEN A.type = 'P' THEN "Premium 인테리어" 
+		                  ELSE "My Choice 인테리어" END AS reqType		
 		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E, wit_sllr000t F
 		WHERE   A.REQ_NO = B.REQ_NO
 		AND 	B.END_DATE = '99991231'
@@ -41,11 +45,17 @@
 			AND A.REQ_GUBUN = 'G'
 			AND C.APT_NO = #{aptNo}
 		</if>
-		<if test="reqGubun ==null or reqGubun.equals('')">
-			<if test="stat !=null and !stat.equals('')">
-				AND B.REQ_STATE = #{stat}
-			</if>
+		<if test="reqGubun == null or reqGubun == ''">
+		  <choose>
+		    <when test="stat != null and stat != ''">
+		      AND B.REQ_STATE = 10
+		    </when>
+		    <otherwise>
+		      AND B.REQ_STATE != 10
+		    </otherwise>
+		  </choose>
 		</if>
+
 		
         AND 	C.APT_NO = A.APT_NO
         AND 	B.CATEGORY_ID = D.CATEGORY_ID
@@ -70,7 +80,7 @@
 			    , B.CATEGORY_ID categoryId
 		        , D.category_nm AS itemName
 			    , B.REQ_STATE   reqState
-		        , (select cd_nm from wit_code000t where cd_cls = 'EST01' and appl_en_date = '99991231235959' and cd = B.REQ_STATE) AS stat
+		        , (select cd_nm from wit_code000t where cd_cls = 'EST02' and appl_en_date = '99991231235959' and cd = B.REQ_STATE) AS stat
 		        , B.estimate_contents content
 			    , B.REQ_USER AS reqUser
 		        , IF(B.auto_yn = 'Y', '바로 견적서비스 발송', '일반 견적서비스 발송') AS autoYn
@@ -80,6 +90,10 @@
 				, DATE_FORMAT(B.ESTIMATE_DATE, '%Y%m%d') AS estimateDate
                 , DATE_FORMAT(B.ESTIMATE_PROC_DATE, '%Y%m%d') AS estimateProcDate
                 , E.imageUrl AS prsnImageUrl
+                , CASE WHEN A.type = 'S' THEN "Simple 인테리어" 
+		                  WHEN A.type = 'T' THEN "Standard 인테리어" 
+		                  WHEN A.type = 'P' THEN "Premium 인테리어" 
+		                  ELSE "My Choice 인테리어" END AS reqType
 		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E, wit_sllr000t F
 		WHERE   A.REQ_NO = B.REQ_NO
 		AND 	B.END_DATE = '99991231'
@@ -105,7 +119,7 @@
 			    , B.CATEGORY_ID categoryId
 		        , D.category_nm AS itemName
 			    , B.REQ_STATE   reqState
-		        , (select cd_nm from wit_code000t where cd_cls = 'EST01' and appl_en_date = '99991231235959' and cd = B.REQ_STATE) AS stat
+		        , (select cd_nm from wit_code000t where cd_cls = 'EST02' and appl_en_date = '99991231235959' and cd = B.REQ_STATE) AS stat
 		        , B.estimate_contents estimateContent
 			    , B.REQ_USER AS reqUser
 		        , E.NICK_NAME AS prsnName
@@ -116,6 +130,10 @@
                 , DATE_FORMAT(B.ESTIMATE_PROC_DATE, '%Y%m%d') AS estimateProcDate
                 , B.chat_id chatId
                 , E.imageUrl AS prsnImageUrl
+                , CASE WHEN A.type = 'S' THEN "Simple 인테리어" 
+		                  WHEN A.type = 'T' THEN "Standard 인테리어" 
+		                  WHEN A.type = 'P' THEN "Premium 인테리어" 
+		                  ELSE "My Choice 인테리어" END AS reqType
 		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E, wit_sllr000t F
 		WHERE   A.REQ_NO = B.REQ_NO
 		AND 	B.END_DATE = '99991231'

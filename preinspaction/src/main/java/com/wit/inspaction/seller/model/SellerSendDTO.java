@@ -24,7 +24,7 @@ public class SellerSendDTO {
     private String estimateProcDate;		// 최종 작업확정일
     private String chatId;		// 채팅방 ID
     private String prsnImageUrl;            // 사용자 이미지 URL 
-
+    private String reqType;                 // 견적 타입
     
 	/**
 	 * @return the chatId
@@ -291,5 +291,16 @@ public class SellerSendDTO {
 		this.prsnImageUrl = prsnImageUrl;
 	}
 	
-
+	/**
+	 * @return the reqType
+	 */
+	public String getReqType() {
+		return reqType;
+	}
+	/**
+	 * @param reqType the reqType to set
+	 */
+	public void setReqType(String reqType) {
+		this.reqType = reqType;
+	}
 }
