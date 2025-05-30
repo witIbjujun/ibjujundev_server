@@ -10,7 +10,9 @@ public class ChatDTO {
 	private String text;				// 점검ID
 	private String chatgubun;				// 점검ID
 	private String imageUrl;				// 점검ID
+	private String userImage;				// 점검ID
 	private String storeName;				// 점검ID
+	private String nickName;				// 점검ID
 	private String authorId; // 작성자 ID
 	private AuthorDTO author; // 새로운 필드 추가
 	private String time; // 새로운 필드 추가
@@ -22,7 +24,10 @@ public class ChatDTO {
 	private String anwCode; // 새로운 필드 추가
 	private String messageId; // 새로운 필드 추가
 	private String targetView; // 새로운 필드 추가
-	
+	private String reqStepState; // 새로운 필드 추가
+	private String reqStateNm; // 새로운 필드 추가
+	private String sllrNo; // 새로운 필드 추가
+	private String storeImgPath; // 새로운 필드 추가
 	private String categoryNm; // 새로운 필드 추가
 	private String categoryId; // 새로운 필드 추가
 	private String estimateAmount; // 새로운 필드 추가
@@ -34,6 +39,60 @@ public class ChatDTO {
 	private String nextReqState; // 다음실행 코드 
 	private String reqBtenNm; // 다음실행 버튼명
 	
+	/**
+	 * @return the nickName
+	 */
+	public String getNickName() {
+		return nickName;
+	}
+	/**
+	 * @param nickName the nickName to set
+	 */
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+	/**
+	 * @return the sllrNo
+	 */
+	public String getSllrNo() {
+		return sllrNo;
+	}
+	/**
+	 * @param sllrNo the sllrNo to set
+	 */
+	public void setSllrNo(String sllrNo) {
+		this.sllrNo = sllrNo;
+	}
+	/**
+	 * @return the storeImgPath
+	 */
+	public String getStoreImgPath() {
+		return storeImgPath;
+	}
+	/**
+	 * @param storeImgPath the storeImgPath to set
+	 */
+	public void setStoreImgPath(String storeImgPath) {
+		this.storeImgPath = storeImgPath;
+	}
+	public String getUserImage() {
+		return userImage;
+	}
+	public void setUserImage(String userImage) {
+		this.userImage = userImage;
+	}
+	public String getReqStepState() {
+		return reqStepState;
+	}
+	public void setReqStepState(String reqStepState) {
+		this.reqStepState = reqStepState;
+	}
+	public String getReqStateNm() {
+		return reqStateNm;
+	}
+	public void setReqStateNm(String reqStateNm) {
+		this.reqStateNm = reqStateNm;
+	}
 	public String getNextReqState() {
 		return nextReqState;
 	}

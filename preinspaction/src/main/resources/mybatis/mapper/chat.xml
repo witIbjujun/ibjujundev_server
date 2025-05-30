@@ -7,17 +7,23 @@
 
 	<!-- 채팅내용 조회-->
 	<select id="selectChatList" parameterType="java.util.HashMap" resultType="ChatDTO">
-		
 		SELECT  
 		    A.CHAT_ID AS chatId,
 		    A.message_id AS messageId,
 		    B.CHAT_NAME AS roomNm,  
+            A.req_user, /*사용자 번호*/
+			P.nick_name nickName, /*사용자 닉네임*/
+            P.img_path userImage, /*사용자 프로필*/
+			S.sllr_no sllrNo, /*판매자 번호*/
+			S.store_name storeName, /*판매자 회사면*/
+            (SELECT CONCAT(FILE_LOC, FILE_ID) FROM wit_file000t WHERE BIZ_KEY = S.sllr_no AND FILE_SEQ = '1' AND BIZ_CD ='SR01') storeImgPath,
             A.reqState ,
             DATE_FORMAT(A.estimateDate, '%Y.%m.%d') estimateDate,
             DATE_FORMAT(A.estimateProcDate, '%Y.%m.%d') estimateProcDate,
 		    DATE_FORMAT(A.reg_date, '%H:%i') AS time,
 		    A.CLERK_NO AS authorId,
 		    COALESCE(P.nick_name, S.store_name) AS storeName,
+		    
 		    CASE 
 		        WHEN A.msg_type = 'image' THEN CONCAT(F.FILE_LOC, F.FILE_ID)
 		        WHEN C.keyword_text IS NOT NULL THEN C.keyword_text
@@ -30,8 +36,6 @@
 		        WHEN A.CLERK_NO = 'system' THEN 'system'
 		        ELSE 'other'
 		    END AS chatgubun,
-		    S.CATEGORY_IMAGE AS imageUrl,
-		    S.store_name AS storeName,
 		    A.msg_code AS msgCode,
 		    C.upp_msg_code AS anwCode,
 		    C.msg_code AS keywordCode,
@@ -42,19 +46,21 @@
     IBJ_CHAT100T B
     JOIN (
     
-			SELECT   B.CHAT_ID
-					,B.message_id 
-					,A.REQ_NO
-					,A.SEQ
-					,B.CLERK_NO
+			SELECT    B.CHAT_ID
+					, B.message_id 
+                    , A.company_id
+                    , A.req_user
+					, A.REQ_NO
+					, A.SEQ
+					, B.CLERK_NO
 					, B.msg_status 
 					, B.msg_type 
 					, A.req_state reqState
                     , B.reg_date
                     , B.chat_gubun
-                    ,B.msg_content  
+                    , B.msg_content  
 					, A.estimate_date estimateDate
-					,A.estimate_proc_date estimateProcDate
+					, A.estimate_proc_date estimateProcDate
 					, B.msg_code 
 		FROM request110t A  , IBJ_CHAT110T B
 		WHERE A.chat_id = B.chat_id
@@ -64,11 +70,11 @@
     ) A ON A.CHAT_ID = B.CHAT_ID
     LEFT JOIN IBJ_CHAT210T C ON A.msg_code = C.msg_code
     LEFT JOIN IBJ_CHAT200T D ON C.msg_code = D.msg_code
-    LEFT JOIN wit_sllr000t S ON S.sllr_no = A.CLERK_NO
+    LEFT JOIN wit_sllr000t S ON S.sllr_no =  A.company_id
     LEFT JOIN (
-        SELECT clerk_no, nick_name 
+        SELECT clerk_no, nick_name , img_path
         FROM IBJ_PRSN000T
-    ) P ON P.clerk_no = A.CLERK_NO
+    ) P ON P.clerk_no = A.req_user
     LEFT JOIN (
         SELECT BIZ_KEY, FILE_LOC, FILE_ID 
         FROM wit_file000t 
@@ -80,8 +86,14 @@
 	    AND (D.target = #{target} OR D.target IS NULL)
 	ORDER BY 
 	    A.message_id
-	    
 	 
+	</select>
+	
+	<select id="selectSllerChatList" parameterType="java.util.HashMap" resultType="ChatDTO">
+	SELECT chat_id chatId
+    FROM request110t 
+	WHERE 	req_no = #{reqNo}
+    AND SEQ = #{seq}
 	</select>
 	
 	<!-- 채팅생성-->
@@ -105,34 +117,7 @@
 		      WHERE CLERK_NO = A.req_user) AS reqName,
 		    A.req_state reqState,
 		    
-	     CASE WHEN A.req_state  ='20' AND #{target}  = 'sellerView' THEN '-'
-              WHEN A.req_state  ='30' AND #{target}  = 'sellerView' THEN '-'
-              WHEN A.req_state  ='40' AND #{target}  = 'sellerView' THEN '50'
-              WHEN A.req_state  ='50' AND #{target}  = 'sellerView' THEN '60'
-              WHEN A.req_state  ='60' AND #{target}  = 'sellerView' THEN '-'
-              WHEN A.req_state  ='20' AND #{target}  = 'userView' THEN '40'
-              WHEN A.req_state  ='30' AND #{target}  = 'userView' THEN '40'
-              WHEN A.req_state  ='40' AND #{target}  = 'userView' THEN '-'
-              WHEN A.req_state  ='50' AND #{target}  = 'userView' THEN '-'
-              WHEN A.req_state  ='60' AND #{target}  = 'userView' THEN '70'
-              WHEN A.req_state  ='70'  THEN '-'
-         END nextReqState,
-         
-
-	    CASE WHEN A.req_state  ='20' AND #{target}  = 'sellerView' THEN '진행대기'
-	         WHEN A.req_state  ='30' AND #{target}  = 'sellerView' THEN '진행대기'
-			 WHEN A.req_state  ='40' AND #{target} = 'sellerView' THEN '작업진행'
-	         WHEN A.req_state  ='50' AND #{target}  = 'sellerView' THEN '작업완료'
-			 WHEN A.req_state  ='60' AND #{target}  = 'sellerView' THEN '최종점검중'
-			 WHEN A.req_state  ='20' AND #{target}  = 'userView' THEN '진행요청'
-			 WHEN A.req_state  ='30' AND #{target}  = 'userView' THEN '진행요청'
-	         WHEN A.req_state ='40'  AND #{target}  = 'userView' THEN '작업대기'
-			 WHEN A.req_state  ='50' AND #{target}  = 'userView' THEN '작업중'
-			 WHEN A.req_state  ='60' AND #{target}  = 'userView' THEN '최종완료'
-	         WHEN A.req_state  ='70' THEN '완료'
-	         END reqBtenNm,
-         
-		    CONCAT(DATE_FORMAT(A.estimate_date, '%Y년 %c월 %e일 '), 
+	        CONCAT(DATE_FORMAT(A.estimate_date, '%Y년 %c월 %e일 '), 
 		        CASE DAYOFWEEK(A.estimate_date)
 		          WHEN 1 THEN '(일)'
 		          WHEN 2 THEN '(월)'
@@ -153,6 +138,24 @@
 		          WHEN 6 THEN '(금)'
 		          WHEN 7 THEN '(토)'
 		        END) AS estimateProcDate,
+		        
+		      CASE WHEN A.req_state ='20' THEN  '10'
+                 WHEN A.req_state ='30' THEN  '10'
+                 WHEN A.req_state ='40' THEN  '20'
+                 WHEN A.req_state ='50' THEN  '20'
+                 WHEN A.req_state ='60' THEN  '30'
+                 WHEN A.req_state ='70' THEN  '40'
+                 END reqStepState ,
+                 
+            
+            CASE WHEN A.req_state ='20' THEN  '협의'
+                 WHEN A.req_state ='30' THEN  '협의'
+                 WHEN A.req_state ='40' THEN  '작업중'
+                 WHEN A.req_state ='50' THEN  '작업중'
+                 WHEN A.req_state ='60' THEN  '작업완료'
+                 WHEN A.req_state ='70' THEN  '최종완료'
+                 END reqStateNm ,
+		     A.company_id sllrNo,
 		    (SELECT store_name 
 		       FROM wit_sllr000t 
 		      WHERE sllr_no = A.company_id) AS storeName
@@ -180,7 +183,7 @@
 	<!-- 사전점검 항목 저장 -->
 	<update id="updateRequestStatus" parameterType="java.util.HashMap">
 		UPDATE request110t
-		    SET  req_state =  #{upState}
+		    SET  req_state =  #{reqState}
 		WHERE REQ_NO = #{reqNo}
 		AND SEQ = #{seq}
 	</update>

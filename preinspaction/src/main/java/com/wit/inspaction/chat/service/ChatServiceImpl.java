@@ -31,6 +31,16 @@ public class ChatServiceImpl implements ChatService{
 		return list;
 	}
 	
+	@Override
+	public List<ChatDTO> getSllerChatList(HashMap<String, Object> paramMap) {
+		
+		System.out.println("채티팅 selectSllerChatList 호출");
+		
+		List<ChatDTO> list = chatMapper.selectSllerChatList(paramMap);
+		
+		return list;
+	}
+	
 	/**
 	 * 채팅내용 조회 
 	 */

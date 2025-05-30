@@ -16,6 +16,11 @@ public interface ChatService {
 	 * @return List<ChatDTO>
 	 */
 	public List<ChatDTO> getChatList(HashMap<String, Object> paramMap);
+	/**
+	 * 채팅내용 판매차 첫조회 
+	 * @return List<ChatDTO>
+	 */
+	public List<ChatDTO> getSllerChatList(HashMap<String, Object> paramMap);
 	
 	/**
 	 * 채팅정보 조회 

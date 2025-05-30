@@ -94,11 +94,11 @@ public class ChatController {
 		List<ChatDTO> chatList = chatService.getChatList(param);
 		
 		System.out.println("들어왔나건이 몇개고=="+chatList.size());
-		for (ChatDTO dto : chatList) {
-		   System.out.println("들어왔나??????");
-		    System.out.println(dto);
+		
+		//판매자는 첫채팅시 건이 없음
+		if(chatList.size() == 0 ) {
+		   chatList = chatService.getSllerChatList(param);
 		}
-    	
 		
         return chatList;
     }
@@ -172,7 +172,7 @@ public class ChatController {
 	    System.out.println("type === " + (String) param.get("type"));
 	    System.out.println("systemGubun === " + systemGubun);
 	    System.out.println("messageId === " + messageId);
-	    System.out.println("anwCode === " + (String) param.get("anwCode"));
+	    System.out.println("anwCode === " + anwCode);
 	    System.out.println("inputGubun === " + inputGubun);
 	    
 	    HashMap<String, Object> paramMap = new HashMap<String, Object>();
@@ -225,17 +225,34 @@ public class ChatController {
 	    /**
 	     * 사용자 입력시 신청 상태값 업데이트 
 	     */
-	    System.out.println("inputGubun===== "+inputGubun);
-	    System.out.println("inputGubun===== "+inputGubun);
-	    System.out.println("inputGubun===== "+inputGubun);
+	    System.out.println("anwCode===== "+anwCode);
+	    System.out.println("msgCode===== "+msgCode);
 	    
-	    if("MSG_005".equals(msgCode) ) {  /*잔업진행*/
+	    if("MSG_005".equals(msgCode) ||  "MSG_006".equals(msgCode) || "MSG_007".equals(msgCode)) {  /*잔업진행*/
+	    	
 			HashMap<String, Object> updateParamMap = new HashMap<String, Object>();
 			updateParamMap.put("reqNo", reqNo);
 			updateParamMap.put("seq", seq);
-			updateParamMap.put("upState", "50");  /*작업진행*/
 			
-			  System.out.println("들어온건가???===== ");
+			  if("MSG_005".equals(msgCode) && "MSG_006".equals(anwCode)) {
+				  System.out.println("작업진행한다!!!");
+				  updateParamMap.put("upState", "50");  /*작업진행*/
+			  }else
+			  /*🏁 최종 작업이 완료되었습니다!*/
+			  if("MSG_006".equals(msgCode) && "MSG_007".equals(anwCode)) {
+				  System.out.println("최종 작업이 완료되었습니다!");
+				  updateParamMap.put("upState", "60");  /*작업완료*/
+			  }else  
+				  /*🏁 최종 작업이 완료되었습니다!*/
+			   if("MSG_007".equals(msgCode) && "END".equals(anwCode)) {
+				   System.out.println("종 작업이 완료되 확인 ");
+				   updateParamMap.put("upState", "70");  /*최종완료*/
+			  }else
+				  /*⭐ 업체 후기 등록*/
+			    if("MSG_007".equals(msgCode) && "BOARD".equals(anwCode)) {
+			    	System.out.println("업체후기 등록");
+					   updateParamMap.put("upState", "70");  /*최종완료*/
+			  }
 	    	
 			 System.out.println("reqNo===== "+updateParamMap.get("reqNo"));
 			 System.out.println("seq===== "+updateParamMap.get("seq"));
@@ -252,16 +269,19 @@ public class ChatController {
 	    
 	 // 🎯 추가: answers 값이 있으면 system 메시지 자동 저장
 	    if (anwCode != null && !anwCode.isEmpty()) {
-        	HashMap<String, Object> systemMessage = new HashMap<>();
-            systemMessage.put("chatId", chatId);
-            systemMessage.put("clerkNo", "system");
-            systemMessage.put("messageContent", "");
-            systemMessage.put("messageStatus", "seen");
-            systemMessage.put("messageType", "link");
-            systemMessage.put("chatgubun", "system");
-            systemMessage.put("msgCode", anwCode);
-
-            chatService.saveChatMessage(systemMessage); // system 메시지 저장
+	    	   if (!"BOARD".equals(anwCode) && !"END".equals(anwCode)) {
+	    		   HashMap<String, Object> systemMessage = new HashMap<>();
+	    		   systemMessage.put("chatId", chatId);
+	    		   systemMessage.put("clerkNo", "system");
+	    		   systemMessage.put("messageContent", "");
+	    		   systemMessage.put("messageStatus", "seen");
+	    		   systemMessage.put("messageType", "link");
+	    		   systemMessage.put("chatgubun", "system");
+	    		   systemMessage.put("msgCode", anwCode);
+	    		   
+	    		   chatService.saveChatMessage(systemMessage); // system 메시지 저장
+	    		   
+	    	   }
 	    }
 	    
 	    System.out.println("등록성공???? === " + result);

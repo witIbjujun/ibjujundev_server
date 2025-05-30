@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wit.inspaction.board.model.BoardDTO;
 import com.wit.inspaction.board.service.BoardServiceImpl;
+import com.wit.inspaction.common.FcmService;
 import com.wit.inspaction.preinspaction.PreinspactionController;
 import com.wit.inspaction.seller.model.AptDTO;
 import com.wit.inspaction.seller.model.CashDTO;
@@ -46,6 +47,9 @@ public class SellerController {
 	
 	@Autowired
 	private BoardServiceImpl boardServiceImpl;
+	
+	@Autowired
+	private FcmService fcmService;
 
 	/**
 	 * 견적리스트 조회
@@ -210,6 +214,22 @@ public class SellerController {
 				
 			}
 		}
+		
+		  HashMap<String, Object> paramMap = new HashMap<>();
+		  paramMap.put("title", "입주전");  // 타이틀
+		  paramMap.put("body", "요청하신 견적이 도착했습니다!!");  // 내용
+		  paramMap.put("screen", "EstimateScreen");        // 이동할 화면
+		  paramMap.put("gubun", "U");         // 이동할 화면
+		  paramMap.put("reqNo", reqNo);         // 이동할 화면
+		  paramMap.put("seq", seq);         // 이동할 화면
+		  int token  = fcmService.sendAppMessage(paramMap);
+		  
+			logger.info(":::::::::::::::::::::::::::::::::::::::");
+			logger.info("토큰 호출  : " + token);
+			logger.info(":::::::::::::::::::::::::::::::::::::::");
+			
+
+		  
 
         return result;
     }

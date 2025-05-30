@@ -26,6 +26,15 @@ public class ChatMapper {
 	public List<ChatDTO> selectChatList(HashMap<String, Object> paramMap) {
 		return sql.selectList(path + "selectChatList", paramMap);
 	}
+	
+	/**
+	 * 채팅내용 조회 
+	 * @return <ChatDTO>
+	 */
+	public List<ChatDTO> selectSllerChatList(HashMap<String, Object> paramMap) {
+		return sql.selectList(path + "selectSllerChatList", paramMap);
+	}
+	
 	/**
 	 * 채팅내용 조회 
 	 * @return ChatDTO

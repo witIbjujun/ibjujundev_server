@@ -42,10 +42,17 @@ public class FcmService {
     	 if("S".equals(gubun)) {  //대상이 판매자
     		 paramMap.put("companyIds", companyIds);
     		 tokenList =  userService.getTokenList(paramMap);
-    	 }else {
     		 
+    	 }else if("U".equals(gubun)) {  //대상이 사용자
+    		 
+    		  logger.info("선택된 gubun ::" + paramp.get("gubun").toString()+"===");
+    		  logger.info("선택된 reqNo ::" + paramp.get("reqNo").toString()+"===");
+    		  logger.info("선택된 seq ::" + paramp.get("seq").toString()+"===");
+    		 
+    		 tokenList =  userService.getReqTokenList(paramp);
     	 }
     	
+    	  logger.info("선택된 tokenList length ::" + tokenList.size()+"===");
  		 
  		 // 메시지 발송 결과 변수
  	    int successCount = 0;
@@ -55,6 +62,7 @@ public class FcmService {
  	       logger.info("선택된 token ::" + token+"===");
  	       logger.info("선택된 title ::" + paramp.get("title").toString()+"===");
  	       logger.info("선택된 body ::" + paramp.get("body").toString()+"===");
+ 	       logger.info("선택된 screen ::" + paramp.get("screen").toString()+"===");
  	        if (token == null || token.isEmpty()) {
  	            logger.warn("FCM 토큰이 없는 사용자: " + user.getClerkNo());
  	            continue; // 토큰이 없는 경우 건너뜀
@@ -66,6 +74,7 @@ public class FcmService {
  	        	        .setToken(token)
  	        	        .putData("title", paramp.get("title").toString()) // Optional: Data 메시지
  	        	        .putData("body", paramp.get("body").toString())
+ 	        	        .putData("screen", paramp.get("screen").toString())
  	        	        .setNotification(Notification.builder()
  	        	                .setTitle(paramp.get("title").toString())
  	        	                .setBody(paramp.get("body").toString())
