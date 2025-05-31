@@ -723,7 +723,7 @@
 		SELECT 
 			CONCAT(S.FILE_LOC, S.FILE_ID) AS imagePath
 		FROM wit_file000t S
-		WHERE S.BIZ_CD = #{bizCd}
+		WHERE S.BIZ_CD IN ('SR01', 'SR02', 'SR03')
 		AND S.BIZ_KEY = #{bizKey}
 		ORDER BY S.FILE_SEQ
 	</select>
