@@ -293,6 +293,7 @@
                   END AS certificationNm
                , REGI_LEVEL AS regiLevel
                , (SELECT COUNT(B.SLLR_NO) FROM IBJ_CTGR100T B WHERE B.SLLR_NO = A.SLLR_NO AND A.SERVICE_ITEM = B.CTGR_ID) AS gongguCnt
+               , (SELECT CONCAT(B.FILE_LOC, B.FILE_ID) FROM wit_file000t B WHERE BIZ_CD = 'SR02' AND BIZ_KEY = SLLR_NO LIMIT 1 ) AS bizCertificationImage
 		FROM   wit_sllr000t A
 		WHERE  A.SLLR_NO = #{sllrNo}
 	</select>
@@ -342,6 +343,7 @@
                   ELSE '협력업체 미인증'
                   END AS certificationNm
                , REGI_LEVEL AS regiLevel
+               , (SELECT CONCAT(B.FILE_LOC, B.FILE_ID) FROM wit_file000t B WHERE BIZ_CD = 'SR02' AND BIZ_KEY = SLLR_NO LIMIT 1 ) AS bizCertificationImage
 		FROM   wit_sllr000t
 		WHERE  BIZ_CERTIFICATION IS NOT NULL
 		<if test="storeName !=null and !storeName.equals('')">

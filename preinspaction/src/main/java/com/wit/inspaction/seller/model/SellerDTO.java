@@ -33,8 +33,7 @@ public class SellerDTO {
     private String bizCertification;    // 사업자인증 상태
     private String bizCertificationNm;  // 사업자인증 상태명
     private String bizCertificationDate;    // 사업자인증 요청일
-    private String imagePbizCertificationDate;    // 사업자인증 요청일
-    private String imagePath; // 
+    private String bizCertificationImage; // 사업자등록증 이미지
     private String categoryContent; // 품목설명
     private String categoryImage; // 품목이미지
     private String rateFlag; // 품목이미지
@@ -417,30 +416,6 @@ public class SellerDTO {
 		this.bizCertificationDate = bizCertificationDate;
 	}
 	/**
-	 * @return the imagePbizCertificationDate
-	 */
-	public String getImagePbizCertificationDate() {
-		return imagePbizCertificationDate;
-	}
-	/**
-	 * @param imagePbizCertificationDate the imagePbizCertificationDate to set
-	 */
-	public void setImagePbizCertificationDate(String imagePbizCertificationDate) {
-		this.imagePbizCertificationDate = imagePbizCertificationDate;
-	}
-	/**
-	 * @return the imagePath
-	 */
-	public String getImagePath() {
-		return imagePath;
-	}
-	/**
-	 * @param imagePath the imagePath to set
-	 */
-	public void setImagePath(String imagePath) {
-		this.imagePath = imagePath;
-	}
-	/**
 	 * @return the categoryContent
 	 */
 	public String getCategoryContent() {
@@ -535,6 +510,18 @@ public class SellerDTO {
 	 */
 	public void setGongguCnt(String gongguCnt) {
 		this.gongguCnt = gongguCnt;
+	}
+	/**
+	 * @return the bizCertificationImage
+	 */
+	public String getBizCertificationImage() {
+		return bizCertificationImage;
+	}
+	/**
+	 * @param bizCertificationImage the bizCertificationImage to set
+	 */
+	public void setBizCertificationImage(String bizCertificationImage) {
+		this.bizCertificationImage = bizCertificationImage;
 	}
 
 	
