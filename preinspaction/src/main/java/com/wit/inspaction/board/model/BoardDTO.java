@@ -1,7 +1,7 @@
 package com.wit.inspaction.board.model;
 
 public class BoardDTO {
-
+	
 	private String bordNo;				// 게시판 번호
 	private String bordName;			// 게시판 이름
 	private String bordKey;			// 게시판 KEY
@@ -24,6 +24,7 @@ public class BoardDTO {
 	private String ctgrId;				// 카테고리ID
 	private String ctgrNm;				// 카테고리명
 	private String stsfRate;				// 별점
+	private String bizCd;				// 이미지 타입
 	private String imagePath;			// 이미지 경로
 	private String reportYn;			// 신고여부
 	private String creUser;				// 작성자
@@ -292,6 +293,18 @@ public class BoardDTO {
 	 */
 	public void setStsfRate(String stsfRate) {
 		this.stsfRate = stsfRate;
+	}
+	/**
+	 * @return the bizCd
+	 */
+	public String getBizCd() {
+		return bizCd;
+	}
+	/**
+	 * @param bizCd the bizCd to set
+	 */
+	public void setBizCd(String bizCd) {
+		this.bizCd = bizCd;
 	}
 	/**
 	 * @return the imagePath

@@ -722,9 +722,9 @@
 	<select id="selectSellerDetailImageList" parameterType="java.util.HashMap" resultType="BoardDTO">
 		SELECT 
 			CONCAT(S.FILE_LOC, S.FILE_ID) AS imagePath
+			, S.BIZ_CD AS bizCd
 		FROM wit_file000t S
-		WHERE S.BIZ_CD IN ('SR01', 'SR02', 'SR0')
-		AND S.BIZ_KEY = #{bizKey}
+		WHERE S.BIZ_KEY = #{bizKey}
 		ORDER BY S.BIZ_CD, S.FILE_SEQ
 	</select>
 	
