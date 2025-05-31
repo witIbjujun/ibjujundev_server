@@ -723,9 +723,9 @@
 		SELECT 
 			CONCAT(S.FILE_LOC, S.FILE_ID) AS imagePath
 		FROM wit_file000t S
-		WHERE S.BIZ_CD IN ('SR01', 'SR02', 'SR03')
+		WHERE S.BIZ_CD IN ('SR01', 'SR02', 'SR0')
 		AND S.BIZ_KEY = #{bizKey}
-		ORDER BY S.FILE_SEQ
+		ORDER BY S.BIZ_CD, S.FILE_SEQ
 	</select>
 	
 	<!-- 포인트 리스트 조회 -->
