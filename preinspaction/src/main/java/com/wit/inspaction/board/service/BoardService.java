@@ -131,6 +131,13 @@ public interface BoardService {
 	 */
 	public int updateStarRateInfo(HashMap<String, Object> paramMap);
 	
+	/**
+	 * 업체 후기 총별점 변경
+	 * @param paramMap
+	 * @return int
+	 */
+	public int updateAllRateInfo(HashMap<String, Object> paramMap);
+	
 	
 	//------------------------------------------------------------------------------------------------------------------------------------------------
 	

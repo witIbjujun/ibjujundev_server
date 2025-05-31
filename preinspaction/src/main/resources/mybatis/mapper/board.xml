@@ -445,4 +445,29 @@
 		AND   COMPANY_ID = #{sllrNo}
 	</update>
 	
+	<!-- 업체 총별점 수정 -->
+	<update id="updateAllRateInfo" parameterType="java.util.HashMap">
+		UPDATE wit_sllr000t SET
+			rate = (
+						SELECT 
+							CASE
+								WHEN S2.allRate = 0 THEN '0'
+								WHEN S2.cnt = 0 THEN '0'
+								ELSE ROUND(S2.allRate / S2.cnt, 1)
+							END AS RATE
+						FROM
+							(
+								SELECT
+									IFNULL(SUM(IFNULL(S1.STSF_RATE, 0)), 0) AS allRate
+									, COUNT(S1.REQ_NO) AS cnt
+								FROM
+									request110t S1
+								WHERE S1.COMPANY_ID = #{sllrNo}
+								AND S1.STSF_RATE IS NOT NULL
+							) S2
+						)
+		WHERE SLLR_NO = #{sllrNo}
+		AND END_DATE = '99991231'
+	</update>
+	
 </mapper>

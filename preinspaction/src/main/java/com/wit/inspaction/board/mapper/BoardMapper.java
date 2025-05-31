@@ -170,6 +170,15 @@ public class BoardMapper {
 		return sql.update(path + "updateStarRateInfo", paramMap);
 	}
 	
+	/**
+	 * 업체 후기 총별점 변경
+	 * @param paramMap
+	 * @return int
+	 */
+	public int updateAllRateInfo(HashMap<String, Object> paramMap) {
+		return sql.update(path + "updateAllRateInfo", paramMap);
+	}
+	
 	//------------------------------------------------------------------------------------------------------------------------------------------------
 
 	/**

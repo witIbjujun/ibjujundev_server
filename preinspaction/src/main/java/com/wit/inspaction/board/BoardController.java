@@ -84,8 +84,11 @@ public class BoardController {
 			if (!"".equals(bordType)) {
 				bordType = bordType.substring(0,2);
 				if ("UH".equals(bordType)) {
-					int updateResult = boardService.updateStarRateInfo(paramMap);
-					logger.info("별점 등록 ::: " + updateResult);
+					int updateResult1 = boardService.updateStarRateInfo(paramMap);
+					logger.info("별점 등록 ::: " + updateResult1);
+					
+					int updateResult2 = boardService.updateAllRateInfo(paramMap);
+					logger.info("별점 총평균등록 ::: " + updateResult2);
 				}
 			}
 			
