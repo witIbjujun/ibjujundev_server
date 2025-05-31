@@ -38,6 +38,7 @@ public class UserDTO {
     private String kakaoId;
     private String role;
     private String nickName;
+    private String sllrNo;
     private String name;
     private String mainAptNo;               // 메인아파트 번호
     private String mainAptNm;               // 메인아파트 이름
@@ -47,12 +48,36 @@ public class UserDTO {
     private String token;               // 메인아파트 이름
     private String price;               // 메인아파트 이름
     private String imageFilePath;               // 업체 이미지 파일path
+    private String selCategoryNm;               // 업체 이미지 파일path
     private String estimateDate;               // 업체 이미지 파일path
     private String finishCount;               // 업체 이미지 파일path
     private List<String> aptNo;               // 아파트 번호 리스트
     private List<String> aptName;             // 아파트 이름 리스트
 
-    
+	/**
+	 * @return the selCategoryNm
+	 */
+	public String getSelCategoryNm() {
+		return selCategoryNm;
+	}
+	/**
+	 * @param selCategoryNm the selCategoryNm to set
+	 */
+	public void setSelCategoryNm(String selCategoryNm) {
+		this.selCategoryNm = selCategoryNm;
+	}
+	/**
+	 * @return the sllrNo
+	 */
+	public String getSllrNo() {
+		return sllrNo;
+	}
+	/**
+	 * @param sllrNo the sllrNo to set
+	 */
+	public void setSllrNo(String sllrNo) {
+		this.sllrNo = sllrNo;
+	}
 	public String getGpStartDate() {
 		return gpStartDate;
 	}

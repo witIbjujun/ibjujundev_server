@@ -46,6 +46,15 @@ public class UserMapper {
 	}
 	
 	/**
+	 * 공구
+	 * @param paramMap
+	 * @return List<UserDTO>
+	 */
+	public List<String> selectGongGuCompanyIdList(HashMap<String, Object> paramMap) {
+		return sql.selectList(path + "selectGongGuCompanyIdList", paramMap);
+	}
+	
+	/**
 	 * 회사 상세 리스트
 	 * @param paramMap
 	 * @return List<UserDTO>
@@ -79,6 +88,16 @@ public class UserMapper {
 	 */
 	public List<UserDTO> selectTokenList(HashMap<String, Object> paramMap) {
 		return sql.selectList(path + "selectTokenList", paramMap);
+	}
+	
+	
+	/**
+	 * 토큰 리스트
+	 * @param paramMap
+	 * @return List<UserDTO>
+	 */
+	public List<UserDTO> selectReqTokenList(HashMap<String, Object> paramMap) {
+		return sql.selectList(path + "selectReqTokenList", paramMap);
 	}
 	
 	/**
@@ -182,6 +201,15 @@ public class UserMapper {
 	}
 	
 	/**
+	 * 공구 카운트
+	 * @param paramMap
+	 * @return int
+	 */
+	public int selectCountGonguReqCount(HashMap<String, Object> paramMap) {
+		return sql.selectOne(path + "selectCountGonguReqCount", paramMap);
+	}
+	
+	/**
 	 * 사전점검 항목 저장
 	 * @param paramMap
 	 * @return int
@@ -205,6 +233,14 @@ public class UserMapper {
 	 */
 	public int insertHistoryRequest(HashMap<String, Object> paramMap) {
 		return sql.update(path + "insertHistoryRequest", paramMap);
+	}
+	/**
+	 * 사전점검 항목 저장
+	 * @param paramMap
+	 * @return int
+	 */
+	public int updateReqCount(HashMap<String, Object> paramMap) {
+		return sql.update(path + "updateReqCount", paramMap);
 	}
 	
 	/**

@@ -181,13 +181,12 @@ public class UserController {
 		
 		// 파라미터
 		String reqUser = param.get("reqUser") == null ? "" : (String) param.get("reqUser");
+		String aptNo = param.get("aptNo") == null ? "" : (String) param.get("aptNo");
 		
 		logger.info("reqUser :: " + reqUser);
+		logger.info("aptNo :: " + aptNo);
 		
-		HashMap<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("reqUser", reqUser);
-		
-		List<UserDTO> noticeList = userService.getGonguList(paramMap);
+		List<UserDTO> noticeList = userService.getGonguList(param);
 		
 		logger.info("공구목록 ::: " + noticeList.size());
 		
@@ -502,6 +501,7 @@ public class UserController {
 		List<UserDTO> reqList = userService.getRequestAsisList(paramMap);
 		
 		logger.info("신청리스트 ::: " + reqList.size());
+		 logger.info("쿼리 실행 후 결과 사이즈: " + reqList.size());
 		
 		return reqList;
 	}
@@ -522,8 +522,9 @@ public class UserController {
 	    String aptNo = param.get("aptNo") == null ? "1" : (String) param.get("aptNo").toString();
 	    String reqContents = param.get("reqContents") == null ? "" : (String) param.get("reqContents");
 	    String expectedDate = param.get("expectedDate") == null ? "" : (String) param.get("expectedDate");
+	    String saleAmt = param.get("saleAmt") == null ? "" : (String) param.get("saleAmt");
 	    
-	    String reqState = "10";
+	   
 	    logger.info("aptNo:: " + aptNo);
 	    logger.info("categoryId 11111:: " + categoryId);
 	    logger.info("reqGubun :: " + reqGubun);
@@ -532,22 +533,19 @@ public class UserController {
 	    logger.info("expectedDate :: " + expectedDate.replace(".", ""));
 
 	    // companyIds 배열 추출
-	     
-	    
-	  		
 	    HashMap<String, Object> paramMap = new HashMap<>();
 	    paramMap.put("categoryId", categoryId);
 	    paramMap.put("reqGubun", reqGubun);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("reqUser", reqUser);  // 선택된 회사 ID 배열 추가
-	    paramMap.put("reqState", reqState);  // 선택된 회사 ID 배열 추가
+	    paramMap.put("saleAmt", saleAmt);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("reqContents", reqContents);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("aptNo", aptNo);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("reqContents", reqContents);  // 선택된 회사 ID 배열 추가
 	    paramMap.put("expectedDate", expectedDate.replace(".", ""));  // 선택된 회사 ID 배열 추가
 	    paramMap.put("gubun", "S");  // 선택된 회사 ID 배열 추가
 	    paramMap.put("title", "입주전");  // 선택된 회사 ID 배열 추가
-	    paramMap.put("body", "견적요청이 왔습니다!!!");  // 선택된 회사 ID 배열 추가
-		
+	    paramMap.put("body", "판매자님 견적요청이 왔습니다!!!");  // 선택된 회사 ID 배열 추가
+	    paramMap.put("screen", "SellerProfileDetail");
 	    int result = userService.saveRequestInfo(paramMap);
 	    
 	    List<String> companyIds = userService.selectCompanyIdList(paramMap);

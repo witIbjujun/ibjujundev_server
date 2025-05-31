@@ -31,8 +31,24 @@
         FROM  IBJ_PRSN000T 
         WHERE clerk_no = #{clerkNo}
 	</select>
+
+	<!-- 사전점검 항목 리스트 조회 -->
+	<select id="selectCountGonguReqCount" parameterType="java.util.HashMap" resultType="int">
+         SELECT (limit_count - req_count) AS remaining_count
+        FROM IBJ_CTGR100T
+        WHERE ctgr_id =  #{categoryId}
+        AND apt_no = #{aptNo}
+        FOR UPDATE
+	</select>
 	
-	
+	<!--  2. req_count 증가 -->
+    <update id="updateReqCount" parameterType="java.util.HashMap">
+        UPDATE IBJ_CTGR100T
+        SET req_count = req_count + 1
+        WHERE ctgr_id = #{categoryId}
+         AND apt_no = #{aptNo}
+    </update>
+    
 		<!-- 사전점검 항목 리스트 조회 -->
 	<select id="userCheckKakaoCount" parameterType="java.util.HashMap" resultType="int">
 		SELECT COUNT(clerk_no) CNT
@@ -53,9 +69,25 @@
 	
 	<!-- 사전점검 상세항목 리스트 조회 -->
 	<select id="selectCompanyIdList" parameterType="java.util.HashMap" resultType="java.lang.String">
-		SELECT sllr_no companyId
-		FROM wit_sllr000t 
-		WHERE service_item = #{categoryId}
+		SELECT A.sllr_no companyId
+		FROM wit_sllr000t A , sllr100t B
+		WHERE A.sllr_no = B.sllr_no
+		AND  A.service_item =#{categoryId}
+		AND B.apt_no = #{aptNo}
+		AND A.end_date ='99991231'
+		AND B.end_date ='99991231' 
+
+	</select>
+	
+	<!-- 사전점검 상세항목 리스트 조회 -->
+	<select id="selectGongGuCompanyIdList" parameterType="java.util.HashMap" resultType="java.lang.String">
+		SELECT a.sllr_no
+		FROM  IBJ_CTGR100T a , wit_sllr000t b 
+		where a.sllr_no = b.sllr_no 
+        and  a.ctgr_id = #{categoryId}
+        and b.BIZ_CERTIFICATION  = '03' 
+		and a.apt_no = #{aptNo}
+		and a.end_date = '99991231'
 	</select>
 	
 	<!-- 사전점검 상세항목 리스트 조회 -->
@@ -135,11 +167,22 @@
 		      ,B.req_count reqCount /*요청수량*/
 		      ,B.sale_rate saleRate /*할인율%*/
 		      ,B.sale_amt saleAmt   /*할인된 금액*/
-		FROM IBJ_CTGR000T A , IBJ_CTGR100T B
-		WHERE A.ctgr_id = B.ctgr_id
-		AND  A.end_date = '99991231'
+              ,C.req_state reqState
+		FROM IBJ_CTGR000T A
+        LEFT JOIN IBJ_CTGR100T B  
+        ON  A.ctgr_id = B.ctgr_id 
+        LEFT OUTER JOIN (
+					select b.req_state
+						  ,b.req_no
+                          ,b.category_id
+					from request100t a , request110t b
+					where a.req_no = b.REQ_NO
+					and a.req_gubun  = 'G'
+					  AND b.req_user = #{reqUser}) C 
+		ON  A.ctgr_id  = C.category_id
+        WHERE  A.end_date = '99991231'
 		AND  B.end_date = '99991231'
-		AND  A.group_pchs_gbn = 'C'
+		 AND  B.apt_no = #{aptNo}
 	</select>
 	
 	<!-- 사전점검 견적전 리스트 조회 -->
@@ -171,23 +214,14 @@
 		    DATE_FORMAT(MIN(A.REQ_DATE), '%c월 %e일') AS reqDateInfo, 
 		    MIN(A.req_gubun) AS reqGubun,
 		    MIN(A.req_state) AS reqState,
-		   CASE 
-		        WHEN MIN(A.req_gubun) = 'T' THEN 
-		            CONCAT(
-		                (
-		                  SELECT GROUP_CONCAT(category_nm SEPARATOR ' / ')
+		   ( SELECT GROUP_CONCAT(category_nm SEPARATOR ' / ')
 		                  FROM category
 		                  WHERE category_id IN (
 		                    SELECT category_id
 		                    FROM request100t
 		                    WHERE req_no = A.req_no
-		                  )
-		                ),
-		                ' ',
-		                MIN(A.req_contents)
-		            )
-		        ELSE MIN(A.req_contents)
-		    END AS reqContents,
+		                  )) selCategoryNm,
+		  MIN(A.req_contents) reqContents,
 	        CASE
 		        WHEN TIMESTAMPDIFF(SECOND, A.REQ_DATE, NOW()) <![CDATA[<=]]> 10 THEN '방금 전'
 		        WHEN TIMESTAMPDIFF(SECOND, A.REQ_DATE, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(SECOND, A.REQ_DATE, NOW()), '초 전')
@@ -231,6 +265,15 @@
     )
 	</select>
 	
+	<!--토근 리스트 조회 -->
+	<select id="selectReqTokenList" parameterType="java.util.HashMap" resultType="UserDTO">
+		SELECT A.token 
+		FROM IBJ_PRSN000T A , request110t B
+		WHERE A.clerk_no = B.req_user 
+		AND B.REQ_NO = #{reqNo}	
+		AND B.SEQ = #{seq}	
+	</select>
+	
 	<!--알림 리스트 조회 -->
 	<select id="selectNoticeList" parameterType="java.util.HashMap" resultType="UserDTO">
 		SELECT      AA.sllr_no 
@@ -271,6 +314,7 @@
 		       A.nick_name AS nickName,
 		       A.apt_no AS mainAptNo,
 		       A.email ,
+		       C.sllr_no AS sllrNo,
 		       TT.mainAptNm
 		FROM IBJ_PRSN000T A
 		LEFT JOIN (
@@ -289,7 +333,9 @@
 		) TT
 		ON A.apt_no = TT.apt_no
 	   AND A.apt_pyoung = TT.apt_pyoung
-	   
+      LEFT OUTER JOIN wit_sllr000t C
+       ON A.clerk_no = C.clerk_no
+       AND C.end_date = '99991231'
 	    <where>
 		    <trim prefixOverrides="AND">
 		      
@@ -522,7 +568,7 @@
         #{reqUser}, 
         SYSDATE(),  
         #{reqState},     
-        #{reqContents}    
+        #{reqContents}   
     )
 	</insert>
 	

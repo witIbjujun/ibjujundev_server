@@ -74,6 +74,13 @@ public interface UserService {
 	public List<UserDTO> getTokenList(HashMap<String, Object> paramMap);
 	
 	/**
+	 * 토큰조회 신청번호로 
+	 * @param paramMap
+	 * @return List<UserDTO>
+	 */
+	public List<UserDTO> getReqTokenList(HashMap<String, Object> paramMap);
+	
+	/**
 	 * 내정보 
 	 * @param paramMap
 	 * @return

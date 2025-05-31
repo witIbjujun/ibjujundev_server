@@ -1,5 +1,6 @@
 package com.wit.inspaction.user.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,6 +100,16 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
+	public List<UserDTO> getReqTokenList(HashMap<String, Object> paramMap) {
+		
+		logger.info("UserServiceImpl getReqTokenList 호출");
+		
+		List<UserDTO> list = userMapper.selectReqTokenList(paramMap);
+		
+		return list;
+	}
+	
+	@Override
 	public UserDTO getUserInfo(HashMap<String, Object> paramMap) {
 		
 		logger.info("UserServiceImpl getUserInfo 호출");
@@ -151,41 +162,74 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public int saveRequestInfo(HashMap<String, Object> paramMap) {
-		
-		List<String> companyIds = userMapper.selectCompanyIdList(paramMap);
-		
 
 	    int insertCount = 0;
 	    int loopCount = 0;  // 루프 카운터 변수
 	    
 	    String reqNo = userMapper.generateReqNo(paramMap);  // 생성된 req_no 값을 얻기 위한 함수 호출
+	    
+	    /*공구*/
+        String reqGubun =(String)paramMap.get("reqGubun");
+        List<String> companyIds = new ArrayList<>();
+        HashMap<String, Object> insertMap = new HashMap<>();
+        
+        if("G".equals(reqGubun)) {
+        	 /**
+        	  *공구 회사 조회 
+        	  */
+        	logger.info("=========공구카운트 한다===========");
+        	 companyIds = userMapper.selectGongGuCompanyIdList(paramMap);
+        	 
+       	    HashMap<String, Object> gonguMap = new HashMap<>();
+        	gonguMap.put("categoryId", paramMap.get("categoryId"));
+        	gonguMap.put("aptNo", paramMap.get("aptNo"));
+        	
+            int remainingCount  = userMapper.selectCountGonguReqCount(paramMap);
+            
+            logger.info("=========건수가 몇인디?? remainingCount==="+remainingCount+"========");
+            if (remainingCount <= 0) {
+            	/*❌ 최대 수량에 도달하여 신청할 수 없습니다.*/
+                return 999;
+            }
+            // 🔹 2. 수량 증가
+            insertCount += userMapper.updateReqCount(gonguMap);
+            
+            
+            insertMap.put("companyId", companyIds.get(0));
+            logger.info("=========공구하나?==="+insertMap.get("companyId")+"========");
+            insertMap.put("estimateAmount", paramMap.get("saleAmt"));
+            insertMap.put("estimateContents", "공구바로견적");
+            insertMap.put("reqState", "20");
+            
+        }else {
+        	 companyIds = userMapper.selectCompanyIdList(paramMap);
+    	     insertMap.put("reqState", "10");
+        }
 
-    	 HashMap<String, Object> insertMap = new HashMap<>();
+    	
     	 insertMap.put("categoryId", paramMap.get("categoryId"));
     	 insertMap.put("reqNo", reqNo);
-    
 		 insertMap.put("reqGubun", paramMap.get("reqGubun"));
-		 insertMap.put("reqUser",  paramMap.get("reqUser"));
-		 insertMap.put("reqState", paramMap.get("reqState"));
 		 insertMap.put("reqContents", paramMap.get("reqContents"));
 		 insertMap.put("aptNo",    paramMap.get("aptNo"));
 		 insertMap.put("reqUser",  paramMap.get("reqUser"));
-		 insertMap.put("reqState", paramMap.get("reqState"));
 		 insertMap.put("expectedDate", paramMap.get("expectedDate"));
+		 
          insertCount += userMapper.insertTotalRequestInfo(insertMap);
+         
+      
 	         
          for (String companyId : companyIds) {
 	    	logger.info("===================================");
 	    	logger.info("reqNo===insertTotalRequestInfo "+insertMap.get("reqNo"));
 	    	logger.info("reqNo===expectedDate "+insertMap.get("expectedDate"));
-	    	logger.info("seq===seq "+loopCount++);
+	    	logger.info("seq===companyId==== "+companyId);
 	    	logger.info("===================================");
 	    	logger.info("===================================");
 	    	logger.info("===================================");
 	    	
 	    	insertMap.put("seq",  loopCount++);
 	    	insertMap.put("companyId", companyId);
-	    	insertMap.put("reqNo",  insertMap.get("reqNo"));
 
 	        insertCount += userMapper.insertHistoryRequest(insertMap);
 	    }
