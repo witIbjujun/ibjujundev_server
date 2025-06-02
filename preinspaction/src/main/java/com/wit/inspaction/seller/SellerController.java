@@ -1,5 +1,7 @@
 package com.wit.inspaction.seller;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -343,20 +345,151 @@ public class SellerController {
 		if (result > 0) {
 			
 			// 파일 Json
-			List<HashMap<String, Object>> fileList = (List<HashMap<String, Object>>) param.get("fileInfo");
+			// fileInfo1 파트너 업체설명 이미지
+			// fileInfo2 사업자 등록증 이미지
+		    // fileInfo3 파트너 프로필 이미지
+			// ObjectMapper 인스턴스 생성
+			ObjectMapper mapper = new ObjectMapper();
 
-				if (fileList != null && !fileList.isEmpty()) {
+			// fileInfo1 파트너 업체설명 이미지
+			List<HashMap<String, Object>> fileList1 = new ArrayList<>();
+			Object fileInfo1Raw = param.get("fileInfo1");
+			if (fileInfo1Raw instanceof String) {
+			    //fileList1 = mapper.readValue((String) fileInfo1Raw, new TypeReference<List<HashMap<String, Object>>>() {});
+			    TypeReference<List<HashMap<String, Object>>> typeRef = new TypeReference<List<HashMap<String, Object>>>() {};
+			    fileList1 = mapper.readValue((String) fileInfo1Raw, typeRef);
+			} else if (fileInfo1Raw instanceof List) {
+			    fileList1 = (List<HashMap<String, Object>>) fileInfo1Raw;
+			}
+
+			// fileInfo2 사업자 등록증 이미지
+			List<HashMap<String, Object>> fileList2 = new ArrayList<>();
+			Object fileInfo2Raw = param.get("fileInfo2");
+			if (fileInfo2Raw instanceof String) {
+			    TypeReference<List<HashMap<String, Object>>> typeRef = new TypeReference<List<HashMap<String, Object>>>() {};
+			    fileList2 = mapper.readValue((String) fileInfo2Raw, typeRef);
+			} else if (fileInfo2Raw instanceof List) {
+			    fileList2 = (List<HashMap<String, Object>>) fileInfo2Raw;
+			}
+
+			// fileInfo3 파트너 프로필 이미지
+			List<HashMap<String, Object>> fileList3 = new ArrayList<>();
+			Object fileInfo3Raw = param.get("fileInfo3");
+			if (fileInfo3Raw instanceof String) {
+//			    fileList3 = mapper.readValue((String) fileInfo3Raw, new TypeReference<List<HashMap<String, Object>>>() {});
+			    TypeReference<List<HashMap<String, Object>>> typeRef = new TypeReference<List<HashMap<String, Object>>>() {};
+			    fileList3 = mapper.readValue((String) fileInfo3Raw, typeRef);
+			} else if (fileInfo3Raw instanceof List) {
+			    fileList3 = (List<HashMap<String, Object>>) fileInfo3Raw;
+			}
+			
+			List<String> fileDelList1 = (List<String>) param.get("fileDelInfo1");
+			List<String> fileDelList2 = (List<String>) param.get("fileDelInfo2");
+			List<String> fileDelList3 = (List<String>) param.get("fileDelInfo3");
+			
+			// 파일 삭제 리스트
+			if (fileDelList1 != null && !fileDelList1.isEmpty()) {
+				
+				// 파일 삭제
+				for (String fileDelInfo1 : fileDelList1) {
+					HashMap<String, Object> delParam = new HashMap<String, Object>();
+					delParam.put("fileId", fileDelInfo1.split("/")[3]);
+					int fileDelResult = boardServiceImpl.deleteFileInfo(delParam);
+					
+					logger.info("파일 삭제 ::: " + fileDelResult);
+					
+					if (fileDelResult > 0) {
+						File delFile = new File("/ibjujundev/tomcat/webapps/FILE/ibjujun/Board/" + fileDelInfo1.split("/")[3]);
+						Boolean delFlag =  delFile.delete();
+						
+						logger.info("파일 삭제 ::: " + delFlag);
+						
+					}
+				}
+			}
+			if (fileDelList2 != null && !fileDelList2.isEmpty()) {
+							
+				// 파일 삭제
+				for (String fileDelInfo2 : fileDelList2) {
+					HashMap<String, Object> delParam = new HashMap<String, Object>();
+					delParam.put("fileId", fileDelInfo2.split("/")[3]);
+					int fileDelResult = boardServiceImpl.deleteFileInfo(delParam);
+					
+					logger.info("파일 삭제 ::: " + fileDelResult);
+					
+					if (fileDelResult > 0) {
+						File delFile = new File("/ibjujundev/tomcat/webapps/FILE/ibjujun/Board/" + fileDelInfo2.split("/")[3]);
+						Boolean delFlag =  delFile.delete();
+						
+						logger.info("파일 삭제 ::: " + delFlag);
+						
+					}
+				}
+			}
+			
+			if (fileDelList3 != null && !fileDelList3.isEmpty()) {
+				
+				// 파일 삭제
+				for (String fileDelInfo3 : fileDelList3) {
+					HashMap<String, Object> delParam = new HashMap<String, Object>();
+					delParam.put("fileId", fileDelInfo3.split("/")[3]);
+					int fileDelResult = boardServiceImpl.deleteFileInfo(delParam);
+					
+					logger.info("파일 삭제 ::: " + fileDelResult);
+					
+					if (fileDelResult > 0) {
+						File delFile = new File("/ibjujundev/tomcat/webapps/FILE/ibjujun/Board/" + fileDelInfo3.split("/")[3]);
+						Boolean delFlag =  delFile.delete();
+						
+						logger.info("파일 삭제 ::: " + delFlag);
+						
+					}
+				}
+			}
+
+		    // 파일저장
+			if (fileList1 != null && !fileList1.isEmpty()) {
+			
+			// 파일 저장
+				for (HashMap<String, Object> fileInfo1 : fileList1) {
+				fileInfo1.put("bizCd", "SR01");
+                fileInfo1.put("bizKey", param.get("sllrNo"));
+				fileInfo1.put("fileType", "01");
+				fileInfo1.put("creUser", "테스트");
+				
+				int fileResult = boardServiceImpl.saveFileInfo(fileInfo1);
+				
+				System.out.println("파일 등록 ::: " + fileResult);
+				}
+			}
+			
+			if (fileList2 != null && !fileList2.isEmpty()) {
 				
 				// 파일 저장
-				for (HashMap<String, Object> fileInfo : fileList) {
-					fileInfo.put("bizCd", "SR01");
-	                fileInfo.put("bizKey", param.get("sllrNo"));
-					fileInfo.put("fileType", "01");
-					fileInfo.put("creUser", "테스트");
-					
-					int fileResult = boardServiceImpl.saveFileInfo(fileInfo);
-					
-					System.out.println("파일 등록 ::: " + fileResult);
+				for (HashMap<String, Object> fileInfo2 : fileList2) {
+				fileInfo2.put("bizCd", "SR02");
+                fileInfo2.put("bizKey", param.get("sllrNo"));
+				fileInfo2.put("fileType", "01");
+				fileInfo2.put("creUser", "테스트");
+				
+				int fileResult = boardServiceImpl.saveFileInfo(fileInfo2);
+				
+				System.out.println("파일 등록 ::: " + fileResult);
+				}
+			}
+			
+			if (fileList3 != null && !fileList3.isEmpty()) {
+				
+				// 파일 저장
+				for (HashMap<String, Object> fileInfo3 : fileList3) {
+				fileInfo3.put("bizCd", "SR03");
+                fileInfo3.put("bizKey", param.get("sllrNo"));
+				fileInfo3.put("fileType", "01");
+				fileInfo3.put("creUser", "테스트");
+				
+				int fileResult = boardServiceImpl.saveFileInfo(fileInfo3);
+				
+				System.out.println("파일 등록 ::: " + fileResult);
 				}
 			}
 			
@@ -559,6 +692,21 @@ public class SellerController {
 		System.out.println("updateBizCertification 호출");
 
 		int result = sellerService.updateBizCertification(param);
+		
+		// 인증상태 수정되면 관리자에게 알림톡 호출
+		/*
+		 * if (result > 0) { HashMap<String, Object> paramMap = new HashMap<>();
+		 * paramMap.put("title", "입주전"); // 타이틀 paramMap.put("body",
+		 * "요청하신 견적이 도착했습니다!!"); // 내용 paramMap.put("screen", "파트너님이 사업자인증 요청을 하였습니다.");
+		 * // 이동할 화면 paramMap.put("gubun", "A"); // 이동할 화면 // paramMap.put("sllrNo",
+		 * sllrNo); // 이동할 화면 // paramMap.put("seq", seq); // 이동할 화면 int token =
+		 * fcmService.sendAppMessage(paramMap);
+		 * 
+		 * logger.info(":::::::::::::::::::::::::::::::::::::::");
+		 * logger.info("토큰 호출  : " + token);
+		 * logger.info(":::::::::::::::::::::::::::::::::::::::"); }
+		 */
+		
 
         return result;
     }
