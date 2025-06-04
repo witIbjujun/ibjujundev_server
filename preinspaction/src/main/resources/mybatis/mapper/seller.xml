@@ -30,7 +30,8 @@
                 , CASE WHEN A.type = 'S' THEN "Simple 인테리어" 
 		                  WHEN A.type = 'T' THEN "Standard 인테리어" 
 		                  WHEN A.type = 'P' THEN "Premium 인테리어" 
-		                  ELSE "My Choice 인테리어" END AS reqType		
+                          WHEN A.type = 'A' THEN "My Choice 인테리어" 
+		                  ELSE "일반 견적 요청" END AS reqType	
 		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E, wit_sllr000t F
 		WHERE   A.REQ_NO = B.REQ_NO
 		AND 	B.END_DATE = '99991231'
@@ -93,7 +94,8 @@
                 , CASE WHEN A.type = 'S' THEN "Simple 인테리어" 
 		                  WHEN A.type = 'T' THEN "Standard 인테리어" 
 		                  WHEN A.type = 'P' THEN "Premium 인테리어" 
-		                  ELSE "My Choice 인테리어" END AS reqType
+                          WHEN A.type = 'A' THEN "My Choice 인테리어" 
+		                  ELSE "일반 견적 요청" END AS reqType	
 		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E, wit_sllr000t F
 		WHERE   A.REQ_NO = B.REQ_NO
 		AND 	B.END_DATE = '99991231'
@@ -133,7 +135,8 @@
                 , CASE WHEN A.type = 'S' THEN "Simple 인테리어" 
 		                  WHEN A.type = 'T' THEN "Standard 인테리어" 
 		                  WHEN A.type = 'P' THEN "Premium 인테리어" 
-		                  ELSE "My Choice 인테리어" END AS reqType
+                          WHEN A.type = 'A' THEN "My Choice 인테리어" 
+		                  ELSE "일반 견적 요청" END AS reqType	
 		FROM    request100t A, request110t B, apt000t C, category D, prsn000t E, wit_sllr000t F
 		WHERE   A.REQ_NO = B.REQ_NO
 		AND 	B.END_DATE = '99991231'
@@ -294,6 +297,7 @@
                , REGI_LEVEL AS regiLevel
                , (SELECT COUNT(B.SLLR_NO) FROM IBJ_CTGR100T B WHERE B.SLLR_NO = A.SLLR_NO AND A.SERVICE_ITEM = B.CTGR_ID) AS gongguCnt
                , (SELECT CONCAT(B.FILE_LOC, B.FILE_ID) FROM wit_file000t B WHERE BIZ_CD = 'SR02' AND BIZ_KEY = SLLR_NO LIMIT 1 ) AS bizCertificationImage
+   		       , BIZ_CERTIFICATION_DATE AS bizCertificationDateOri
 		FROM   wit_sllr000t A
 		WHERE  A.SLLR_NO = #{sllrNo}
 	</select>
@@ -336,6 +340,7 @@
 		            WHEN TIMESTAMPDIFF(MINUTE, BIZ_CERTIFICATION_DATE, NOW()) <![CDATA[<]]> 60 THEN CONCAT(TIMESTAMPDIFF(MINUTE, BIZ_CERTIFICATION_DATE, NOW()), '분 전')
 		            WHEN TIMESTAMPDIFF(HOUR, BIZ_CERTIFICATION_DATE, NOW()) <![CDATA[<]]> 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, BIZ_CERTIFICATION_DATE, NOW()), '시간 전')
 		            ELSE CONCAT(TIMESTAMPDIFF(DAY, BIZ_CERTIFICATION_DATE, NOW()), '일 전') END  AS bizCertificationDate
+		       , BIZ_CERTIFICATION_DATE AS bizCertificationDateOri
 		       , category_content AS categoryContent     
 		       , CERTIFICATION_YN AS certificationYn
                , CASE

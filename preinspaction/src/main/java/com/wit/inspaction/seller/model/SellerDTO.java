@@ -42,7 +42,7 @@ public class SellerDTO {
     private String regiLevel; // 등록단계
     private String gpCnt;     // 공동구매 요청받은 건수
     private String gongguCnt; // 공동구매 진행 아파트 건수
-    
+    private String bizCertificationDateOri;    
 	/**
 	 * @return the sllrNo
 	 */
@@ -523,6 +523,17 @@ public class SellerDTO {
 	public void setBizCertificationImage(String bizCertificationImage) {
 		this.bizCertificationImage = bizCertificationImage;
 	}
+	/**
+	 * @return the bizCertificationDateOri
+	 */
+	public String getBizCertificationDateOri() {
+		return bizCertificationDateOri;
+	}
+	/**
+	 * @param bizCertificationDateOri the bizCertificationDateOri to set
+	 */
+	public void setBizCertificationDateOri(String bizCertificationDateOri) {
+		this.bizCertificationDateOri = bizCertificationDateOri;
+	}
 
-	
 }
