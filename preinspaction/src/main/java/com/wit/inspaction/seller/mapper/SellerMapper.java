@@ -390,6 +390,16 @@ public class SellerMapper {
 		System.out.println("############# updatePartnerYn : " + param);
 		return sql.update(path + "updatePartnerYn", param);
 	}
+	
+	/**
+	 * 사업자 번호 불량여부 조회
+	 * @param param
+	 * @return String
+	 */
+	public String selectBizCertificationAllowYn(HashMap<String, Object> param) {
+		System.out.println("############# selectBizCertificationAllowYn : " + param);
+		return sql.selectOne(path + "selectBizCertificationAllowYn", param);
+	}
 
 
 }

@@ -293,4 +293,11 @@ public class SellerServiceImpl implements SellerService{
 		return sellerMapper.updatePartnerYn(param);
 	}
 
+	@Override
+	public String getBizCertificationAllowYn(HashMap<String, Object> param) {
+		System.out.println("SellerServiceImpl getBizCertificationAllowYn 호출");
+
+		return sellerMapper.selectBizCertificationAllowYn(param);
+	}
+
 }

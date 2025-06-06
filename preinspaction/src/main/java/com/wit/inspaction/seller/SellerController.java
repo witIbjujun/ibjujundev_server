@@ -930,4 +930,18 @@ public class SellerController {
 
         return result;
 	}
+	
+	/**
+	 * 사업자 번호 불량여부 조회
+	 * @return String
+	 */
+	@PostMapping("/wit/getBizCertificationAllowYn")
+    public String getBizCertificationAllowYn(@RequestBody HashMap<String, Object> param) {
+
+		System.out.println("getBizCertificationAllowYn 호출");
+
+		String allowYn = sellerService.getBizCertificationAllowYn(param);
+
+        return allowYn;
+    }
 }

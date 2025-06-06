@@ -273,4 +273,10 @@ public interface SellerService {
 	 */
 	public int updatePartnerYn(HashMap<String, Object> param);
 	
+	/**
+	 * 사업자 번호 불량여부 조회
+	 * @return String
+	 */
+	public String getBizCertificationAllowYn(HashMap<String, Object> param);
+	
 }
