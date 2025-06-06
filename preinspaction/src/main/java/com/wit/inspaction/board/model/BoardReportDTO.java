@@ -6,6 +6,8 @@ public class BoardReportDTO {
 	private String bordType;				// 게시판 타입
 	private String bordTypeNm;			// 게시판 타입명
 	private String bordTitle;				// 게시판 제목
+	private String bordContent;			// 게시판 내용
+	private String bordRdCnt;				// 게시판 조회수
 	private String creUserNm;				// 게시판 작성자명
 	private String profileImg;				// 작성자 이미지 경로
 	private String creDateTxt;				// 게시판 작성일자
@@ -60,6 +62,30 @@ public class BoardReportDTO {
 	 */
 	public void setBordTitle(String bordTitle) {
 		this.bordTitle = bordTitle;
+	}
+	/**
+	 * @return the bordContent
+	 */
+	public String getBordContent() {
+		return bordContent;
+	}
+	/**
+	 * @param bordContent the bordContent to set
+	 */
+	public void setBordContent(String bordContent) {
+		this.bordContent = bordContent;
+	}
+	/**
+	 * @return the bordRdCnt
+	 */
+	public String getBordRdCnt() {
+		return bordRdCnt;
+	}
+	/**
+	 * @param bordRdCnt the bordRdCnt to set
+	 */
+	public void setBordRdCnt(String bordRdCnt) {
+		this.bordRdCnt = bordRdCnt;
 	}
 	/**
 	 * @return the creUserNm
