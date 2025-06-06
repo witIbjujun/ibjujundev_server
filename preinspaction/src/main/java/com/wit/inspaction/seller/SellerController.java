@@ -844,15 +844,15 @@ public class SellerController {
 	}
 	
 	/**
-	 * 사업자 본인인증 수정
+	 * 핸드폰 본인인증 수정
 	 * @param paramMap
 	 * @return int
 	 */
-	@PostMapping("/wit/updateCertificationYn")
-	public int updateCertificationYn(@RequestBody HashMap<String, Object> param) {
-		System.out.println("updateCertificationYn 호출");
+	@PostMapping("/wit/updateHpCertificationYn")
+	public int updateHpCertificationYn(@RequestBody HashMap<String, Object> param) {
+		System.out.println("updateHpCertificationYn 호출");
 
-		int result = sellerService.updateCertificationYn(param);
+		int result = sellerService.updateHpCertificationYn(param);
 
         return result;
 	}

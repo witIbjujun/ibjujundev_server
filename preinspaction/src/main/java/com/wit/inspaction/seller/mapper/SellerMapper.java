@@ -333,13 +333,13 @@ public class SellerMapper {
 	}
 	
 	/**
-	 * 사업자 본인인증 수정
+	 * 핸드폰 본인인증 수정
 	 * @param param
 	 * @return int
 	 */
-	public int updateCertificationYn(HashMap<String, Object> param) {
-		System.out.println("############# updateCertificationYn : " + param);
-		return sql.update(path + "updateCertificationYn", param);
+	public int updateHpCertificationYn(HashMap<String, Object> param) {
+		System.out.println("############# updateHpCertificationYn : " + param);
+		return sql.update(path + "updateHpCertificationYn", param);
 	}
 	
 	/**

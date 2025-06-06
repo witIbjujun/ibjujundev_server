@@ -298,6 +298,8 @@
                , (SELECT COUNT(B.SLLR_NO) FROM IBJ_CTGR100T B WHERE B.SLLR_NO = A.SLLR_NO AND A.SERVICE_ITEM = B.CTGR_ID) AS gongguCnt
                , (SELECT CONCAT(B.FILE_LOC, B.FILE_ID) FROM wit_file000t B WHERE BIZ_CD = 'SR02' AND BIZ_KEY = SLLR_NO LIMIT 1 ) AS bizCertificationImage
    		       , BIZ_CERTIFICATION_DATE AS bizCertificationDateOri
+   		       , HP_CERTIFICATION AS hpCertification
+   		       , HP_CERTIFICATION_DATE AS hpCertificationDate
 		FROM   wit_sllr000t A
 		WHERE  A.SLLR_NO = #{sllrNo}
 	</select>
@@ -349,6 +351,8 @@
                   END AS certificationNm
                , REGI_LEVEL AS regiLevel
                , (SELECT CONCAT(B.FILE_LOC, B.FILE_ID) FROM wit_file000t B WHERE BIZ_CD = 'SR02' AND BIZ_KEY = SLLR_NO LIMIT 1 ) AS bizCertificationImage
+               , HP_CERTIFICATION AS hpCertification
+   		       , HP_CERTIFICATION_DATE AS hpCertificationDate
 		FROM   wit_sllr000t
 		WHERE  BIZ_CERTIFICATION IS NOT NULL
 		<if test="storeName !=null and !storeName.equals('')">
@@ -860,16 +864,17 @@
 		AND    APT_NO  = #{aptNo}
 	</update>
 	
-	<!-- 사업자 본인인증 수정 -->
-	<update id="updateCertificationYn" parameterType="java.util.HashMap">
+	<!-- 사업자 휴대폰 인증 수정 -->
+	<update id="updateHpCertificationYn" parameterType="java.util.HashMap">
 		UPDATE wit_sllr000t
-		SET    CERTIFICATION_YN = 'N'
+		SET    HP_CERTIFICATION = 'Y'
 			   ,HP = #{hp}
+			   ,HP_CERTIFICATION_DATE = SYSDATE()
 		       , UPD_USER = #{updUser}
 		       , UPD_DT = SYSDATE()
 		WHERE  SLLR_NO = #{sllrNo}
 	</update>
-
+	
 	<!-- 공동구매 목록 조회 -->
 	<select id="selectGPList" parameterType="java.util.HashMap" resultType="GpInfoDTO">	
 		SELECT A.CTGR_ID AS ctgrId

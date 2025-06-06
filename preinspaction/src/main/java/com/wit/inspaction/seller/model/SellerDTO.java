@@ -42,7 +42,35 @@ public class SellerDTO {
     private String regiLevel; // 등록단계
     private String gpCnt;     // 공동구매 요청받은 건수
     private String gongguCnt; // 공동구매 진행 아파트 건수
-    private String bizCertificationDateOri;    
+    private String bizCertificationDateOri;
+    
+    /**
+	 * @return the hpCertification
+	 */
+	public String getHpCertification() {
+		return hpCertification;
+	}
+	/**
+	 * @param hpCertification the hpCertification to set
+	 */
+	public void setHpCertification(String hpCertification) {
+		this.hpCertification = hpCertification;
+	}
+	/**
+	 * @return the hpCertificationDate
+	 */
+	public String getHpCertificationDate() {
+		return hpCertificationDate;
+	}
+	/**
+	 * @param hpCertificationDate the hpCertificationDate to set
+	 */
+	public void setHpCertificationDate(String hpCertificationDate) {
+		this.hpCertificationDate = hpCertificationDate;
+	}
+	private String hpCertification;    	// 핸드폰 본인인증여부
+    private String hpCertificationDate; // 핸드폰 본인인증 요청일
+    
 	/**
 	 * @return the sllrNo
 	 */
