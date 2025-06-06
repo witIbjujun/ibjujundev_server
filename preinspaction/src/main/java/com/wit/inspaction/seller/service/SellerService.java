@@ -277,6 +277,6 @@ public interface SellerService {
 	 * 사업자 번호 불량여부 조회
 	 * @return String
 	 */
-	public String getBizCertificationAllowYn(HashMap<String, Object> param);
+	public SellerDTO getBizCertificationAllowYn(HashMap<String, Object> param);
 	
 }

@@ -394,9 +394,9 @@ public class SellerMapper {
 	/**
 	 * 사업자 번호 불량여부 조회
 	 * @param param
-	 * @return String
+	 * @return SellerDTO
 	 */
-	public String selectBizCertificationAllowYn(HashMap<String, Object> param) {
+	public SellerDTO selectBizCertificationAllowYn(HashMap<String, Object> param) {
 		System.out.println("############# selectBizCertificationAllowYn : " + param);
 		return sql.selectOne(path + "selectBizCertificationAllowYn", param);
 	}

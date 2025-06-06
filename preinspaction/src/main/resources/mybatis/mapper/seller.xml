@@ -989,9 +989,9 @@
     </update>
    
     <!-- 사업자 번호 불량여부 조회 -->
-	<select id="selectBizCertificationAllowYn" parameterType="java.util.HashMap" resultType="String">	
+	<select id="selectBizCertificationAllowYn" parameterType="java.util.HashMap" resultType="SellerDTO">	
 		SELECT CASE WHEN COUNT(SLLR_NO) > 0 THEN 'N' ELSE 'Y' END allowYn
-		FROM   WIT_SLLR000T
+		FROM   wit_sllr000t
 		WHERE  STORE_CODE = #{storeCode}
 		AND    BIZ_CERTIFICATION = '05'
 	</select>

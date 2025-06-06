@@ -43,33 +43,9 @@ public class SellerDTO {
     private String gpCnt;     // 공동구매 요청받은 건수
     private String gongguCnt; // 공동구매 진행 아파트 건수
     private String bizCertificationDateOri;
-    
-    /**
-	 * @return the hpCertification
-	 */
-	public String getHpCertification() {
-		return hpCertification;
-	}
-	/**
-	 * @param hpCertification the hpCertification to set
-	 */
-	public void setHpCertification(String hpCertification) {
-		this.hpCertification = hpCertification;
-	}
-	/**
-	 * @return the hpCertificationDate
-	 */
-	public String getHpCertificationDate() {
-		return hpCertificationDate;
-	}
-	/**
-	 * @param hpCertificationDate the hpCertificationDate to set
-	 */
-	public void setHpCertificationDate(String hpCertificationDate) {
-		this.hpCertificationDate = hpCertificationDate;
-	}
 	private String hpCertification;    	// 핸드폰 본인인증여부
     private String hpCertificationDate; // 핸드폰 본인인증 요청일
+    private String allowYn; // 사업자 번호 불량여부 ( N : 불량)
     
 	/**
 	 * @return the sllrNo
@@ -564,4 +540,42 @@ public class SellerDTO {
 		this.bizCertificationDateOri = bizCertificationDateOri;
 	}
 
+	/**
+	 * @return the hpCertification
+	 */
+	public String getHpCertification() {
+		return hpCertification;
+	}
+	/**
+	 * @param hpCertification the hpCertification to set
+	 */
+	public void setHpCertification(String hpCertification) {
+		this.hpCertification = hpCertification;
+	}
+	/**
+	 * @return the hpCertificationDate
+	 */
+	public String getHpCertificationDate() {
+		return hpCertificationDate;
+	}
+	/**
+	 * @param hpCertificationDate the hpCertificationDate to set
+	 */
+	public void setHpCertificationDate(String hpCertificationDate) {
+		this.hpCertificationDate = hpCertificationDate;
+	}
+	/**
+	 * @return the allowYn
+	 */
+	public String getAllowYn() {
+		return allowYn;
+	}
+	/**
+	 * @param allowYn the allowYn to set
+	 */
+	public void setAllowYn(String allowYn) {
+		this.allowYn = allowYn;
+	}
+	
+	
 }

@@ -294,7 +294,7 @@ public class SellerServiceImpl implements SellerService{
 	}
 
 	@Override
-	public String getBizCertificationAllowYn(HashMap<String, Object> param) {
+	public SellerDTO getBizCertificationAllowYn(HashMap<String, Object> param) {
 		System.out.println("SellerServiceImpl getBizCertificationAllowYn 호출");
 
 		return sellerMapper.selectBizCertificationAllowYn(param);
