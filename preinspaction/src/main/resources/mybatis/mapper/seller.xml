@@ -549,6 +549,17 @@
                <if test="regiLevel !=null and !regiLevel.equals('')">
                ,REGI_LEVEL  = #{regiLevel}
                </if>
+               
+               <if test="regiLevel == '04'">
+               	,AGREE_GBN  = '5'
+               	,AGREE_DATE  = SYSDATE()
+               </if>
+               
+               <if test="bizCertification !=null and !bizCertification.equals('')">
+               ,BIZ_CERTIFICATION = '01'
+               ,BIZ_CERTIFICATION_DATE = SYSDATE()
+               </if>
+               
 		WHERE  SLLR_NO = #{sllrNo}
 	</update>
 	
